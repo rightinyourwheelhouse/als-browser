@@ -1,0 +1,53 @@
+{
+  "settings": {
+    "react": {
+      "createClass": "createReactClass",
+      "pragma": "React", 
+      "fragment": "Fragment", 
+      "version": "detect",
+      "flowVersion": "0.53"
+    }
+  },
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended"
+    ],
+    "parserOptions": {
+      "ecmaFeatures": {
+        "jsx": true
+      },
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "plugins": [
+      "react"
+    ],
+    "rules": {
+      "comma-dangle": [
+        "error", 
+        "always-multiline"
+      ],
+      "linebreak-style": "off",
+      "no-console": "warn",
+      "no-plusplus": "off",
+      "react/prop-types": "off",
+      // "react/react-in-jsx-scope": "off",
+      "no-restricted-syntax": [
+        "error",
+        {
+          "selector": "CallExpression[callee.object.name='console'][callee.property.name!=/^(log|warn|error|info|trace)$/]",
+          "message": "Unexpected property on console object was called"
+        }
+      ],
+      "no-void": "off",
+      "strict": [
+        "error", 
+        "global"
+      ]
+    }
+  }
