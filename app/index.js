@@ -15,14 +15,19 @@ function createWindow() {
 		nodeIntegration: true,
 		enableRemoteModule: true,
 		webPreferences: {
-			webviewTag: true,
 			preload: path.join(__dirname, 'preload.js'),
 		},
 	});
 
 	mainWindow.maximize();
 
-	view = new BrowserView();
+	view = new BrowserView({
+		nodeIntegration: true,
+		enableRemoteModule: true,
+		webPreferences: {
+			preload: path.join(__dirname, 'scripts/preload.js'),
+		},
+	});
 
 	// Open the DevTools.
 	if (isDev) {
@@ -35,6 +40,7 @@ function createWindow() {
 	mainWindow.setBrowserView(view);
 	view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 108 });
 	view.webContents.loadURL('https://google.com');
+	view.webContents.openDevTools();
 
 	// Events
 	mainWindow.on('resize', function () {
