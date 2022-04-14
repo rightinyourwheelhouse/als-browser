@@ -7,13 +7,15 @@ const isDev = require('electron-is-dev');
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) app.quit();
 
+let mainWindow;
 let view;
 
 function createWindow() {
 	// Create the browser window.
-	const mainWindow = new BrowserWindow({
+	mainWindow = new BrowserWindow({
 		nodeIntegration: true,
 		enableRemoteModule: true,
+		frame: false,
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
 		},
@@ -38,14 +40,14 @@ function createWindow() {
 	}
 
 	mainWindow.setBrowserView(view);
-	view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 108 });
+	view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
 	view.webContents.loadURL('https://google.com');
 	view.webContents.openDevTools();
 
 	// Events
 	mainWindow.on('resize', function () {
 		const size = mainWindow.getSize();
-		view.setBounds({ x: 0, y: 80, width: size[0], height: size[1] - 108 });
+		view.setBounds({ x: 0, y: 80, width: size[0], height: size[1] - 80 });
 	});
 }
 
@@ -62,11 +64,40 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-	if (process.platform !== 'darwin') {
-		app.quit();
-	}
+	app.quit();
+	// if (process.platform !== 'darwin') {
+	// 	app.quit();
+	// }
+});
+
+ipcMain.on('goBack', () => {
+	view.webContents.goBack();
+});
+
+ipcMain.on('goForward', () => {
+	view.webContents.goForward();
 });
 
 ipcMain.on('toMain', (event, args) => {
 	view.webContents.loadURL(`https://www.google.com/search?q=${args}`);
+});
+
+ipcMain.on('refresh', () => {
+	view.webContents.reload();
+});
+
+ipcMain.on('minimize', () => {
+	mainWindow.minimize();
+});
+
+ipcMain.on('adjustSize', () => {
+	mainWindow.isFullScreen() ? mainWindow.setFullScreen(false) : mainWindow.setFullScreen(true);
+});
+
+ipcMain.on('close', () => {
+	mainWindow.close();
+});
+
+ipcMain.on('dashboard', () => {
+	mainWindow.getBrowserView() ? mainWindow.setBrowserView(null) : mainWindow.setBrowserView(view);
 });

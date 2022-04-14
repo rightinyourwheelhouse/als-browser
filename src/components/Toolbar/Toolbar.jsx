@@ -4,16 +4,46 @@ import styles from './toolbar.module.css';
 const Toolbar = () => {
 	const [input, setInput] = useState('');
 
+	// Can we put this in one function?
+	const handleGoBack = () => {
+		window.api.send('goBack');
+	};
+
+	const handleGoForward = () => {
+		window.api.send('goForward');
+	};
+
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		window.api.send('toMain', input);
 	};
+
+	const handleRefresh = () => {
+		window.api.send('refresh');
+	};
+
+	const handleClose = () => {
+		window.api.send('close');
+	};
+
+	const handleMinimize = () => {
+		window.api.send('minimize');
+	};
+
+	const handleDashboard = () => {
+		window.api.send('dashboard');
+	};
+
+	const handleAdjustSize = () => {
+		window.api.send("adjustSize")
+	}
+
 	return (
 		<>
 			<div className={styles.toolbar_wrapper}>
 				<div className={styles.toolbar}>
 					<div className={styles.toolbar_icon_wrapper}>
-						<div className={styles.toolbar_icon}>
+						<div onClick={handleGoBack} className={styles.toolbar_icon}>
 							<svg width="18" height="32" viewBox="0 0 18 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path
 									fillRule="evenodd"
@@ -24,7 +54,7 @@ const Toolbar = () => {
 							</svg>
 						</div>
 
-						<div className={styles.toolbar_icon}>
+						<div onClick={handleGoForward} className={styles.toolbar_icon}>
 							<svg width="17" height="32" viewBox="0 0 17 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path
 									fillRule="evenodd"
@@ -37,7 +67,7 @@ const Toolbar = () => {
 					</div>
 
 					<div className={styles.toolbar_searchinput_wrapper}>
-						<div className={styles.toolbar_icon}>
+						<div onClick={handleRefresh} className={styles.toolbar_icon}>
 							<svg width="32" height="34" viewBox="0 0 32 34" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path
 									d="M6.33766 25.8238C3.4466 21.9117 3.05137 18.0724 3.86539 14.8073C4.68048 11.5379 6.70963 8.83899 8.67335 7.22077L8.67342 7.22072C13.9493 2.86482 21.7856 3.58628 26.46 8.39801L22.0621 8.29684L22.0614 8.29683C21.3181 8.28495 20.6056 8.86431 20.606 9.68682C20.5946 10.4297 21.1737 11.1417 21.9959 11.1414C21.9962 11.1414 21.9965 11.1414 21.9968 11.1414L30.207 11.2858L30.207 11.2863L30.2174 11.2854C30.9303 11.2236 31.3148 10.8582 31.4952 10.4489C31.6707 10.0508 31.6518 9.61452 31.57 9.39207L29.0872 1.60402C28.8833 0.89506 28.2042 0.497441 27.486 0.630552C26.5868 0.797204 26.2059 1.77071 26.4173 2.53227L26.4173 2.53228L26.4182 2.53522L27.3072 5.3939C22.6958 1.62 14.798 -0.739328 6.82186 4.88297L6.8218 4.88289L6.81817 4.8857C5.11228 6.20938 2.45423 9.17678 1.20333 13.157C-0.0494577 17.1433 0.111391 22.1401 4.03989 27.5048C9.31699 34.7213 19.8046 35.7516 26.8074 30.27L26.8074 30.27L26.8093 30.2685C27.3927 29.7884 27.5308 28.9444 27.0379 28.2919L27.038 28.2918L27.0353 28.2886C26.5553 27.7052 25.7113 27.5671 25.0588 28.06L25.0588 28.06L25.0575 28.061C19.2817 32.5732 10.6874 31.7078 6.33766 25.8238ZM6.33766 25.8238L6.25724 25.8832L6.33765 25.8238C6.33765 25.8238 6.33766 25.8238 6.33766 25.8238Z"
@@ -54,7 +84,7 @@ const Toolbar = () => {
 								placeholder="Typ een website om te zoeken"
 							></input>
 						</form>
-						<div className={styles.toolbar_icon}>
+						<div onClick={handleDashboard} className={styles.toolbar_icon}>
 							<svg width="31" height="32" viewBox="0 0 31 32" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path
 									d="M15.2875 0.000595555C15.0251 0.00955745 14.7724 0.10221 14.5663 0.265014L2.9047 9.45234C1.42461 10.6188 0.558594 12.4012 0.558594 14.2856V29.9488C0.558594 31.0676 1.49101 32 2.60984 32H10.8148C11.9336 32 12.8661 31.0676 12.8661 29.9488V21.7438C12.8661 21.5017 13.0342 21.3335 13.2763 21.3335H17.3788C17.6209 21.3335 17.789 21.5017 17.789 21.7438V29.9488C17.789 31.0676 18.7215 32 19.8403 32H28.0453C29.1641 32 30.0965 31.0676 30.0965 29.9488V14.2856C30.0965 12.4012 29.2305 10.6188 27.7504 9.45234L16.0888 0.265014C15.8612 0.0852224 15.5774 -0.00842274 15.2875 0.000595555ZM15.3275 2.79862L26.228 11.3866C27.1175 12.0876 27.635 13.1538 27.635 14.2856V29.5385H20.2505V21.7438C20.2505 20.1726 18.95 18.872 17.3788 18.872H13.2763C11.7051 18.872 10.4046 20.1726 10.4046 21.7438V29.5385H3.02009V14.2856C3.02009 13.1538 3.53761 12.0876 4.42711 11.3866L15.3275 2.79862Z"
@@ -65,7 +95,7 @@ const Toolbar = () => {
 					</div>
 
 					<div className={styles.toolbar_window_commands_wrapper}>
-						<div className={styles.toolbar_icon}>
+						<div onClick={handleMinimize} className={styles.toolbar_icon}>
 							<svg width="29" height="4" viewBox="0 0 29 4" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path
 									fillRule="evenodd"
@@ -75,7 +105,7 @@ const Toolbar = () => {
 								/>
 							</svg>
 						</div>
-						<div className={styles.toolbar_icon}>
+						<div onClick={handleAdjustSize} className={styles.toolbar_icon}>
 							<svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path
 									fillRule="evenodd"
@@ -85,7 +115,7 @@ const Toolbar = () => {
 								/>
 							</svg>
 						</div>
-						<div className={styles.toolbar_icon}>
+						<div onClick={handleClose} className={styles.toolbar_icon}>
 							<svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path
 									fillRule="evenodd"
