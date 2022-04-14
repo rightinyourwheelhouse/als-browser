@@ -1,6 +1,6 @@
 // electron/electron.js
 const path = require('path');
-const { app, BrowserWindow, BrowserView, ipcMain } = require('electron');
+const { app, BrowserWindow, BrowserView, ipcMain, nativeTheme } = require('electron');
 
 const isDev = require('electron-is-dev');
 
@@ -12,6 +12,8 @@ let view;
 
 function createWindow() {
 	// Create the browser window.
+	nativeTheme.themeSource = 'light';
+
 	mainWindow = new BrowserWindow({
 		nodeIntegration: true,
 		enableRemoteModule: true,
@@ -23,13 +25,7 @@ function createWindow() {
 
 	mainWindow.maximize();
 
-	view = new BrowserView({
-		nodeIntegration: true,
-		enableRemoteModule: true,
-		webPreferences: {
-			preload: path.join(__dirname, 'scripts/preload.js'),
-		},
-	});
+	createBrowserView();
 
 	// Open the DevTools.
 	if (isDev) {
@@ -39,16 +35,27 @@ function createWindow() {
 		mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
 	}
 
-	mainWindow.setBrowserView(view);
-	view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
-	view.webContents.loadURL('https://google.com');
-	view.webContents.openDevTools();
-
 	// Events
 	mainWindow.on('resize', function () {
 		const size = mainWindow.getSize();
-		view.setBounds({ x: 0, y: 80, width: size[0], height: size[1] - 80 });
+		if (view) view.setBounds({ x: 0, y: 80, width: size[0], height: size[1] - 80 });
 	});
+}
+
+function createBrowserView() {
+	view = new BrowserView({
+		nodeIntegration: true,
+		enableRemoteModule: true,
+		webPreferences: {
+			preload: path.join(__dirname, 'scripts/preload.js'),
+		},
+	});
+	mainWindow.setBrowserView(view);
+	view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
+
+	// view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
+	view.webContents.loadURL('https://google.com');
+	if (isDev) view.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {
@@ -65,9 +72,9 @@ app.whenReady().then(() => {
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
 	app.quit();
-	// if (process.platform !== 'darwin') {
-	// 	app.quit();
-	// }
+	if (process.platform !== 'darwin') {
+		app.quit();
+	}
 });
 
 ipcMain.on('goBack', () => {
@@ -98,6 +105,8 @@ ipcMain.on('close', () => {
 	mainWindow.close();
 });
 
-ipcMain.on('dashboard', () => {
-	mainWindow.getBrowserView() ? mainWindow.setBrowserView(null) : mainWindow.setBrowserView(view);
+ipcMain.on('toggleDashboard', () => {
+	view.getBounds().width === 0 && view.getBounds().height === 0
+		? view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 })
+		: view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
 });

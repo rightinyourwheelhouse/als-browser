@@ -31,7 +31,7 @@ const Toolbar = () => {
 	};
 
 	const handleDashboard = () => {
-		window.api.send('dashboard');
+		window.api.send('toggleDashboard');
 	};
 
 	const handleAdjustSize = () => {
