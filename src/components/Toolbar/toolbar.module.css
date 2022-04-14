@@ -13,6 +13,19 @@
 
 .toolbar_icon {
 	@apply w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-2xl;
+	@apply transition duration-300 ease-in-out;
+}
+
+.toolbar_icon svg {
+	@apply fill-dark-gray;
+}
+
+.toolbar_icon:hover svg {
+	@apply fill-white;
+}
+
+.toolbar_icon:hover {
+	@apply bg-dark-gray scale-110;
 }
 
 .toolbar_searchinput_wrapper {
