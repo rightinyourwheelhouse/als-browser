@@ -39,8 +39,7 @@ function createWindow() {
 	// Events
 	mainWindow.on('resize', function () {
 		const size = mainWindow.getSize();
-
-		view.setBounds({ x: 0, y: 80, width: size[0], height: size[1] - 85 });
+		view.setBounds({ x: 0, y: 80, width: size[0], height: size[1] - 108 });
 	});
 }
 
