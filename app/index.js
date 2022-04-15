@@ -1,6 +1,6 @@
 // electron/electron.js
 const path = require('path');
-const { app, BrowserWindow, BrowserView, ipcMain, nativeTheme } = require('electron');
+const { app, BrowserWindow, BrowserView, ipcMain, ipcRenderer, nativeTheme } = require('electron');
 
 const isDev = require('electron-is-dev');
 
@@ -86,6 +86,9 @@ ipcMain.on('goForward', () => {
 
 ipcMain.on('searchURL', (event, args) => {
 	view.webContents.loadURL(`https://www.google.com/search?q=${args}`);
+
+	event.reply('searchURL-reply', true);
+	// view.webContents.document.activeElement.blur();
 
 	if (view.getBounds().width === 0 && view.getBounds().height === 0)
 		view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
