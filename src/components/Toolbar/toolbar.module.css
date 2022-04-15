@@ -1,5 +1,5 @@
 .toolbar_wrapper {
-	@apply w-full;
+	@apply w-full drop-shadow-xl;
 }
 
 .toolbar {
