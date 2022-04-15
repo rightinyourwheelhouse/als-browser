@@ -1,3 +1,24 @@
+.dashboard {
+	@apply select-none;
+}
+
+.time {
+	@apply text-center mt-6 font-light;
+}
+
+.settings {
+	@apply flex flex-col gap-2 justify-center items-center absolute right-8 top-28 drop-shadow-light;
+	@apply hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover;
+}
+
+.settings img {
+	@apply w-14 h-14 rounded-full;
+}
+
+.settings h2 {
+	@apply font-light;
+}
+
 .dashboard_block {
 	margin: 0 auto;
 	@apply w-3/4 mt-20;
@@ -26,7 +47,7 @@
 }
 
 .most_visited_wrapper {
-	@apply flex flex-wrap gap-8 mt-6;
+	@apply flex flex-wrap gap-20 mt-6;
 }
 
 .most_visited_item {

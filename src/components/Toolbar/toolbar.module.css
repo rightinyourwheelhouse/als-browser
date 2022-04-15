@@ -1,5 +1,5 @@
 .toolbar_wrapper {
-	@apply w-full drop-shadow-xl;
+	@apply w-full drop-shadow-browser;
 }
 
 .toolbar {
@@ -12,7 +12,7 @@
 }
 
 .toolbar_icon {
-	@apply w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-2xl;
+	@apply w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-light;
 	@apply transition duration-300 ease-in-out;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .toolbar_searchinput {
-	@apply h-12 w-96 pl-4 rounded-xl drop-shadow-2xl;
+	@apply h-12 w-96 pl-4 rounded-xl drop-shadow-light;
 }
 
 .toolbar_window_commands_wrapper {

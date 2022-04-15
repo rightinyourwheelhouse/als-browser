@@ -1,9 +1,31 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import styles from './dashboard.module.css';
 
 const Dashboard = () => {
+	function getDateTime() {
+		const options = {
+			weekday: 'long',
+			month: 'long',
+			day: 'numeric',
+			hour: 'numeric',
+			minute: 'numeric',
+		};
+		const currentDate = new Date().toLocaleDateString('nl-BE', options);
+		const element = <p className={styles.time}>{currentDate}</p>;
+
+		ReactDOM.render(element, document.getElementById('clock'));
+	}
+
+	setInterval(getDateTime, 1000);
+
 	return (
 		<div className={styles.dashboard}>
+			<div id="clock"></div>
+			<div className={styles.settings}>
+				<img src="https://i.imgur.com/jcuurYi.png" alt="" />
+				<h2>Instellingen</h2>
+			</div>
 			<div className={styles.dashboard_block}>
 				<h1>Suggesties</h1>
 				<div className={styles.suggestions_wrapper}>
