@@ -17,7 +17,6 @@ function createWindow() {
 	mainWindow = new BrowserWindow({
 		nodeIntegration: true,
 		enableRemoteModule: true,
-		frame: false,
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
 		},
@@ -85,8 +84,11 @@ ipcMain.on('goForward', () => {
 	view.webContents.goForward();
 });
 
-ipcMain.on('toMain', (event, args) => {
+ipcMain.on('searchURL', (event, args) => {
 	view.webContents.loadURL(`https://www.google.com/search?q=${args}`);
+
+	if (view.getBounds().width === 0 && view.getBounds().height === 0)
+		view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
 });
 
 ipcMain.on('refresh', () => {

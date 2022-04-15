@@ -32,9 +32,6 @@
 	@apply flex flex-row items-center gap-4;
 }
 
-.toolbar_searchinput {
-	@apply h-12 w-96 pl-4 rounded-xl drop-shadow-light;
-}
 
 .toolbar_window_commands_wrapper {
 	@apply flex flex-row gap-2;
