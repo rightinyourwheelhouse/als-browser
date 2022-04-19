@@ -14,7 +14,7 @@ const Dashboard = () => {
 		const currentDate = new Date().toLocaleDateString('nl-BE', options);
 		const element = <p className="text-center mt-6 font-light">{currentDate}</p>;
 
-		ReactDOM.render(element, document.getElementById('clock'));
+		if (document.getElementById('clock')) ReactDOM.render(element, document.getElementById('clock'));
 	}
 
 	setInterval(getDateTime, 1000);
@@ -49,38 +49,38 @@ const Dashboard = () => {
 				<div className="flex flex-wrap gap-20 mt-6">
 					<div className="flex flex-col justify-center items-center gap-2 hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover">
 						<div className="bg-white drop-shadow-browser w-20 h-20  rounded-2xl flex justify-center items-center">
-							<img className='w-14 h-14 bg-white p-2' src="https://i.imgur.com/a2jzYU6.png" alt="" />
+							<img className="w-14 h-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
 						</div>
 
 						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
 					</div>
 					<div className="flex flex-col justify-center items-center gap-2 hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover">
 						<div className="bg-white drop-shadow-browser w-20 h-20  rounded-2xl flex justify-center items-center">
-							<img className='w-14 h-14 bg-white p-2' src="https://i.imgur.com/a2jzYU6.png" alt="" />
+							<img className="w-14 h-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
 						</div>
 
 						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
 					</div>
 					<div className="flex flex-col justify-center items-center gap-2 hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover">
 						<div className="bg-white drop-shadow-browser w-20 h-20  rounded-2xl flex justify-center items-center">
-							<img className='w-14 h-14 bg-white p-2' src="https://i.imgur.com/a2jzYU6.png" alt="" />
+							<img className="w-14 h-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
 						</div>
 
 						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
 					</div>
 					<div className="flex flex-col justify-center items-center gap-2 hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover">
 						<div className="bg-white drop-shadow-browser w-20 h-20  rounded-2xl flex justify-center items-center">
-							<img className='w-14 h-14 bg-white p-2' src="https://i.imgur.com/a2jzYU6.png" alt="" />
+							<img className="w-14 h-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
 						</div>
 
-						<h2>Het Nieuwsblad</h2>
+						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
 					</div>
 					<div className="flex flex-col justify-center items-center gap-2 hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover">
 						<div className="bg-white drop-shadow-browser w-20 h-20  rounded-2xl flex justify-center items-center">
-							<img className='w-14 h-14 bg-white p-2' src="https://i.imgur.com/a2jzYU6.png" alt="" />
+							<img className="w-14 h-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
 						</div>
 
-						<h2>Het Nieuwsblad</h2>
+						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
 					</div>
 					<div className="flex flex-col justify-center items-center gap-2 hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover">
 						<div className="bg-white drop-shadow-browser w-20 h-20  rounded-2xl flex justify-center items-center">
@@ -94,7 +94,7 @@ const Dashboard = () => {
 							</svg>
 						</div>
 
-						<h2>Toevoegen</h2>
+						<h2 className="font-mulish text-base font-medium">Toevoegen</h2>
 					</div>
 				</div>
 			</div>

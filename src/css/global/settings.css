@@ -5,6 +5,6 @@ html {
 body,
 html,
 #root {
-	@apply h-full m-0 p-0;
+	@apply h-full m-0 p-0 font-mulish;
 	@apply font-mulish;
 }

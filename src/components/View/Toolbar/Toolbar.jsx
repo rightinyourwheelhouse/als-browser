@@ -1,10 +1,7 @@
 import React from 'react';
-import SearchBar from './SearchBar/SearchBar';
+import SearchBar from './SearchBar';
 
-import styles from './toolbar.module.css';
-
-const Toolbar = ({onFocusChange}) => {
-
+const Toolbar = ({ onFocusChange }) => {
 	const handleGoBack = () => {
 		window.api.send('goBack');
 	};
@@ -35,11 +32,21 @@ const Toolbar = ({onFocusChange}) => {
 
 	return (
 		<>
-			<div className={styles.toolbar_wrapper}>
-				<div className={styles.toolbar}>
-					<div className={styles.toolbar_icon_wrapper}>
-						<div onClick={handleGoBack} className={styles.toolbar_icon}>
-							<svg width="18" height="32" viewBox="0 0 18 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<div className="w-full drop-shadow-browser">
+				<div className="h-20 bg-slate-100 flex justify-between items-center pl-4 pr-4">
+					<div className="flex flex-row gap-4">
+						<div
+							onClick={handleGoBack}
+							className="w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-light transition duration-300 ease-in-out"
+						>
+							<svg
+								className="fill-dark-gray"
+								width="18"
+								height="32"
+								viewBox="0 0 18 32"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
 								<path
 									fillRule="evenodd"
 									clipRule="evenodd"
@@ -48,8 +55,18 @@ const Toolbar = ({onFocusChange}) => {
 							</svg>
 						</div>
 
-						<div onClick={handleGoForward} className={styles.toolbar_icon}>
-							<svg width="17" height="32" viewBox="0 0 17 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<div
+							onClick={handleGoForward}
+							className="w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-light transition duration-300 ease-in-out"
+						>
+							<svg
+								className="fill-dark-gray"
+								width="17"
+								height="32"
+								viewBox="0 0 17 32"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
 								<path
 									fillRule="evenodd"
 									clipRule="evenodd"
@@ -59,9 +76,19 @@ const Toolbar = ({onFocusChange}) => {
 						</div>
 					</div>
 
-					<div className={styles.toolbar_searchinput_wrapper}>
-						<div onClick={handleRefresh} className={styles.toolbar_icon}>
-							<svg width="32" height="34" viewBox="0 0 32 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<div className="flex flex-row items-center gap-4">
+						<div
+							onClick={handleRefresh}
+							className="w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-light transition duration-300 ease-in-out"
+						>
+							<svg
+								className="fill-dark-gray"
+								width="32"
+								height="34"
+								viewBox="0 0 32 34"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
 								<path
 									fillRule="evenodd"
 									clipRule="evenodd"
@@ -70,16 +97,36 @@ const Toolbar = ({onFocusChange}) => {
 							</svg>
 						</div>
 						<SearchBar onFocusChange={onFocusChange} />
-						<div onClick={handleDashboard} className={styles.toolbar_icon}>
-							<svg width="31" height="32" viewBox="0 0 31 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<div
+							onClick={handleDashboard}
+							className="w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-light transition duration-300 ease-in-out"
+						>
+							<svg
+								className="fill-dark-gray"
+								width="31"
+								height="32"
+								viewBox="0 0 31 32"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
 								<path d="M15.2875 0.000595555C15.0251 0.00955745 14.7724 0.10221 14.5663 0.265014L2.9047 9.45234C1.42461 10.6188 0.558594 12.4012 0.558594 14.2856V29.9488C0.558594 31.0676 1.49101 32 2.60984 32H10.8148C11.9336 32 12.8661 31.0676 12.8661 29.9488V21.7438C12.8661 21.5017 13.0342 21.3335 13.2763 21.3335H17.3788C17.6209 21.3335 17.789 21.5017 17.789 21.7438V29.9488C17.789 31.0676 18.7215 32 19.8403 32H28.0453C29.1641 32 30.0965 31.0676 30.0965 29.9488V14.2856C30.0965 12.4012 29.2305 10.6188 27.7504 9.45234L16.0888 0.265014C15.8612 0.0852224 15.5774 -0.00842274 15.2875 0.000595555ZM15.3275 2.79862L26.228 11.3866C27.1175 12.0876 27.635 13.1538 27.635 14.2856V29.5385H20.2505V21.7438C20.2505 20.1726 18.95 18.872 17.3788 18.872H13.2763C11.7051 18.872 10.4046 20.1726 10.4046 21.7438V29.5385H3.02009V14.2856C3.02009 13.1538 3.53761 12.0876 4.42711 11.3866L15.3275 2.79862Z" />
 							</svg>
 						</div>
 					</div>
 
-					<div className={styles.toolbar_window_commands_wrapper}>
-						<div onClick={handleMinimize} className={styles.toolbar_icon}>
-							<svg width="29" height="4" viewBox="0 0 29 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<div className="flex flex-row gap-2">
+						<div
+							onClick={handleMinimize}
+							className="w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-light transition duration-300 ease-in-out"
+						>
+							<svg
+								className="fill-dark-gray"
+								width="29"
+								height="4"
+								viewBox="0 0 29 4"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
 								<path
 									fillRule="evenodd"
 									clipRule="evenodd"
@@ -87,8 +134,18 @@ const Toolbar = ({onFocusChange}) => {
 								/>
 							</svg>
 						</div>
-						<div onClick={handleAdjustSize} className={styles.toolbar_icon}>
-							<svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<div
+							onClick={handleAdjustSize}
+							className="w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-light transition duration-300 ease-in-out"
+						>
+							<svg
+								className="fill-dark-gray"
+								width="27"
+								height="27"
+								viewBox="0 0 27 27"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
 								<path
 									fillRule="evenodd"
 									clipRule="evenodd"
@@ -96,8 +153,18 @@ const Toolbar = ({onFocusChange}) => {
 								/>
 							</svg>
 						</div>
-						<div onClick={handleClose} className={styles.toolbar_icon}>
-							<svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<div
+							onClick={handleClose}
+							className="w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-light transition duration-300 ease-in-out"
+						>
+							<svg
+								className="fill-dark-gray"
+								width="24"
+								height="25"
+								viewBox="0 0 24 25"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
 								<path
 									fillRule="evenodd"
 									clipRule="evenodd"

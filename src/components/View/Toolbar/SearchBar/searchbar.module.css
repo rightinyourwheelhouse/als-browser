@@ -1,7 +1,0 @@
-.toolbar_searchinput {
-	@apply h-14 w-96 pl-4 rounded-xl drop-shadow-light rounded-full text-center;
-}
-
-.toolbar_searchinput::placeholder {
-	@apply text-center;
-}

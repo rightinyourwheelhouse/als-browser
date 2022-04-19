@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
 import Toolbar from './components/View/Toolbar/Toolbar';
-import Dashboard from './components/Dashboard';
-import OnFocus from './components/OnFocus';
+import Dashboard from './components/View/Dashboard/Dashboard';
 
 const App = () => {
-	const [focus, setFocus] = useState();
-	console.log(focus);
+	const [focus, setFocus] = useState(Dashboard);
 
-	const handleFocusChange = (value) => {
-		setFocus(value);
+	const handleFocusChange = (component) => {
+		setFocus(component);
 	};
 
 	return (
 		<>
 			<Toolbar onFocusChange={handleFocusChange} />
-			{focus ? <OnFocus /> : <Dashboard />}
+			{focus}
 		</>
 	);
 };
