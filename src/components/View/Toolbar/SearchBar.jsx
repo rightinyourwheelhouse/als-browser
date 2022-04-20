@@ -25,7 +25,7 @@ const SearchBar = ({ onFocusChange }) => {
 		<form onSubmit={handleSubmit}>
 			<input
 				ref={inputRef}
-				className="h-14 w-96 pl-4  drop-shadow-light rounded-full text-center placeholder:text-center"
+				className="h-14 w-96 rounded-full  pl-4 text-center drop-shadow-light placeholder:text-center"
 				onInput={(e) => {
 					setInput(e.target.value);
 					if (e.target.value.length > 0) {

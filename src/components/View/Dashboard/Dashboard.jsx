@@ -12,7 +12,7 @@ const Dashboard = () => {
 			minute: 'numeric',
 		};
 		const currentDate = new Date().toLocaleDateString('nl-BE', options);
-		const element = <p className="text-center mt-6 font-light">{currentDate}</p>;
+		const element = <p className="mt-6 text-center font-light">{currentDate}</p>;
 
 		if (document.getElementById('clock')) ReactDOM.render(element, document.getElementById('clock'));
 	}
@@ -22,68 +22,68 @@ const Dashboard = () => {
 	return (
 		<div className="select-none">
 			<div id="clock"></div>
-			<div className="flex flex-col gap-2 justify-center items-center absolute right-8 top-28 drop-shadow-light hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover;">
-				<img className="w-14 h-14 rounded-full" src="https://i.imgur.com/jcuurYi.png" alt="" />
+			<div className="absolute right-8 top-28 flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
+				<img className="h-14 w-14 rounded-full" src="https://i.imgur.com/jcuurYi.png" alt="" />
 				<h2 className="font-light">Instellingen</h2>
 			</div>
-			<div className="w-3/4 mt-20 m-center">
+			<div className="m-center mt-20 w-3/4">
 				<h1 className="font-mulish text-3xl font-bold">Suggesties</h1>
-				<div className="flex flex-row gap-8 mt-6">
-					<div className="w-64 h-20 bg-white drop-shadow-browser rounded-2xl flex justify-start items-center gap-4  hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover;">
-						<img className="w-20 h-20 bg-gray-50 rounded-2xl" src="https://i.imgur.com/a2jzYU6.png" alt="" />
+				<div className="mt-6 flex flex-row gap-8">
+					<div className="flex h-20 w-64 items-center justify-start gap-4 rounded-2xl bg-white drop-shadow-browser  transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
+						<img className="h-20 w-20 rounded-2xl bg-gray-50" src="https://i.imgur.com/a2jzYU6.png" alt="" />
 						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
 					</div>
-					<div className="w-64 h-20 bg-white drop-shadow-browser rounded-2xl flex justify-start items-center gap-4  hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover;">
-						<img className="w-20 h-20 bg-gray-50 rounded-2xl" src="https://i.imgur.com/a2jzYU6.png" alt="" />
+					<div className="flex h-20 w-64 items-center justify-start gap-4 rounded-2xl bg-white drop-shadow-browser  transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
+						<img className="h-20 w-20 rounded-2xl bg-gray-50" src="https://i.imgur.com/a2jzYU6.png" alt="" />
 						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
 					</div>
-					<div className="w-64 h-20 bg-white drop-shadow-browser rounded-2xl flex justify-start items-center gap-4  hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover;">
-						<img className="w-20 h-20 bg-gray-50 rounded-2xl" src="https://i.imgur.com/a2jzYU6.png" alt="" />
+					<div className="flex h-20 w-64 items-center justify-start gap-4 rounded-2xl bg-white drop-shadow-browser  transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
+						<img className="h-20 w-20 rounded-2xl bg-gray-50" src="https://i.imgur.com/a2jzYU6.png" alt="" />
 						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
 					</div>
 				</div>
 			</div>
 
-			<div className="w-3/4 mt-20 m-center">
+			<div className="m-center mt-20 w-3/4">
 				<h1 className="font-mulish text-3xl font-bold">Meest bezocht</h1>
-				<div className="flex flex-wrap gap-20 mt-6">
-					<div className="flex flex-col justify-center items-center gap-2 hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover">
-						<div className="bg-white drop-shadow-browser w-20 h-20  rounded-2xl flex justify-center items-center">
-							<img className="w-14 h-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
+				<div className="mt-6 flex flex-wrap gap-20">
+					<div className="flex flex-col items-center justify-center gap-2 transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
+						<div className="flex h-20 w-20 items-center  justify-center rounded-2xl bg-white drop-shadow-browser">
+							<img className="h-14 w-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
 						</div>
 
 						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
 					</div>
-					<div className="flex flex-col justify-center items-center gap-2 hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover">
-						<div className="bg-white drop-shadow-browser w-20 h-20  rounded-2xl flex justify-center items-center">
-							<img className="w-14 h-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
+					<div className="flex flex-col items-center justify-center gap-2 transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
+						<div className="flex h-20 w-20 items-center  justify-center rounded-2xl bg-white drop-shadow-browser">
+							<img className="h-14 w-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
 						</div>
 
 						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
 					</div>
-					<div className="flex flex-col justify-center items-center gap-2 hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover">
-						<div className="bg-white drop-shadow-browser w-20 h-20  rounded-2xl flex justify-center items-center">
-							<img className="w-14 h-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
+					<div className="flex flex-col items-center justify-center gap-2 transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
+						<div className="flex h-20 w-20 items-center  justify-center rounded-2xl bg-white drop-shadow-browser">
+							<img className="h-14 w-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
 						</div>
 
 						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
 					</div>
-					<div className="flex flex-col justify-center items-center gap-2 hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover">
-						<div className="bg-white drop-shadow-browser w-20 h-20  rounded-2xl flex justify-center items-center">
-							<img className="w-14 h-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
+					<div className="flex flex-col items-center justify-center gap-2 transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
+						<div className="flex h-20 w-20 items-center  justify-center rounded-2xl bg-white drop-shadow-browser">
+							<img className="h-14 w-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
 						</div>
 
 						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
 					</div>
-					<div className="flex flex-col justify-center items-center gap-2 hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover">
-						<div className="bg-white drop-shadow-browser w-20 h-20  rounded-2xl flex justify-center items-center">
-							<img className="w-14 h-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
+					<div className="flex flex-col items-center justify-center gap-2 transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
+						<div className="flex h-20 w-20 items-center  justify-center rounded-2xl bg-white drop-shadow-browser">
+							<img className="h-14 w-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
 						</div>
 
 						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
 					</div>
-					<div className="flex flex-col justify-center items-center gap-2 hover:scale-105 transition duration-300 ease-in-out hover:drop-shadow-hover">
-						<div className="bg-white drop-shadow-browser w-20 h-20  rounded-2xl flex justify-center items-center">
+					<div className="flex flex-col items-center justify-center gap-2 transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
+						<div className="flex h-20 w-20 items-center  justify-center rounded-2xl bg-white drop-shadow-browser">
 							<svg width="39" height="38" viewBox="0 0 39 38" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path
 									fillRule="evenodd"

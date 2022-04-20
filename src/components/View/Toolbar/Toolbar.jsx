@@ -33,11 +33,11 @@ const Toolbar = ({ onFocusChange }) => {
 	return (
 		<>
 			<div className="w-full drop-shadow-browser">
-				<div className="h-20 bg-slate-100 flex justify-between items-center pl-4 pr-4">
+				<div className="flex h-20 items-center justify-between bg-slate-100 pl-4 pr-4">
 					<div className="flex flex-row gap-4">
 						<div
 							onClick={handleGoBack}
-							className="w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-light transition duration-300 ease-in-out"
+							className="flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out"
 						>
 							<svg
 								className="fill-dark-gray"
@@ -57,7 +57,7 @@ const Toolbar = ({ onFocusChange }) => {
 
 						<div
 							onClick={handleGoForward}
-							className="w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-light transition duration-300 ease-in-out"
+							className="flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out"
 						>
 							<svg
 								className="fill-dark-gray"
@@ -79,7 +79,7 @@ const Toolbar = ({ onFocusChange }) => {
 					<div className="flex flex-row items-center gap-4">
 						<div
 							onClick={handleRefresh}
-							className="w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-light transition duration-300 ease-in-out"
+							className="flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out"
 						>
 							<svg
 								className="fill-dark-gray"
@@ -99,7 +99,7 @@ const Toolbar = ({ onFocusChange }) => {
 						<SearchBar onFocusChange={onFocusChange} />
 						<div
 							onClick={handleDashboard}
-							className="w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-light transition duration-300 ease-in-out"
+							className="flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out"
 						>
 							<svg
 								className="fill-dark-gray"
@@ -117,7 +117,7 @@ const Toolbar = ({ onFocusChange }) => {
 					<div className="flex flex-row gap-2">
 						<div
 							onClick={handleMinimize}
-							className="w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-light transition duration-300 ease-in-out"
+							className="flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out"
 						>
 							<svg
 								className="fill-dark-gray"
@@ -136,7 +136,7 @@ const Toolbar = ({ onFocusChange }) => {
 						</div>
 						<div
 							onClick={handleAdjustSize}
-							className="w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-light transition duration-300 ease-in-out"
+							className="flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out"
 						>
 							<svg
 								className="fill-dark-gray"
@@ -155,7 +155,7 @@ const Toolbar = ({ onFocusChange }) => {
 						</div>
 						<div
 							onClick={handleClose}
-							className="w-14 h-14 bg-white flex justify-center items-center rounded-full drop-shadow-light transition duration-300 ease-in-out"
+							className="flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out"
 						>
 							<svg
 								className="fill-dark-gray"
