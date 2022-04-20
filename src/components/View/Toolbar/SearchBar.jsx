@@ -25,7 +25,8 @@ const SearchBar = ({ onFocusChange }) => {
 		<form onSubmit={handleSubmit}>
 			<input
 				ref={inputRef}
-				className="h-14 w-96 rounded-full  pl-4 text-center drop-shadow-light placeholder:text-center"
+				className="h-14 w-96 rounded-full pl-4 text-center drop-shadow-light transition duration-300 ease-in-out placeholder:text-center hover:drop-shadow-browser"
+				onClick={() => onFocusChange(components.onFocus)}
 				onInput={(e) => {
 					setInput(e.target.value);
 					if (e.target.value.length > 0) {
@@ -34,8 +35,8 @@ const SearchBar = ({ onFocusChange }) => {
 						onFocusChange(components.onFocus);
 					}
 				}}
-				onFocus={() => onFocusChange(components.onFocus)}
-				onBlur={() => onFocusChange(components.dashboard)}
+				// onFocus={() => onFocusChange(components.onFocus)}
+				// onBlur={() => onFocusChange(components.dashboard)}
 				placeholder="Typ een website om te zoeken"
 			></input>
 		</form>

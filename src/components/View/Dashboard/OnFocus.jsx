@@ -44,10 +44,44 @@ const OnFocus = () => {
 				<h1 className="font-mulish text-3xl font-bold">Recente zoekopdrachten</h1>
 				<h2 className="mt-1 font-mulish text-lg font-medium">Vandaag - vrijdag 8 april, 2022</h2>
 
-				<div className="my-4 h-14 w-full rounded-full bg-white drop-shadow-light">
-					<div></div>
+				<div className="my-2 flex h-14 w-full items-center gap-6 rounded-full bg-white drop-shadow-light">
+					<div className="ml-6 flex items-center gap-4">
+						<input className="h-5 w-5" type="checkbox" />
+						<p>9:05</p>
+					</div>
 
-					<div></div>
+					<div className="flex items-center gap-2">
+						<img className="h-8 w-8" src="https://i.imgur.com/bPfHmNc.png" alt="" />
+						<p>VRT</p>
+						<p>www.vrt.be</p>
+					</div>
+				</div>
+				<div className="my-2 flex h-14 w-full items-center gap-6 rounded-full bg-white drop-shadow-light">
+					<div className="ml-6 flex items-center gap-4">
+						<input className="h-5 w-5" type="checkbox" />
+						<p>9:05</p>
+					</div>
+
+					<div className="flex items-center gap-2">
+						<img className="h-8 w-8" src="https://i.imgur.com/bPfHmNc.png" alt="" />
+						<p>VRT</p>
+						<p>www.vrt.be</p>
+					</div>
+				</div>
+
+				<h2 className="mt-6 font-mulish text-lg font-medium">Gisteren - donderdag 7 april, 2022</h2>
+
+				<div className="my-2 flex h-14 w-full items-center gap-6 rounded-full bg-white drop-shadow-light">
+					<div className="ml-6 flex items-center gap-4">
+						<input className="h-5 w-5" type="checkbox" />
+						<p>9:05</p>
+					</div>
+
+					<div className="flex items-center gap-2">
+						<img className="h-8 w-8" src="https://i.imgur.com/bPfHmNc.png" alt="" />
+						<p>VRT</p>
+						<p>www.vrt.be</p>
+					</div>
 				</div>
 			</div>
 		</div>

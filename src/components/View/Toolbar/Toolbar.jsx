@@ -37,10 +37,10 @@ const Toolbar = ({ onFocusChange }) => {
 					<div className="flex flex-row gap-4">
 						<div
 							onClick={handleGoBack}
-							className="flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out"
+							className="group flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
 						>
 							<svg
-								className="fill-dark-gray"
+								className="fill-dark-gray group-hover:fill-white"
 								width="18"
 								height="32"
 								viewBox="0 0 18 32"
@@ -57,10 +57,10 @@ const Toolbar = ({ onFocusChange }) => {
 
 						<div
 							onClick={handleGoForward}
-							className="flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out"
+							className="group flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
 						>
 							<svg
-								className="fill-dark-gray"
+								className="fill-dark-gray group-hover:fill-white"
 								width="17"
 								height="32"
 								viewBox="0 0 17 32"
@@ -79,10 +79,10 @@ const Toolbar = ({ onFocusChange }) => {
 					<div className="flex flex-row items-center gap-4">
 						<div
 							onClick={handleRefresh}
-							className="flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out"
+							className="group flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
 						>
 							<svg
-								className="fill-dark-gray"
+								className="fill-dark-gray group-hover:fill-white"
 								width="32"
 								height="34"
 								viewBox="0 0 32 34"
@@ -99,10 +99,10 @@ const Toolbar = ({ onFocusChange }) => {
 						<SearchBar onFocusChange={onFocusChange} />
 						<div
 							onClick={handleDashboard}
-							className="flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out"
+							className="group flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
 						>
 							<svg
-								className="fill-dark-gray"
+								className="fill-dark-gray group-hover:fill-white"
 								width="31"
 								height="32"
 								viewBox="0 0 31 32"
@@ -117,10 +117,10 @@ const Toolbar = ({ onFocusChange }) => {
 					<div className="flex flex-row gap-2">
 						<div
 							onClick={handleMinimize}
-							className="flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out"
+							className="group flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
 						>
 							<svg
-								className="fill-dark-gray"
+								className="fill-dark-gray group-hover:fill-white"
 								width="29"
 								height="4"
 								viewBox="0 0 29 4"
@@ -136,10 +136,10 @@ const Toolbar = ({ onFocusChange }) => {
 						</div>
 						<div
 							onClick={handleAdjustSize}
-							className="flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out"
+							className="group flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
 						>
 							<svg
-								className="fill-dark-gray"
+								className="fill-dark-gray group-hover:fill-white"
 								width="27"
 								height="27"
 								viewBox="0 0 27 27"
@@ -155,10 +155,10 @@ const Toolbar = ({ onFocusChange }) => {
 						</div>
 						<div
 							onClick={handleClose}
-							className="flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out"
+							className="group flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
 						>
 							<svg
-								className="fill-dark-gray"
+								className="fill-dark-gray group-hover:fill-white"
 								width="24"
 								height="25"
 								viewBox="0 0 24 25"

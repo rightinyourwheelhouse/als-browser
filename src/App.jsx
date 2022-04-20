@@ -8,7 +8,7 @@ const App = () => {
 	const handleFocusChange = (component) => {
 		setDashboardComponent(component);
 	};
-	
+
 	return (
 		<>
 			<Toolbar onFocusChange={handleFocusChange} />
