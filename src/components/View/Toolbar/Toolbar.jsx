@@ -32,12 +32,12 @@ const Toolbar = ({ onFocusChange }) => {
 
 	return (
 		<>
-			<div className="w-full drop-shadow-browser">
+			<div className="drop-shadow-browser w-full draggable">
 				<div className="flex h-20 items-center justify-between bg-slate-100 pl-4 pr-4">
 					<div className="flex flex-row gap-4">
 						<div
 							onClick={handleGoBack}
-							className="group flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
+							className="group flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
 						>
 							<svg
 								className="fill-dark-gray group-hover:fill-white"
@@ -57,7 +57,7 @@ const Toolbar = ({ onFocusChange }) => {
 
 						<div
 							onClick={handleGoForward}
-							className="group flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
+							className="group flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
 						>
 							<svg
 								className="fill-dark-gray group-hover:fill-white"
@@ -79,7 +79,7 @@ const Toolbar = ({ onFocusChange }) => {
 					<div className="flex flex-row items-center gap-4">
 						<div
 							onClick={handleRefresh}
-							className="group flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
+							className="group flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
 						>
 							<svg
 								className="fill-dark-gray group-hover:fill-white"
@@ -99,7 +99,7 @@ const Toolbar = ({ onFocusChange }) => {
 						<SearchBar onFocusChange={onFocusChange} />
 						<div
 							onClick={handleDashboard}
-							className="group flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
+							className="group flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
 						>
 							<svg
 								className="fill-dark-gray group-hover:fill-white"
@@ -117,7 +117,7 @@ const Toolbar = ({ onFocusChange }) => {
 					<div className="flex flex-row gap-2">
 						<div
 							onClick={handleMinimize}
-							className="group flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
+							className="group flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
 						>
 							<svg
 								className="fill-dark-gray group-hover:fill-white"
@@ -136,7 +136,7 @@ const Toolbar = ({ onFocusChange }) => {
 						</div>
 						<div
 							onClick={handleAdjustSize}
-							className="group flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
+							className="group flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
 						>
 							<svg
 								className="fill-dark-gray group-hover:fill-white"
@@ -155,7 +155,7 @@ const Toolbar = ({ onFocusChange }) => {
 						</div>
 						<div
 							onClick={handleClose}
-							className="group flex h-14 w-14 items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
+							className="group flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
 						>
 							<svg
 								className="fill-dark-gray group-hover:fill-white"

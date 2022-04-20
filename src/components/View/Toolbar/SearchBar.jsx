@@ -26,7 +26,7 @@ const SearchBar = ({ onFocusChange }) => {
 			<input
 				ref={inputRef}
 				className="h-14 w-96 rounded-full pl-4 text-center drop-shadow-light transition duration-300 ease-in-out placeholder:text-center hover:drop-shadow-browser"
-				onClick={() => onFocusChange(components.onFocus)}
+				onClick={() => onFocusChange(components.onType)}
 				onInput={(e) => {
 					setInput(e.target.value);
 					if (e.target.value.length > 0) {
