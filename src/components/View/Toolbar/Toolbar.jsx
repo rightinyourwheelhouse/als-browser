@@ -1,4 +1,5 @@
 import React from 'react';
+import Dashboard from '../Dashboard/Dashboard';
 import SearchBar from './SearchBar';
 
 const Toolbar = ({ onFocusChange }) => {
@@ -30,14 +31,18 @@ const Toolbar = ({ onFocusChange }) => {
 		window.api.send('adjustSize');
 	};
 
+	window.api.recieve('ToggleTheDashboard', () => {
+		onFocusChange(Dashboard);
+	});
+
 	return (
 		<>
-			<div className="drop-shadow-browser w-full draggable">
+			<div className="drop-shadow-browser draggable w-full">
 				<div className="flex h-20 items-center justify-between bg-slate-100 pl-4 pr-4">
-					<div className="flex flex-row gap-4">
+					<div className="flex cursor-pointer flex-row gap-4">
 						<div
 							onClick={handleGoBack}
-							className="group flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
+							className="group flex h-14 w-14  items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
 						>
 							<svg
 								className="fill-dark-gray group-hover:fill-white"

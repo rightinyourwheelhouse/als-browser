@@ -6,6 +6,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.draggable {
+/* .draggable {
 	-webkit-app-region: drag;
-}
+} */

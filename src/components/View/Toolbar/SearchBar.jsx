@@ -1,19 +1,12 @@
 // import { ipcRenderer } from 'electron';
 import React, { useState, useRef } from 'react';
-import OnFocus from '../Dashboard/OnFocus';
-import onType from '../Dashboard/OnType';
 import Dashboard from '../Dashboard/Dashboard';
+import OnType from '../Dashboard/OnType';
 
 const SearchBar = ({ onFocusChange }) => {
 	const [input, setInput] = useState('');
 
 	const inputRef = useRef();
-
-	const components = {
-		dashboard: Dashboard,
-		onFocus: OnFocus,
-		onType: onType,
-	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -21,22 +14,25 @@ const SearchBar = ({ onFocusChange }) => {
 		window.api.send('searchURL', input);
 	};
 
+	const handleOnFocus = (bool) => {
+		window.api.send('searchBarFocus', bool);
+	};
+
 	return (
 		<form onSubmit={handleSubmit}>
 			<input
 				ref={inputRef}
-				className="h-14 w-96 rounded-full pl-4 text-center drop-shadow-light transition duration-300 ease-in-out placeholder:text-center hover:drop-shadow-browser"
-				onClick={() => onFocusChange(components.onType)}
+				className="hover:drop-shadow-browser h-14 w-96 rounded-full pl-4 text-center drop-shadow-light transition duration-300 ease-in-out placeholder:text-center"
 				onInput={(e) => {
 					setInput(e.target.value);
 					if (e.target.value.length > 0) {
-						onFocusChange(components.onType);
+						onFocusChange(OnType);
 					} else {
-						onFocusChange(components.onFocus);
+						onFocusChange(Dashboard);
 					}
 				}}
-				// onFocus={() => onFocusChange(components.onFocus)}
-				// onBlur={() => onFocusChange(components.dashboard)}
+				onFocus={() => handleOnFocus(true)}
+				onBlur={() => handleOnFocus(false)}
 				placeholder="Typ een website om te zoeken"
 			></input>
 		</form>
