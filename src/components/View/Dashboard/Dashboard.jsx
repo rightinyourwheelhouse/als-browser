@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import styles from './dashboard.module.css';
 
 const Dashboard = () => {
 	function getDateTime() {
