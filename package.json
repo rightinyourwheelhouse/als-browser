@@ -36,6 +36,7 @@
     "electron:build:all": "npm run build && electron-builder -mw"
   },
   "dependencies": {
+    "@heroicons/react": "^1.0.6",
     "cross-env": "^7.0.3",
     "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
