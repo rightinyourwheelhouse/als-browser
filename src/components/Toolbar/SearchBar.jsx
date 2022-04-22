@@ -1,7 +1,5 @@
 // import { ipcRenderer } from 'electron';
 import React, { useState, useRef } from 'react';
-import Dashboard from '../Dashboard/Dashboard';
-import OnType from '../Dashboard/OnType';
 
 const SearchBar = ({ onFocusChange }) => {
 	const [input, setInput] = useState('');
@@ -22,9 +20,9 @@ const SearchBar = ({ onFocusChange }) => {
 	const handleOnChange = (e) => {
 		setInput(e.target.value);
 		if (e.target.value.length > 0) {
-			onFocusChange(OnType);
+			onFocusChange('OnType');
 		} else {
-			onFocusChange(Dashboard);
+			onFocusChange('Dashboard');
 		}
 	};
 

@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
-import Toolbar from './components/View/Toolbar/Toolbar';
-import Dashboard from './components/View/Dashboard/Dashboard';
+import Toolbar from './components/Toolbar/Toolbar';
+import Dashboard from './components/Dashboard/Dashboard';
+import OnType from './components/Dashboard/OnType';
 
 const App = () => {
-	const [dashboardComponent, setDashboardComponent] = useState(Dashboard);
+	const [searchBarStatus, setSearchBarStatus] = useState('Dashboard');
 
 	const handleFocusChange = (component) => {
-		setDashboardComponent(component);
+		component === 'OnType' ? setSearchBarStatus('OnType') : setSearchBarStatus('Dashboard');
 	};
 
 	return (
 		<>
 			<Toolbar onFocusChange={handleFocusChange} />
-			{dashboardComponent}
+			{searchBarStatus === 'OnType' ? <OnType /> : <Dashboard />}
 		</>
 	);
 };
