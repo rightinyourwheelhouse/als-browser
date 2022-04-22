@@ -13,7 +13,6 @@ import { XIcon } from '@heroicons/react/outline';
 
 const Toolbar = ({ onFocusChange }) => {
 	const handleGoBack = () => {
-		console.log('click');
 		window.api.send('goBack');
 	};
 
