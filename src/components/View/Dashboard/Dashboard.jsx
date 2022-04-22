@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import SmallTile from './Tiles/SmallTile';
+import MediumTile from './Tiles/MediumTile';
 
 const Dashboard = () => {
 	function getDateTime() {
@@ -30,59 +32,22 @@ const Dashboard = () => {
 			<div className="m-center mt-20 w-3/4">
 				<h1 className="font-mulish text-3xl font-bold">Suggesties</h1>
 				<div className="mt-6 flex flex-row gap-8">
-					<div className="flex h-20 w-64 items-center justify-start gap-4 rounded-2xl bg-white drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
-						<img className="h-20 w-20 rounded-2xl bg-gray-50" src="https://i.imgur.com/a2jzYU6.png" alt="" />
-						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
-					</div>
-					<div className="flex h-20 w-64 items-center justify-start gap-4 rounded-2xl bg-white drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
-						<img className="h-20 w-20 rounded-2xl bg-gray-50" src="https://i.imgur.com/a2jzYU6.png" alt="" />
-						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
-					</div>
-					<div className="flex h-20 w-64 items-center justify-start gap-4 rounded-2xl bg-white drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
-						<img className="h-20 w-20 rounded-2xl bg-gray-50" src="https://i.imgur.com/a2jzYU6.png" alt="" />
-						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
-					</div>
+					<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" />
+					<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" />
+					<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" />
 				</div>
 			</div>
 
 			<div className="m-center mt-20 w-3/4">
 				<h1 className="font-mulish text-3xl font-bold">Meest bezocht</h1>
 				<div className="mt-6 flex flex-wrap gap-20">
-					<div className="flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
-						<div className="drop-shadow-browser flex h-20 w-20  items-center justify-center rounded-2xl bg-white">
-							<img className="h-14 w-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
-						</div>
+					<SmallTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" />
+					<SmallTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" />
+					<SmallTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" />
+					<SmallTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" />
+					<SmallTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" />
+					<SmallTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" />
 
-						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
-					</div>
-					<div className="flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
-						<div className="drop-shadow-browser flex h-20 w-20  items-center justify-center rounded-2xl bg-white">
-							<img className="h-14 w-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
-						</div>
-
-						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
-					</div>
-					<div className="flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
-						<div className="drop-shadow-browser flex h-20 w-20  items-center justify-center rounded-2xl bg-white">
-							<img className="h-14 w-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
-						</div>
-
-						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
-					</div>
-					<div className="flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
-						<div className="drop-shadow-browser flex h-20 w-20  items-center justify-center rounded-2xl bg-white">
-							<img className="h-14 w-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
-						</div>
-
-						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
-					</div>
-					<div className="flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
-						<div className="drop-shadow-browser flex h-20 w-20  items-center justify-center rounded-2xl bg-white">
-							<img className="h-14 w-14 bg-white p-2" src="https://i.imgur.com/a2jzYU6.png" alt="" />
-						</div>
-
-						<h2 className="font-mulish text-base font-medium">Het Nieuwsblad</h2>
-					</div>
 					<div className="flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
 						<div className="drop-shadow-browser flex h-20 w-20  items-center justify-center rounded-2xl bg-white">
 							<svg width="39" height="38" viewBox="0 0 39 38" fill="none" xmlns="http://www.w3.org/2000/svg">
