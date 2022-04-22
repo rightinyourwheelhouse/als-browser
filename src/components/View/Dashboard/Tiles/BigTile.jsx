@@ -2,7 +2,6 @@ import React from 'react';
 
 const BigTile = ({ title, img, description, url }) => {
 	const handleChangeUrl = () => {
-		console.log(url);
 		window.api.send('changeURL', url);
 	};
 
