@@ -8,7 +8,7 @@ const BigTile = ({ title, img, description, url }) => {
 	return (
 		<div
 			onClick={handleChangeUrl}
-			className="mt-6 w-3/4 cursor-pointer select-none rounded-2xl bg-white p-6 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover"
+			className="mt-6 w-2/4 cursor-pointer select-none rounded-2xl bg-white p-6 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover"
 		>
 			<div className="flex flex-row gap-8">
 				<div className="flex items-center gap-4">
