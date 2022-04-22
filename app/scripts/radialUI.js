@@ -52,49 +52,61 @@ const data = [
 
 const menuSize = 300;
 
-const createRadialUiHtml = (mouseX, mouseY, windowWidth, windowHeight) => {
+const createRadialUiHtml = (mouseX, mouseY, windowWidth, windowHeight, e) => {
+	// const scope = document.body;
+	// const { left: scopeOffsetX, top: scopeOffsetY } = scope.getBoundingClientRect();
+
+	// const scopeX = mouseX - scopeOffsetX;
+	// const scopeY = mouseY - scopeOffsetY;
+
+	// // check if the element will go out of bounds
+	// const outOfBoundsOnX = scopeX + menuSize > scope.clientWidth;
+	// const outOfBoundsOnY = scopeY + menuSize > scope.clientHeight;
+
+	// let normalizedX = mouseX;
+	// let normalizedY = mouseY;
+
+	// if (outOfBoundsOnX) {
+	// 	normalizedX = scopeOffsetX + scope.clientWidth - menuSize;
+	// }
+
+	// if (outOfBoundsOnY) {
+	// 	normalizedY = scopeOffsetY + scope.clientHeight - (menuSize + 15);
+	// 	console.log(normalizedY);
+	// }
+
 	const radialMenu = document.createElement('div');
 	radialMenu.id = 'radial-ui';
-	radialMenu.style.position = 'absolute';
+	radialMenu.style.position = 'fixed';
 	radialMenu.style.zIndex = '9999';
 
-	// if (windowWidth - mouseX < menuSize) {
-	// 	radialMenu.style.left = windowWidth - (menuSize + 20) + 'px';
-	// } else if (mouseX < menuSize) {
-	// 	radialMenu.style.left = mouseX + 'px';
-	// } else {
-	// 	radialMenu.style.left = mouseX + 'px';
-	// 	radialMenu.style.transform = 'translate(-50%, -50%)';
-	// }
+	if (windowWidth - mouseX < menuSize) {
+		radialMenu.style.left = windowWidth - (menuSize + 20) + 'px';
+	} else {
+		radialMenu.style.left = mouseX + 'px';
+	}
 
-	// if (windowHeight - mouseY < menuSize) {
-	// 	radialMenu.style.top = windowHeight - (menuSize + 20) + 'px';
-	// } else if (mouseY < menuSize) {
-	// 	radialMenu.style.top = mouseY + 'px';
-	// } else {
-	// 	radialMenu.style.top = mouseY + 'px';
-	// 	radialMenu.style.transform = 'translate(-50%, -50%)';
-	// }
+	if (windowHeight - mouseY < menuSize) {
+		radialMenu.style.top = windowHeight - (menuSize + 20) + 'px';
 
-	// if (windowWidth - mouseX < menuSize) {
-	// 	radialMenu.style.left = windowWidth - (menuSize + 20) + 'px';
-	// } else {
-	// 	radialMenu.style.left = mouseX + 'px';
-	// }
+		// if (e.pageY > e.clientY) {
+		// 	radialMenu.style.top = mouseY - menuSize + 'px';
 
-	// if (windowHeight - mouseY < menuSize) {
-	// 	radialMenu.style.top = windowHeight - (menuSize + 20) + 'px';
-	// } else {
-	// 	radialMenu.style.top = mouseY + 'px';
-	// }
+		// 	if (e.pageY + 400 > document.body.getBoundingClientRect().height) {
+		// 		radialMenu.style.top = e.pageY - 300 + 'px';
+		// 	}
+		// }
+	} else {
+		radialMenu.style.top = mouseY + 'px';
+	}
 
-	radialMenu.style.left = mouseX + 'px';
-	radialMenu.style.top = mouseY + 'px';
 	radialMenu.style.overflow = 'hidden';
 	radialMenu.style.width = menuSize + 'px';
 	radialMenu.style.height = menuSize + 'px';
 	radialMenu.style.background = 'white';
 	radialMenu.style.borderRadius = '50%';
+	// radialMenu.style.left = normalizedX + 'px';
+	// radialMenu.style.top = normalizedY + 'px';
 	document.body.appendChild(radialMenu);
 
 	const $items = data.length;
@@ -186,10 +198,11 @@ const createRadialUiHtml = (mouseX, mouseY, windowWidth, windowHeight) => {
 	copy();
 	paste();
 	closeRadial();
-	resizeListener();
 	textSizeDown();
 	textSizeUp();
 	settings();
+
+	resizeListener();
 };
 
 const removeRadialUiHtml = () => {
@@ -199,13 +212,15 @@ const removeRadialUiHtml = () => {
 
 const contextListener = () => {
 	window.addEventListener('contextmenu', (e) => {
+		e.preventDefault();
+
 		const menu = document.getElementById('radial-ui');
 		if (!menu) {
-			const mouseX = e.pageX;
-			const mouseY = e.pageY;
+			const mouseX = e.clientX;
+			const mouseY = e.clientY;
 			const windowWidth = window.innerWidth;
 			const windowHeight = window.innerHeight;
-			createRadialUiHtml(mouseX, mouseY, windowWidth, windowHeight);
+			createRadialUiHtml(mouseX, mouseY, windowWidth, windowHeight, e);
 		} else {
 			removeRadialUiHtml();
 		}
