@@ -1,13 +1,27 @@
-function createRadialUiHtml(mouseX, mouseY) {
+const menuSize = 400;
+
+function createRadialUiHtml(mouseX, mouseY, windowWidth, windowHeight) {
 	const radialMenu = document.createElement('div');
 	radialMenu.id = 'radial-ui';
 	radialMenu.style.position = 'absolute';
 	radialMenu.style.zIndex = '9999';
-	radialMenu.style.left = mouseX + 'px';
-	radialMenu.style.top = mouseY + 'px';
-	radialMenu.style.transform = 'translate(-50%, -50%)';
-	radialMenu.style.width = '400px';
-	radialMenu.style.height = '400px';
+
+	if (windowWidth - mouseX < menuSize) {
+		radialMenu.style.left = windowWidth - (menuSize + 20) + 'px';
+	} else {
+		radialMenu.style.left = mouseX + 'px';
+	}
+
+	if (windowHeight - mouseY < menuSize) {
+		radialMenu.style.top = windowHeight - (menuSize + 20) + 'px';
+	} else {
+		radialMenu.style.top = mouseY + 'px';
+	}
+
+	radialMenu.style.overflow = 'hidden';
+
+	radialMenu.style.width = menuSize + 'px';
+	radialMenu.style.height = menuSize + 'px';
 	radialMenu.style.background = 'white';
 	radialMenu.style.borderRadius = '50%';
 	document.body.appendChild(radialMenu);
@@ -25,6 +39,7 @@ function createRadialUiHtml(mouseX, mouseY) {
     -webkit-transform-origin: 100% 100%;
     border: 1.5px solid transparent;
     overflow: hidden;
+    box-sizing: border-box;
     display: none;`;
 
 	const defaultStyleA = `color: white;
@@ -39,10 +54,10 @@ function createRadialUiHtml(mouseX, mouseY) {
 	const radialMenuHTML = `
     
      
-<ul 
+<div 
   list-style-type: none;
-  margin: 0;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
   position: relative;
   display: inline-block;
   width: ${$size * 2}px;
@@ -137,6 +152,7 @@ function createRadialUiHtml(mouseX, mouseY) {
 	copy();
 	paste();
 	closeRadial();
+	resizeListener();
 }
 
 function removeRadialUiHtml() {
@@ -145,10 +161,13 @@ function removeRadialUiHtml() {
 }
 
 window.addEventListener('contextmenu', (e) => {
-	if (!document.getElementById('radial-ui')) {
+	const menu = document.getElementById('radial-ui');
+	if (!menu) {
 		const mouseX = e.pageX;
 		const mouseY = e.pageY;
-		createRadialUiHtml(mouseX, mouseY);
+		const windowWidth = window.innerWidth;
+		const windowHeight = window.innerHeight;
+		createRadialUiHtml(mouseX, mouseY, windowWidth, windowHeight);
 	} else {
 		removeRadialUiHtml();
 	}
@@ -216,5 +235,13 @@ function closeRadial() {
 	const exit = document.getElementById('radial-ui-close');
 	exit.addEventListener('click', () => {
 		removeRadialUiHtml();
+	});
+}
+
+function resizeListener() {
+	window.addEventListener('resize', () => {
+		if (document.getElementById('radial-ui')) {
+			removeRadialUiHtml();
+		}
 	});
 }
