@@ -1,31 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { useState } from 'react';
 import SmallTile from './Tiles/SmallTile';
 import MediumTile from './Tiles/MediumTile';
+
 import { PlusIcon } from '@heroicons/react/outline';
 
 const Dashboard = () => {
-	function getDateTime() {
-		const options = {
-			weekday: 'long',
-			month: 'long',
-			day: 'numeric',
-			hour: 'numeric',
-			minute: 'numeric',
-		};
-		const currentDate = new Date().toLocaleDateString('nl-BE', options);
-		const element = <p className="text-center font-light">{currentDate}</p>;
+	const options = {
+		weekday: 'long',
+		month: 'long',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+	};
 
-		if (document.getElementById('clock')) {
-			ReactDOM.render(element, document.getElementById('clock'));
-		}
-	}
+	const [time, setTime] = useState(new Date().toLocaleDateString('nl-BE', options));
 
-	setInterval(getDateTime, 1000);
+	setInterval(() => setTime(new Date().toLocaleDateString('nl-BE', options)), 1000);
 
 	return (
 		<div className="select-none">
-			<div className="mt-4 h-10" id="clock"></div>
+			<div className="mt-4 h-10 text-center">
+				{time}
+			</div>
 			<div className="absolute right-8 top-28 flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
 				<img className="h-14 w-14 rounded-full" src="https://i.imgur.com/jcuurYi.png" alt="" />
 				<h2 className="font-light">Instellingen</h2>

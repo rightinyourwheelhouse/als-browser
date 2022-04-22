@@ -1,4 +1,3 @@
-// import { ipcRenderer } from 'electron';
 import React, { useState, useRef } from 'react';
 
 const SearchBar = ({ onFocusChange }) => {
