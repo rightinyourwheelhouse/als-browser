@@ -5,7 +5,7 @@ import Title from '../Typography/Title';
 const OnType = () => {
 	return (
 		<div>
-			<div className="m-center mt-20 w-3/4">
+			<div className="m-center mt-20 flex w-3/4 flex-col">
 				<Title>Zoeken</Title>
 				<BigTile
 					title="VRT.be: Home"

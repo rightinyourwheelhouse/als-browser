@@ -2,7 +2,7 @@ import React from 'react';
 
 const RecentSearchTile = ({ title, img, url }) => {
 	return (
-		<div className="my-2 flex  h-14 w-full cursor-pointer items-center gap-6 rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
+		<button className="my-2 flex  h-14 w-full cursor-pointer items-center gap-6 rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
 			<div className="ml-6 flex items-center gap-4">
 				<input className="h-5 w-5" type="checkbox" />
 				<p>9:05</p>
@@ -13,7 +13,7 @@ const RecentSearchTile = ({ title, img, url }) => {
 				<p>{title}</p>
 				<p>{url}</p>
 			</div>
-		</div>
+		</button>
 	);
 };
 
