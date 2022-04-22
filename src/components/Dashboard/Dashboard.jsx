@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SmallTile from './Tiles/SmallTile';
 import MediumTile from './Tiles/MediumTile';
+import Title from '../Typography/Title';
 
 import { PlusIcon } from '@heroicons/react/outline';
 
@@ -30,7 +31,7 @@ const Dashboard = () => {
 			</div>
 
 			<div className="m-center mt-20 w-3/4">
-				<h1 className="font-mulish text-3xl font-bold">Suggesties</h1>
+				<Title>Suggesties</Title>
 				<div className="mt-6 flex cursor-pointer flex-row gap-10">
 					<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" />
 					<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" />
@@ -39,7 +40,7 @@ const Dashboard = () => {
 			</div>
 
 			<div className="m-center mt-20 w-3/4">
-				<h1 className="font-mulish text-3xl font-bold">Meest bezocht</h1>
+				<Title>Meest bezocht</Title>
 				<div className="mt-6 flex cursor-pointer flex-row gap-10">
 					<SmallTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" />
 					<SmallTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" />

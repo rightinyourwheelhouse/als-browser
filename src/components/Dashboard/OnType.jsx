@@ -1,11 +1,12 @@
 import React from 'react';
 import BigTile from './Tiles/BigTile';
+import Title from '../Typography/Title';
 
 const OnType = () => {
 	return (
 		<div>
 			<div className="m-center mt-20 w-3/4">
-				<h1 className="font-mulish text-3xl font-bold">Zoeken</h1>
+				<Title>Zoeken</Title>
 				<BigTile
 					title="VRT.be: Home"
 					img="https://i.imgur.com/bPfHmNc.png"
