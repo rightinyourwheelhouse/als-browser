@@ -1,6 +1,7 @@
 import React from 'react';
 import Dashboard from '../Dashboard/Dashboard';
 import SearchBar from './SearchBar';
+import ToolbarIcon from './ToolbarIcon.jsx';
 
 import { ArrowLeftIcon } from '@heroicons/react/outline';
 import { ArrowRightIcon } from '@heroicons/react/outline';
@@ -12,6 +13,7 @@ import { XIcon } from '@heroicons/react/outline';
 
 const Toolbar = ({ onFocusChange }) => {
 	const handleGoBack = () => {
+		console.log('click');
 		window.api.send('goBack');
 	};
 
@@ -48,56 +50,39 @@ const Toolbar = ({ onFocusChange }) => {
 			<div className="drop-shadow-browser draggable w-full">
 				<div className="flex h-20 items-center justify-between bg-slate-100 pl-4 pr-4">
 					<div className="flex cursor-pointer flex-row gap-4">
-						<div
-							onClick={handleGoBack}
-							className="group flex h-14 w-14  items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
-						>
-							<ArrowLeftIcon className="h-9 w-9 group-hover:text-white" />
-						</div>
+						<ToolbarIcon onClick={handleGoBack}>
+							<ArrowLeftIcon />
+						</ToolbarIcon>
 
-						<div
-							onClick={handleGoForward}
-							className="group flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
-						>
-							<ArrowRightIcon className="h-9 w-9 group-hover:text-white" />
-						</div>
+						<ToolbarIcon onClick={handleGoForward}>
+							<ArrowRightIcon />
+						</ToolbarIcon>
 					</div>
 
 					<div className="flex flex-row items-center gap-4">
-						<div
-							onClick={handleRefresh}
-							className="group flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
-						>
-							<RefreshIcon className="h-9 w-9 group-hover:text-white" />
-						</div>
+						<ToolbarIcon onClick={handleRefresh}>
+							<RefreshIcon />
+						</ToolbarIcon>
+
 						<SearchBar onFocusChange={onFocusChange} />
-						<div
-							onClick={handleDashboard}
-							className="group flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
-						>
-							<HomeIcon className="h-9 w-9 group-hover:text-white" />
-						</div>
+
+						<ToolbarIcon onClick={handleDashboard}>
+							<HomeIcon />
+						</ToolbarIcon>
 					</div>
 
 					<div className="flex flex-row gap-2">
-						<div
-							onClick={handleMinimize}
-							className="group flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
-						>
-							<MinusSmIcon className="h-9 w-9 group-hover:text-white" />
-						</div>
-						<div
-							onClick={handleAdjustSize}
-							className="group flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
-						>
-							<ArrowsExpandIcon className="h-8 w-8 group-hover:text-white" />
-						</div>
-						<div
-							onClick={handleClose}
-							className="group flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-white drop-shadow-light transition duration-300 ease-in-out hover:bg-dark-gray"
-						>
-							<XIcon className="h-9 w-9 group-hover:text-white" />
-						</div>
+						<ToolbarIcon onClick={handleMinimize}>
+							<MinusSmIcon />
+						</ToolbarIcon>
+
+						<ToolbarIcon onClick={handleAdjustSize}>
+							<ArrowsExpandIcon />
+						</ToolbarIcon>
+
+						<ToolbarIcon onClick={handleClose}>
+							<XIcon />
+						</ToolbarIcon>
 					</div>
 				</div>
 			</div>
