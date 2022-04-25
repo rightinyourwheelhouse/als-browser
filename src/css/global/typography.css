@@ -1,0 +1,9 @@
+/**
+ *
+ * Typography rules.
+ *
+ */
+
+body {
+	@apply text-dark-gray;
+}

@@ -1,24 +1,19 @@
 import React, { useState } from 'react';
-import './css/App.css';
+import Toolbar from './components/Toolbar/Toolbar';
+import Dashboard from './components/Dashboard/Dashboard';
+import OnType from './components/Dashboard/OnType';
 
 const App = () => {
-	const [input, setInput] = useState('');
+	const [searchBarStatus, setSearchBarStatus] = useState('Dashboard');
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		window.api.send('toMain', input);
+	const handleFocusChange = (component) => {
+		component === 'OnType' ? setSearchBarStatus('OnType') : setSearchBarStatus('Dashboard');
 	};
+
 	return (
 		<>
-			<div className="h-20 bg-slate-400 flex justify-center items-center">
-				<form onSubmit={handleSubmit}>
-					<input
-						className="h-10 w-96 pl-4 rounded-xl"
-						onInput={(e) => setInput(e.target.value)}
-						placeholder="Typ een website om te zoeken"
-					></input>
-				</form>
-			</div>
+			<Toolbar onFocusChange={handleFocusChange} />
+			{searchBarStatus === 'OnType' ? <OnType /> : <Dashboard />}
 		</>
 	);
 };
