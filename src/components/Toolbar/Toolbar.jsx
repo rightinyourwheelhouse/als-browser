@@ -3,6 +3,8 @@ import Dashboard from '../Dashboard/Dashboard';
 import SearchBar from './SearchBar';
 import ToolbarIcon from './ToolbarIcon.jsx';
 
+import LogoBrainWeb from '/assets/img/logo-brainweb.png';
+
 import { ArrowLeftIcon } from '@heroicons/react/outline';
 import { ArrowRightIcon } from '@heroicons/react/outline';
 import { RefreshIcon } from '@heroicons/react/outline';
@@ -63,10 +65,14 @@ const Toolbar = ({ onFocusChange }) => {
 							<RefreshIcon />
 						</ToolbarIcon>
 
-						<SearchBar onFocusChange={onFocusChange} />
-
 						<ToolbarIcon onClick={handleDashboard}>
 							<HomeIcon />
+						</ToolbarIcon>
+
+						<SearchBar onFocusChange={onFocusChange} />
+
+						<ToolbarIcon>
+							<img src={LogoBrainWeb} alt="" />
 						</ToolbarIcon>
 					</div>
 
