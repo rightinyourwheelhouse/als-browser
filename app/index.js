@@ -145,9 +145,14 @@ ipcMain.on('toggleDashboard', (event, arg) => {
 	} else if (viewClosed && arg) {
 		view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
 	}
+});
 
-	// view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
-	// view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
+ipcMain.on('toggleExtension', () => {
+	const viewOpen = view.getBounds().width > 0 && view.getBounds().height > 0;
+
+	if (viewOpen) {
+		view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
+	}
 });
 
 ipcMain.on('changeURL', (event, url) => {

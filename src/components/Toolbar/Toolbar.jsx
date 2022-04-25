@@ -40,7 +40,6 @@ const Toolbar = ({ onFocusChange }) => {
 
 	const handleDashboard = () => {
 		navigate('/');
-		// Get the current path
 		if (location.pathname === '/') {
 			window.api.send('toggleDashboard', true);
 		} else {
@@ -53,12 +52,9 @@ const Toolbar = ({ onFocusChange }) => {
 	};
 
 	const handleExtensionToggle = () => {
-		window.api.send('ToggleExtension');
+		navigate('/settings/extension');
+		window.api.send('toggleExtension');
 	};
-
-	window.api.recieve('ToggleTheDashboard', () => {
-		onFocusChange('Dashboard');
-	});
 
 	return (
 		<>
