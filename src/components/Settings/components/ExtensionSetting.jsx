@@ -1,7 +1,11 @@
 import React from 'react';
 
 const ExtensionSettings = () => {
-	return <>This is the EXTENSIONS settings page</>;
+	return (
+		<>
+			<div>This is the EXTENSIONS settings page</div>{' '}
+		</>
+	);
 };
 
 export default ExtensionSettings;
