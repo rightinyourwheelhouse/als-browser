@@ -1,7 +1,8 @@
 import React from 'react';
-import Dashboard from '../Dashboard/Dashboard';
 import SearchBar from './SearchBar';
 import ToolbarIcon from './ToolbarIcon.jsx';
+
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import LogoBrainWeb from '/assets/img/logo-brainweb.png';
 
@@ -14,6 +15,9 @@ import { ArrowsExpandIcon } from '@heroicons/react/outline';
 import { XIcon } from '@heroicons/react/outline';
 
 const Toolbar = ({ onFocusChange }) => {
+	let navigate = useNavigate();
+	const location = useLocation();
+
 	const handleGoBack = () => {
 		window.api.send('goBack');
 	};
@@ -35,15 +39,25 @@ const Toolbar = ({ onFocusChange }) => {
 	};
 
 	const handleDashboard = () => {
-		window.api.send('toggleDashboard');
+		navigate('/');
+		// Get the current path
+		if (location.pathname === '/') {
+			window.api.send('toggleDashboard', true);
+		} else {
+			window.api.send('toggleDashboard', null);
+		}
 	};
 
 	const handleAdjustSize = () => {
 		window.api.send('adjustSize');
 	};
 
+	const handleExtensionToggle = () => {
+		window.api.send('ToggleExtension');
+	};
+
 	window.api.recieve('ToggleTheDashboard', () => {
-		onFocusChange(Dashboard);
+		onFocusChange('Dashboard');
 	});
 
 	return (
@@ -71,7 +85,7 @@ const Toolbar = ({ onFocusChange }) => {
 
 						<SearchBar onFocusChange={onFocusChange} />
 
-						<ToolbarIcon>
+						<ToolbarIcon onClick={handleExtensionToggle}>
 							<img src={LogoBrainWeb} alt="" />
 						</ToolbarIcon>
 					</div>

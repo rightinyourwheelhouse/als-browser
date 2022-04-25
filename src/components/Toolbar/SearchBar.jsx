@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const SearchBar = ({ onFocusChange }) => {
+const SearchBar = () => {
 	const [input, setInput] = useState('');
-	// const [currentURL, setCurrentURL] = useState();
 
 	const inputRef = useRef();
+	let navigate = useNavigate();
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -18,10 +19,11 @@ const SearchBar = ({ onFocusChange }) => {
 
 	const handleOnChange = (e) => {
 		setInput(e.target.value);
+
 		if (e.target.value.length > 0) {
-			onFocusChange('OnType');
+			navigate('/on-type');
 		} else {
-			onFocusChange('Dashboard');
+			navigate('/');
 		}
 	};
 

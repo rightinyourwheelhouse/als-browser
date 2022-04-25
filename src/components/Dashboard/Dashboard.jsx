@@ -3,6 +3,8 @@ import SmallTile from './Tiles/SmallTile';
 import MediumTile from './Tiles/MediumTile';
 import Title from '../Typography/Title';
 
+import { useNavigate } from 'react-router-dom';
+
 import { PlusIcon } from '@heroicons/react/outline';
 
 const options = {
@@ -16,16 +18,26 @@ const options = {
 const Dashboard = () => {
 	const [time, setTime] = useState(new Date().toLocaleDateString('nl-BE', options));
 
+	let navigate = useNavigate();
+
 	useEffect(() => {
 		const interval = setInterval(() => setTime(new Date().toLocaleDateString('nl-BE', options)), 1000);
 
 		return () => clearInterval(interval);
 	}, []);
 
+	const handleSettings = () => {
+		navigate('/settings');
+	};
+
 	return (
 		<div className="select-none">
 			<div className="mt-4 h-10 text-center">{time}</div>
-			<button className="absolute right-8 top-28 flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
+
+			<button
+				onClick={handleSettings}
+				className="absolute right-8 top-28 flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
+			>
 				<img className="h-14 w-14 rounded-full" src="https://i.imgur.com/jcuurYi.png" alt="" />
 				<h2 className="font-light">Instellingen</h2>
 			</button>

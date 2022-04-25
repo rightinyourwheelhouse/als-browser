@@ -30,7 +30,7 @@ function createWindow() {
 	// Open the DevTools.
 	if (isDev) {
 		mainWindow.loadURL('http://localhost:3000');
-		mainWindow.webContents.openDevTools({ mode: 'detach' });
+		mainWindow.webContents.openDevTools();
 	} else {
 		mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
 	}
@@ -54,6 +54,8 @@ function createBrowserView() {
 			preload: path.join(__dirname, 'scripts/preload.js'),
 		},
 	});
+
+	view.setBackgroundColor('#fff');
 	mainWindow.setBrowserView(view);
 	view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
 
@@ -133,12 +135,19 @@ ipcMain.on('close', () => {
 	mainWindow.close();
 });
 
-ipcMain.on('toggleDashboard', () => {
-	// This causes a memory leak
-	// event.reply('ToggleTheDashboard', true);
-	view.getBounds().width === 0 && view.getBounds().height === 0
-		? view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 })
-		: view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
+ipcMain.on('toggleDashboard', (event, arg) => {
+	// view.getBounds().width === 0 && view.getBounds().height === 0;
+	const viewOpen = view.getBounds().width > 0 && view.getBounds().height > 0;
+	const viewClosed = view.getBounds().width === 0 && view.getBounds().height === 0;
+
+	if (viewOpen) {
+		view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
+	} else if (viewClosed && arg) {
+		view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
+	}
+
+	// view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
+	// view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
 });
 
 ipcMain.on('changeURL', (event, url) => {
