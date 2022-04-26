@@ -4,6 +4,7 @@ module.exports = {
 		extend: {
 			colors: {
 				'dark-gray': '#343A44',
+				'dark-blue': '#205493',
 			},
 			fontFamily: {
 				mulish: ['Mulish', 'sans-serif'],

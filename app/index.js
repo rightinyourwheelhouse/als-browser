@@ -27,7 +27,6 @@ function createWindow() {
 
 	createBrowserView();
 
-	// Open the DevTools.
 	if (isDev) {
 		mainWindow.loadURL('http://localhost:3000');
 		mainWindow.webContents.openDevTools();

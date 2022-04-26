@@ -39,7 +39,7 @@ const SearchBar = () => {
 		<form onSubmit={handleSubmit}>
 			<input
 				ref={inputRef}
-				className="hover:drop-shadow-browser h-14 w-96 rounded-full pl-4 text-center drop-shadow-light transition duration-300 ease-in-out placeholder:text-center"
+				className="hover:drop-shadow-browser h-14 w-96 rounded-full pl-4 text-center drop-shadow-light transition duration-300 ease-in-out placeholder:text-center focus:outline-none focus:ring focus:ring-dark-blue"
 				onInput={(e) => handleOnChange(e)}
 				onFocus={() => handleOnFocus(true)}
 				onBlur={() => handleOnFocus(false)}
