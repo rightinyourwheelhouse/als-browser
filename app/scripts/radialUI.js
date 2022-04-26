@@ -1,3 +1,5 @@
+const { ipcRenderer } = require('electron');
+
 const data = [
 	{
 		id: 1,
@@ -248,12 +250,14 @@ const bookmark = () => {
 	bookmark.addEventListener('click', () => {
 		const url = window.location.href;
 		const title = document.title;
-		// const favicon = document.querySelector('link[rel="shortcut icon"]').getAttribute('href');
+
+		const rootUrl = window.location.origin;
+		const favicon = rootUrl + '/favicon.ico';
 
 		const bookmark = {
 			url,
 			title,
-			// favicon,
+			favicon,
 		};
 
 		// sent to database
@@ -311,7 +315,7 @@ const search = () => {
 const dashboard = () => {
 	const dashboard = document.getElementById('radial-ui-dashboard');
 	dashboard.addEventListener('click', () => {
-		console.log('dashboard');
+		ipcRenderer.send('toggleDashboard');
 	});
 };
 
