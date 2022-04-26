@@ -52,33 +52,18 @@ const data = [
 
 const menuSize = 300;
 
-const createRadialUiHtml = (mouseX, mouseY, windowWidth, windowHeight, e) => {
-	// const scope = document.body;
-	// const { left: scopeOffsetX, top: scopeOffsetY } = scope.getBoundingClientRect();
-
-	// const scopeX = mouseX - scopeOffsetX;
-	// const scopeY = mouseY - scopeOffsetY;
-
-	// // check if the element will go out of bounds
-	// const outOfBoundsOnX = scopeX + menuSize > scope.clientWidth;
-	// const outOfBoundsOnY = scopeY + menuSize > scope.clientHeight;
-
-	// let normalizedX = mouseX;
-	// let normalizedY = mouseY;
-
-	// if (outOfBoundsOnX) {
-	// 	normalizedX = scopeOffsetX + scope.clientWidth - menuSize;
-	// }
-
-	// if (outOfBoundsOnY) {
-	// 	normalizedY = scopeOffsetY + scope.clientHeight - (menuSize + 15);
-	// 	console.log(normalizedY);
-	// }
+const createRadialUiHtml = (e) => {
+	const { clientX: mouseX, clientY: mouseY } = e;
+	const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
 
 	const radialMenu = document.createElement('div');
 	radialMenu.id = 'radial-ui';
 	radialMenu.style.position = 'fixed';
 	radialMenu.style.zIndex = '9999';
+	radialMenu.style.overflow = 'hidden';
+	radialMenu.style.width = menuSize + 'px';
+	radialMenu.style.height = menuSize + 'px';
+	radialMenu.style.borderRadius = '50%';
 
 	if (windowWidth - mouseX < menuSize) {
 		radialMenu.style.left = windowWidth - (menuSize + 20) + 'px';
@@ -88,30 +73,16 @@ const createRadialUiHtml = (mouseX, mouseY, windowWidth, windowHeight, e) => {
 
 	if (windowHeight - mouseY < menuSize) {
 		radialMenu.style.top = windowHeight - (menuSize + 20) + 'px';
-
-		// if (e.pageY > e.clientY) {
-		// 	radialMenu.style.top = mouseY - menuSize + 'px';
-
-		// 	if (e.pageY + 400 > document.body.getBoundingClientRect().height) {
-		// 		radialMenu.style.top = e.pageY - 300 + 'px';
-		// 	}
-		// }
 	} else {
 		radialMenu.style.top = mouseY + 'px';
 	}
 
-	radialMenu.style.overflow = 'hidden';
-	radialMenu.style.width = menuSize + 'px';
-	radialMenu.style.height = menuSize + 'px';
-	radialMenu.style.background = 'white';
-	radialMenu.style.borderRadius = '50%';
-	// radialMenu.style.left = normalizedX + 'px';
-	// radialMenu.style.top = normalizedY + 'px';
 	document.body.appendChild(radialMenu);
 
 	const $items = data.length;
 	const $size = 150;
-	const $bgcolor = '#343A44';
+	const $bgcolor = 'rgb(52 58 68 / 50%)';
+	const $bgColorClose = '#343A44';
 
 	const $deg = 360 / $items;
 	const $unrotate = -(90 - $deg) / 2;
@@ -130,16 +101,18 @@ const createRadialUiHtml = (mouseX, mouseY, windowWidth, windowHeight, e) => {
   padding: 0;
   padding-top: 10px;
   margin: 0;
-  border: none;
+  border: 2px solid white;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  width: ${$size * 2}px;height: ${$size * 2}px;
+  width: ${$size * 2}px;
+  height: ${$size * 2}px;
   border-radius:50%;
   text-align: center;
   background: ${$bgcolor};
   font-size: 25px;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
   transform: skew(${-$skew}deg) rotate(${-67.5}deg);`;
 
 	const defaultStyleDiv = `
@@ -162,20 +135,29 @@ const createRadialUiHtml = (mouseX, mouseY, windowWidth, windowHeight, e) => {
 
 		const $button = document.createElement('button');
 		$button.style.cssText = defaultStyleButton;
-		$button.style.lineHeight = `50px`;
 		$button.id = item.id_name;
 		$button.innerHTML = item.icon;
+
+		// $button hover
+		$button.addEventListener('mouseenter', () => {
+			$button.style.background = '#343A44';
+			$button.style.border = '2px solid #205493';
+		});
+
+		$button.addEventListener('mouseleave', () => {
+			$button.style.background = $bgcolor;
+			$button.style.border = '2px solid white';
+		});
 
 		$mask.appendChild($button);
 		$div.appendChild($mask);
 	});
 
 	const defaultStyleClose = `"${defaultStyleMask} width: 100px;
-  border: 5px solid white;
+  border: 3px solid white;
   color: white;
   cursor: pointer;
   height: 100px;
-  background: ${$bgcolor};
   border-radius: 50%;
   position: absolute;
   left: 50%;
@@ -184,12 +166,22 @@ const createRadialUiHtml = (mouseX, mouseY, windowWidth, windowHeight, e) => {
   display: block;
   -webkit-transform-origin: 50% 50%; display: flex;
   align-items: center;
+  transition: all 0.2s ease-in-out;
+  background: ${$bgColorClose};
   justify-content: center;`;
 
-	const $close = document.createElement('div');
+	const $close = document.createElement('button');
 	$close.id = 'radial-ui-close';
 	$close.innerHTML = 'close';
 	$close.style.cssText = defaultStyleClose;
+	$close.addEventListener('mouseenter', () => {
+		$close.style.transform = 'translate(-50%, -50%) scale(1.2)';
+		$close.style.border = '5px solid #205493';
+	});
+	$close.addEventListener('mouseleave', () => {
+		$close.style.transform = 'translate(-50%, -50%) scale(1)';
+		$close.style.border = '3px solid white';
+	});
 	$div.appendChild($close);
 
 	goBack();
@@ -201,7 +193,6 @@ const createRadialUiHtml = (mouseX, mouseY, windowWidth, windowHeight, e) => {
 	textSizeDown();
 	textSizeUp();
 	settings();
-
 	resizeListener();
 };
 
@@ -216,11 +207,7 @@ const contextListener = () => {
 
 		const menu = document.getElementById('radial-ui');
 		if (!menu) {
-			const mouseX = e.clientX;
-			const mouseY = e.clientY;
-			const windowWidth = window.innerWidth;
-			const windowHeight = window.innerHeight;
-			createRadialUiHtml(mouseX, mouseY, windowWidth, windowHeight, e);
+			createRadialUiHtml(e);
 		} else {
 			removeRadialUiHtml();
 		}
@@ -272,7 +259,6 @@ const copy = () => {
 		const copy = document.getElementById('radial-ui-copy');
 		copy.addEventListener('click', () => {
 			navigator.clipboard.writeText(text);
-			console.log('copy');
 		});
 	}
 };
