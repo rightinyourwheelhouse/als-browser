@@ -24,12 +24,12 @@ const ExtensionSettings = () => {
 			<div className="mx-10 h-full">
 				<Title className="mt-8">Extensie</Title>
 
-				<SettingTile>
+				<SettingTile infoText="Schakel alle functies aan of uit.">
 					<p className="text-lg font-bold">Volledige extensie</p>
 					<CustomSwitch />
 				</SettingTile>
 
-				<SettingTile>
+				<SettingTile infoText="Deze tool helpt je om te scrollen doorheen webpagina’s. Stel de snelheid in van het scrollen of kies waar de scrollhulp gepositioneerd staat op je webpagina.">
 					<div className="flex w-full flex-col">
 						<div className="my-2 flex items-center justify-between">
 							<p className="text-lg font-bold">Scrollhulp</p>
@@ -105,12 +105,12 @@ const ExtensionSettings = () => {
 					</div>
 				</SettingTile>
 
-				<SettingTile>
+				<SettingTile infoText="Schakel mouse tracking aan of uit.">
 					<p className="text-lg font-bold">Mouse tracking</p>
 					<CustomSwitch />
 				</SettingTile>
 
-				<SettingTile>
+				<SettingTile infoText="Schakel achtervolgende knoppen aan of uit.">
 					<p className="text-lg font-bold">Achtervolgende knoppen</p>
 					<CustomSwitch />
 				</SettingTile>
