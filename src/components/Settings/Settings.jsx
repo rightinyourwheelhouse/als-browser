@@ -1,95 +1,97 @@
 import React from 'react';
-import ExtensionSetting from './components/ExtensionSetting';
-import FeedbackSetting from './components/FeedbackSetting';
-import PasswordSetting from './components/PasswordSetting';
+import { Routes, Route, NavLink } from 'react-router-dom';
 
-import { Tab } from '@headlessui/react';
-import AccountSetting from './components/AccountSetting';
-import HistorySetting from './components/HistorySetting';
-import AboutSetting from './components/AboutSetting';
+import ExtensionSetting from './components/Pages/ExtensionSetting';
+import FeedbackSetting from './components/Pages/FeedbackSetting';
+import PasswordSetting from './components/Pages/PasswordSetting';
+
+import AccountSetting from './components/Pages/AccountSetting';
+import HistorySetting from './components/Pages/HistorySetting';
+import AboutSetting from './components/Pages/AboutSetting';
 import Title from '../Typography/Title';
 
 import { AnnotationIcon } from '@heroicons/react/outline';
-
-function classNames(...classes) {
-	return classes.filter(Boolean).join(' ');
-}
+import { UserIcon } from '@heroicons/react/outline';
+import { LockClosedIcon } from '@heroicons/react/outline';
+import { PuzzleIcon } from '@heroicons/react/outline';
+import { BookOpenIcon } from '@heroicons/react/outline';
+import { InformationCircleIcon } from '@heroicons/react/outline';
 
 const Settings = () => {
-	const tabs = {
-		'Feedback': [
-			{
-				id: 1,
-				component: FeedbackSetting,
-				icon: AnnotationIcon,
-			},
-		],
-		'Account': [
-			{
-				id: 2,
-				component: AccountSetting,
-				icon: '5h ago',
-			},
-		],
-		'Wachtwoorden': [
-			{
-				id: 3,
-				component: PasswordSetting,
-				icon: '5h ago',
-			},
-		],
-		'Extensie': [
-			{
-				id: 4,
-				component: ExtensionSetting,
-				icon: '5h ago',
-			},
-		],
-		'Geschiedenis': [
-			{
-				id: 5,
-				component: HistorySetting,
-				icon: '5h ago',
-			},
-		],
-		'Over Brainweb': [
-			{
-				id: 6,
-				component: AboutSetting,
-				icon: '5h ago',
-			},
-		],
-	};
+	const tabs = [
+		{
+			tabName: 'Feedback',
+			link: 'feedback',
+			component: FeedbackSetting,
+			icon: AnnotationIcon,
+		},
+
+		{
+			tabName: 'Account',
+			link: 'account',
+			component: AccountSetting,
+			icon: UserIcon,
+		},
+
+		{
+			tabName: 'Wachtwoorden',
+			component: PasswordSetting,
+			link: 'passwords',
+			icon: LockClosedIcon,
+		},
+
+		{
+			tabName: 'Extensie',
+			link: 'extension',
+			component: ExtensionSetting,
+			icon: PuzzleIcon,
+		},
+
+		{
+			tabName: 'Geschiedenis',
+			link: 'history',
+			component: HistorySetting,
+			icon: BookOpenIcon,
+		},
+
+		{
+			tabName: 'Over Brainweb',
+			link: 'about',
+			component: AboutSetting,
+			icon: InformationCircleIcon,
+		},
+	];
 	return (
 		<>
 			<div className="flex h-full w-full flex-row">
-				<Tab.Group>
-					<Tab.List className="z-10 flex h-full w-96 flex-col gap-4 bg-slate-100 shadow-2xl">
-						<Title className="my-8 text-center">Instellingen</Title>
-						{Object.keys(tabs).map((tabItem) => (
-							<Tab
-								key={tabItem}
-								className={({ selected }) =>
-									classNames(
-										'text-dark-grey w-full rounded-br-full rounded-tr-full py-2.5 pl-8 text-left text-lg font-light',
-										selected ? 'bg-white font-bold drop-shadow-light ' : '',
-									)
-								}
-							>
-								<div className="fex-row flex">{tabItem}</div>
-							</Tab>
-						))}
-					</Tab.List>
-					<Tab.Panels className="z-0 w-full">
-						{Object.values(tabs).map((components) =>
-							components.map((component, index) => (
-								<Tab.Panel key={index} className={classNames('z-0 h-full w-full outline-0')}>
-									<component.component />
-								</Tab.Panel>
-							)),
-						)}
-					</Tab.Panels>
-				</Tab.Group>
+				<div className="z-10 flex h-full w-72 flex-col gap-4 bg-slate-100 shadow-2xl">
+					<Title className="my-8 text-center">Instellingen</Title>
+					{tabs.map((tab, index) => (
+						<NavLink
+							className={({ isActive }) => {
+								const classes =
+									'text-dark-grey w-full rounded-br-full rounded-tr-full p-2 text-left text-lg font-light hover:bg-white';
+								return isActive ? `bg-white font-bold outline-none drop-shadow-light ${classes}` : classes;
+							}}
+							to={`/settings/${tab.link}`}
+							key={index}
+						>
+							<div className="ml-4 flex items-center gap-3">
+								<tab.icon className="h-6 w-6 stroke-2" />
+								<p>{tab.tabName}</p>
+							</div>
+						</NavLink>
+					))}
+				</div>
+
+				<Routes>
+					<Route path="feedback" element={<FeedbackSetting />} />
+					<Route path="account" element={<AccountSetting />} />
+					<Route path="passwords" element={<PasswordSetting />} />
+					<Route path="extension" element={<ExtensionSetting />} />
+					<Route path="history" element={<HistorySetting />} />
+					<Route path="about" element={<AboutSetting />} />
+				</Routes>
 			</div>
 		</>
 	);

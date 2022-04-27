@@ -8,7 +8,7 @@ const CustomSwitch = () => {
 			<Switch
 				checked={enabled}
 				onChange={setEnabled}
-				className={`${enabled ? 'bg-teal-900' : 'bg-teal-700'}
+				className={`${enabled ? 'bg-dark-blue' : 'bg-dark-blue opacity-20'}
           relative inline-flex h-[38px] w-[74px] flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
 			>
 				<span

@@ -27,7 +27,7 @@ const Dashboard = () => {
 	}, []);
 
 	const handleSettings = () => {
-		navigate('/settings');
+		navigate('/settings/feedback');
 	};
 
 	return (

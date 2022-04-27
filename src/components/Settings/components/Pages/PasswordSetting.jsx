@@ -3,7 +3,7 @@ import React from 'react';
 const PasswordSetting = () => {
 	return (
 		<>
-			<div>This is the Passwords settings page</div>{' '}
+			<div>This is the Passwords settings page</div>
 		</>
 	);
 };
