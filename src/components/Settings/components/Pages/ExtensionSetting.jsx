@@ -21,7 +21,7 @@ const ExtensionSettings = () => {
 
 	return (
 		<>
-			<div className="mx-10 h-full">
+			<div className="mx-10 ">
 				<Title className="mt-8">Extensie</Title>
 
 				<SettingTile infoText="Schakel alle functies aan of uit.">

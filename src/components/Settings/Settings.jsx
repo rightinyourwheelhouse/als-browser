@@ -63,8 +63,8 @@ const Settings = () => {
 	];
 	return (
 		<>
-			<div className="flex h-full w-full flex-row">
-				<div className="z-10 flex h-full w-72 flex-col gap-4 bg-slate-100 shadow-2xl">
+			<div className="grid grid-cols-[minmax(12rem,16rem),1fr] gap-4">
+				<div className="mi z-10 flex flex-col gap-4 bg-slate-100">
 					<Title className="my-8 text-center">Instellingen</Title>
 					{tabs.map((tab, index) => (
 						<NavLink
@@ -84,14 +84,16 @@ const Settings = () => {
 					))}
 				</div>
 
-				<Routes>
-					<Route path="feedback" element={<FeedbackSetting />} />
-					<Route path="account" element={<AccountSetting />} />
-					<Route path="passwords" element={<PasswordSetting />} />
-					<Route path="extension" element={<ExtensionSetting />} />
-					<Route path="history" element={<HistorySetting />} />
-					<Route path="about" element={<AboutSetting />} />
-				</Routes>
+				<div className="">
+					<Routes>
+						<Route path="feedback" element={<FeedbackSetting />} />
+						<Route path="account" element={<AccountSetting />} />
+						<Route path="passwords" element={<PasswordSetting />} />
+						<Route path="extension" element={<ExtensionSetting />} />
+						<Route path="history" element={<HistorySetting />} />
+						<Route path="about" element={<AboutSetting />} />
+					</Routes>
+				</div>
 			</div>
 		</>
 	);

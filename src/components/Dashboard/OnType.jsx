@@ -3,6 +3,8 @@ import BigTile from './Tiles/BigTile';
 import Title from '../Typography/Title';
 
 const OnType = () => {
+
+	
 	return (
 		<div>
 			<div className="m-center mt-20 flex w-3/4 flex-col">

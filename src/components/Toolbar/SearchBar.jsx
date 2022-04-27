@@ -21,19 +21,11 @@ const SearchBar = () => {
 		setInput(e.target.value);
 
 		if (e.target.value.length > 0) {
-			navigate('/on-type');
+			navigate(`/?search=${e.target.value}`);
 		} else {
 			navigate('/');
 		}
 	};
-
-	// window.api.recieve('loadURLResponse', (url) => {
-	// 	if (url.length <= 0) {
-	// 		setCurrentURL('Typ een website om te zoeken');
-	// 	} else {
-	// 		setCurrentURL(url[0]);
-	// 	}
-	// });
 
 	return (
 		<form onSubmit={handleSubmit}>
