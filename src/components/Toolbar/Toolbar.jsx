@@ -40,6 +40,7 @@ const Toolbar = ({ onFocusChange }) => {
 
 	const handleDashboard = () => {
 		navigate('/');
+
 		if (location.pathname === '/') {
 			window.api.send('toggleDashboard', true);
 		} else {
