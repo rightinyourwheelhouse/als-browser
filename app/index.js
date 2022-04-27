@@ -114,3 +114,7 @@ ipcMain.on('toggleDashboard', () => {
 		? view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 })
 		: view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
 });
+
+ipcMain.on('focusSearchBar', (event) => {
+	event.reply('replyFocusSearchBar');
+});

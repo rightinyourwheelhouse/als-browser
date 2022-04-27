@@ -309,6 +309,7 @@ const search = () => {
 	const search = document.getElementById('radial-ui-searchbar');
 	search.addEventListener('click', () => {
 		console.log('search');
+		ipcRenderer.send('focusSearchBar');
 	});
 };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SearchBar from './SearchBar/SearchBar';
 
 import styles from './toolbar.module.css';
@@ -32,6 +32,12 @@ const Toolbar = () => {
 	const handleAdjustSize = () => {
 		window.api.send('adjustSize');
 	};
+
+	useEffect(() => {
+		window.api.receive('replyFocusSearchBar', () => {
+			console.log('het werkt');
+		});
+	}, []);
 
 	return (
 		<>
