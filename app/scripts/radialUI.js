@@ -60,9 +60,16 @@ const createRadialUiHtml = (e) => {
 	const { clientX: mouseX, clientY: mouseY } = e;
 	const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
 
+  const font = document.createElement('link');
+  font.setAttribute('rel', 'stylesheet');
+  font.setAttribute('type', 'text/css');
+  font.setAttribute('href', 'https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;700&display=swap');
+  document.head.appendChild(font);
+
 	const radialMenu = document.createElement('div');
 	radialMenu.id = 'radial-ui';
 	radialMenu.style.position = 'fixed';
+  radialMenu.style.fontFamily = 'Mulish';
 	radialMenu.style.zIndex = '9999';
 	radialMenu.style.overflow = 'hidden';
 	radialMenu.style.width = menuSize + 'px';
@@ -101,9 +108,11 @@ const createRadialUiHtml = (e) => {
   border: 1.5px solid transparent;
   overflow: hidden;
   box-sizing: border-box;
+  font-family: Mulish;
   display: none;`;
 
 	const defaultStyleButton = `fill: white;
+  font-family: Mulish;
   color: white;
   padding: 0;
   padding-top: 10px;
@@ -123,6 +132,7 @@ const createRadialUiHtml = (e) => {
   transform: skew(${-$skew}deg) rotate(${-67.5}deg);`;
 
 	const defaultStyleDiv = `
+  font-family: Mulish;
   margin: 0 !important;
   padding: 0 !important;
   position: relative;
@@ -162,6 +172,7 @@ const createRadialUiHtml = (e) => {
 	});
 
 	const defaultStyleClose = `"${defaultStyleMask} width: 100px;
+  font-family: Mulish;
   border: 3px solid white;
   color: white;
   cursor: pointer;
