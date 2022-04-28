@@ -82,15 +82,21 @@ const createRadialUiHtml = (e) => {
 	radialMenu.addEventListener('mouseleave', () => {
 		$closeIcon.innerHTML = closeIconSVG;
 	});
+
 	if (windowWidth - mouseX < menuSize) {
 		radialMenu.style.left = windowWidth - (menuSize + 20) + 'px';
+	} else if (mouseX < menuSize) {
+		radialMenu.style.left = '20px';
 	} else {
-		radialMenu.style.left = mouseX + 'px';
+		radialMenu.style.left = mouseX - menuSize / 2 + 'px';
 	}
+
 	if (windowHeight - mouseY < menuSize) {
 		radialMenu.style.top = windowHeight - (menuSize + 20) + 'px';
+	} else if (mouseY < menuSize) {
+		radialMenu.style.top = '20px';
 	} else {
-		radialMenu.style.top = mouseY + 'px';
+		radialMenu.style.top = mouseY - menuSize / 2 + 'px';
 	}
 	document.body.appendChild(radialMenu);
 
