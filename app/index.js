@@ -142,8 +142,8 @@ ipcMain.on('toggleDashboard', () => {
 });
 
 ipcMain.on('focusSearchBarRadialUi', (event, arg) => {
-  mainWindow.focus();
-  mainWindow.webContents.send('focusSearchBarRadialUiReply', arg);
+	mainWindow.webContents.focus();
+	mainWindow.webContents.send('focusSearchBarRadialUiReply', arg);
 });
 
 ipcMain.on('changeURL', (event, url) => {

@@ -21,10 +21,10 @@ const data = [
 	},
 	{
 		id: 4,
-		id_name: 'radial-ui-home',
+		id_name: 'radial-ui-dashboard',
 		name: 'Dashboard',
 		icon: '<svg class="radial-ui-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/><path d="M0 0h24v24H0z" fill="none"/></svg>',
-  },
+	},
 	{
 		id: 5,
 		id_name: 'radial-ui-searchbar',
@@ -50,57 +50,49 @@ const data = [
 		name: 'Kopiëren',
 		icon: '<svg class="radial-ui-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>',
 	},
-	
 ];
 
-const menuSize = 300;
-let hoveredButton = '';
-
 const createRadialUiHtml = (e) => {
+	const menuSize = 300;
+	const $items = data.length;
+	const $size = 150;
+	const $bgcolor = 'rgb(52 58 68 / 50%)';
+	const $bgColorClose = '#343A44';
+	const $deg = 360 / $items;
+	let $unrotate = (90 - $deg) / 2;
+	const $skew = 90 - $deg;
 	const { clientX: mouseX, clientY: mouseY } = e;
 	const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
 
-  const font = document.createElement('link');
-  font.setAttribute('rel', 'stylesheet');
-  font.setAttribute('type', 'text/css');
-  font.setAttribute('href', 'https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;700&display=swap');
-  document.head.appendChild(font);
+	const font = document.createElement('link');
+	font.setAttribute('rel', 'stylesheet');
+	font.setAttribute('type', 'text/css');
+	font.setAttribute('href', 'https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;700&display=swap');
+	document.head.appendChild(font);
 
 	const radialMenu = document.createElement('div');
 	radialMenu.id = 'radial-ui';
 	radialMenu.style.position = 'fixed';
-  radialMenu.style.fontFamily = 'Mulish';
+	radialMenu.style.fontFamily = 'Mulish';
 	radialMenu.style.zIndex = '9999';
 	radialMenu.style.overflow = 'hidden';
 	radialMenu.style.width = menuSize + 'px';
 	radialMenu.style.height = menuSize + 'px';
 	radialMenu.style.borderRadius = '50%';
-  radialMenu.addEventListener('mouseleave', () => {
-    $closeIcon.innerHTML = closeIconSVG;
-  });
-
+	radialMenu.addEventListener('mouseleave', () => {
+		$closeIcon.innerHTML = closeIconSVG;
+	});
 	if (windowWidth - mouseX < menuSize) {
 		radialMenu.style.left = windowWidth - (menuSize + 20) + 'px';
 	} else {
 		radialMenu.style.left = mouseX + 'px';
 	}
-
 	if (windowHeight - mouseY < menuSize) {
 		radialMenu.style.top = windowHeight - (menuSize + 20) + 'px';
 	} else {
 		radialMenu.style.top = mouseY + 'px';
 	}
-
 	document.body.appendChild(radialMenu);
-
-	const $items = data.length;
-	const $size = 150;
-	const $bgcolor = 'rgb(52 58 68 / 50%)';
-	const $bgColorClose = '#343A44';
-
-	const $deg = 360 / $items;
-	let $unrotate = (90 - $deg) / 2;
-	const $skew = 90 - $deg;
 
 	const defaultStyleMask = `position: absolute;
   width: ${$size}px;height: ${$size}px;
@@ -159,7 +151,7 @@ const createRadialUiHtml = (e) => {
 		$button.addEventListener('mouseenter', () => {
 			$button.style.background = '#343A44';
 			$button.style.border = '2px solid #205493';
-      $closeIcon.innerHTML = item.name;
+			$closeIcon.innerHTML = item.name;
 		});
 
 		$button.addEventListener('mouseleave', () => {
@@ -196,20 +188,21 @@ const createRadialUiHtml = (e) => {
 	$close.addEventListener('mouseenter', () => {
 		$close.style.transform = 'translate(-50%, -50%) scale(1.2)';
 		$close.style.border = '5px solid #205493';
-    $closeIcon.innerHTML = closeIconSVG;
+		$closeIcon.innerHTML = closeIconSVG;
 	});
 	$close.addEventListener('mouseleave', () => {
 		$close.style.transform = 'translate(-50%, -50%) scale(1)';
 		$close.style.border = '3px solid white';
-    $closeIcon.innerHTML = closeIconSVG;
+		$closeIcon.innerHTML = closeIconSVG;
 	});
 	$div.appendChild($close);
 
-  // Close icon
-  const $closeIcon = document.createElement('div');
-  const closeIconSVG = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
-  $closeIcon.innerHTML = closeIconSVG;
-  $closeIcon.style.fill = 'white';
+	// Close icon
+	const $closeIcon = document.createElement('div');
+	const closeIconSVG =
+		'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
+	$closeIcon.innerHTML = closeIconSVG;
+	$closeIcon.style.fill = 'white';
 	$closeIcon.style.fontSize = '16px';
 	$closeIcon.style.fontWeight = 'light';
 	$closeIcon.style.color = 'white';
@@ -330,7 +323,6 @@ const extension = () => {
 const search = () => {
 	const search = document.getElementById('radial-ui-searchbar');
 	search.addEventListener('click', () => {
-    window.blur();
 		ipcRenderer.send('focusSearchBarRadialUi');
 	});
 };
