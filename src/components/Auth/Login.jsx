@@ -17,7 +17,6 @@ const Login = () => {
 			setSubmitting(true);
 			await signInWithEmailAndPassword(auth.auth, values.email, values.password);
 
-			console.log(auth.auth.currentUser);
 			const user = auth.auth.currentUser;
 
 			// Create user ID in Firestore
