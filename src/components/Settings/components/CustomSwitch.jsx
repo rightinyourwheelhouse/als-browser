@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Switch } from '@headlessui/react';
-import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../../../utils/FirebaseConfig';
 
 const CustomSwitch = ({ state }) => {
 	const [enabled, setEnabled] = useState(false);
