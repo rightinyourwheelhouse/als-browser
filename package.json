@@ -36,16 +36,23 @@
     "electron:build:all": "npm run build && electron-builder -mw"
   },
   "dependencies": {
+    "@firebase/auth": "^0.19.12",
     "@headlessui/react": "^1.6.0",
     "@heroicons/react": "^1.0.6",
+    "classnames": "^2.3.1",
     "cross-env": "^7.0.3",
+    "dotenv": "^16.0.0",
     "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "eslint-plugin-react-hooks": "^4.3.0",
+    "firebase": "^9.6.11",
+    "formik": "^2.2.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-electron-browser-window": "^0.1.2",
-    "react-router-dom": "^6.3.0"
+    "react-icons": "^4.3.1",
+    "react-router-dom": "^6.3.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^1.0.7",
