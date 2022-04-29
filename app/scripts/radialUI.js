@@ -281,8 +281,7 @@ const bookmark = () => {
 			favicon,
 		};
 
-		// sent to database
-		console.log(bookmark);
+		ipcRenderer.send('bookmark', bookmark);
 	});
 };
 

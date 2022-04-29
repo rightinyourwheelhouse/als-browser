@@ -1,6 +1,6 @@
 // electron/electron.js
 const path = require('path');
-const { app, BrowserWindow, BrowserView, ipcMain, nativeTheme, ipcRenderer } = require('electron');
+const { app, BrowserWindow, BrowserView, ipcMain, nativeTheme } = require('electron');
 
 const isDev = require('electron-is-dev');
 
@@ -191,4 +191,8 @@ ipcMain.on('searchBarFocus', (event, bool) => {
 	bool
 		? view.setBounds({ x: 0, y: 0, width: 0, height: 0 })
 		: view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
+});
+
+ipcMain.on('bookmark', (event, arg) => {
+	mainWindow.webContents.send('bookmarkReply', arg);
 });
