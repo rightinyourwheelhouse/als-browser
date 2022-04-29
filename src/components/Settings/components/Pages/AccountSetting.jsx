@@ -16,9 +16,9 @@ const AccountSetting = () => {
 	};
 
 	return user.user ? (
-		<>
+		<div>
 			<p>Je bent ingelogd</p> <button onClick={logout}>Uitloggen</button>
-		</>
+		</div>
 	) : (
 		<Login />
 	);
