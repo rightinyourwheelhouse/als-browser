@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import SmallTile from './Tiles/SmallTile';
 import MediumTile from './Tiles/MediumTile';
 import Title from '../Typography/Title';
@@ -13,16 +13,13 @@ const Dashboard = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	let params = useMemo(() => new URLSearchParams(location.search), [location.search]);
-	const searchParams = params.get('search');
+	let params = new URLSearchParams(location.search);
 
 	const handleSettings = () => {
 		navigate('/settings/feedback');
 	};
 
-	return searchParams ? (
-		<OnType />
-	) : (
+	return !params.get('search') ? (
 		<div className="select-none">
 			<Clock />
 			<button
@@ -59,6 +56,8 @@ const Dashboard = () => {
 				</div>
 			</div>
 		</div>
+	) : (
+		<OnType />
 	);
 };
 
