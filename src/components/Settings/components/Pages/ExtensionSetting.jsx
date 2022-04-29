@@ -12,8 +12,6 @@ import { PlusIcon } from '@heroicons/react/outline';
 
 const ExtensionSettings = () => {
 	const user = useUser();
-
-	const [scrollSpeed, setScrollSpeed] = useState(0);
 	const [extensionStates, setExtensionStates] = useState(false);
 
 	useEffect(() => {
@@ -25,7 +23,6 @@ const ExtensionSettings = () => {
 				const data = docSnap.data();
 				if (data.extensionStates) {
 					setExtensionStates(data.extensionStates);
-					setScrollSpeed(data.extensionStates.scrollSpeed);
 				}
 			}
 		};
@@ -34,26 +31,43 @@ const ExtensionSettings = () => {
 	}, [user.user]);
 
 	const incrementScrollSpeed = async () => {
-		if (scrollSpeed >= 10) return;
-		setScrollSpeed(scrollSpeed + 1);
-
-		sendToDatabase('scrollSpeed', scrollSpeed + 1);
+		if (extensionStates.scrollSpeed >= 10) return;
+		const previousState = { ...extensionStates };
+		const scrollSpeed = extensionStates.scrollSpeed + 1;
+		try {
+			setExtensionStates({ ...extensionStates, scrollSpeed: scrollSpeed });
+			await sendToDatabase('scrollSpeed', scrollSpeed);
+		} catch (error) {
+			setExtensionStates(previousState);
+		}
 	};
 
 	const decrementScrollSpeed = async () => {
-		if (scrollSpeed <= 1) return;
-		setScrollSpeed(scrollSpeed - 1);
-
-		sendToDatabase('scrollSpeed', scrollSpeed - 1);
+		if (extensionStates.scrollSpeed <= 1) return;
+		const previousState = { ...extensionStates };
+		const scrollSpeed = extensionStates.scrollSpeed - 1;
+		try {
+			setExtensionStates({ ...extensionStates, scrollSpeed: scrollSpeed });
+			await sendToDatabase('scrollSpeed', scrollSpeed);
+		} catch (error) {
+			setExtensionStates(previousState);
+		}
 	};
 
 	const handleOnChange = async (name, state) => {
-		sendToDatabase(name, state);
+		const previousState = { ...extensionStates };
+		try {
+			setExtensionStates({ ...extensionStates, [name]: state });
+			await sendToDatabase(name, state);
+		} catch (error) {
+			setExtensionStates(previousState);
+		}
 	};
 
-	const handleAlignment = async (alignment) => {
-		sendToDatabase('alignment', alignment);
-	};
+	// const handleAlignment = async (alignment) => {
+
+	// 	sendToDatabase('alignment', alignment);
+	// };
 
 	const sendToDatabase = async (key, value) => {
 		if (user?.user?.uid) {
@@ -95,8 +109,8 @@ const ExtensionSettings = () => {
 							/>
 							<input
 								className="border-1 mx-4 w-12 border-dark-blue bg-white pl-3"
-								value={scrollSpeed}
-								onChange={(e) => (e.target.value = scrollSpeed)}
+								value={extensionStates.scrollSpeed}
+								onChange={(e) => (e.target.value = extensionStates.scrollSpeed)}
 								min="1"
 								max="5"
 								type="number"
@@ -110,10 +124,7 @@ const ExtensionSettings = () => {
 					<div className="my-2 mt-4 flex w-full items-center justify-between">
 						<p className="text-lg font-bold">Uitlijning</p>
 						<div className="grid grid-cols-2 grid-rows-2 gap-2">
-							<div
-								onClick={() => handleAlignment('topLeft')}
-								className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover"
-							>
+							<div className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover">
 								<svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path
 										fillRule="evenodd"
@@ -123,10 +134,7 @@ const ExtensionSettings = () => {
 									/>
 								</svg>
 							</div>
-							<div
-								onClick={() => handleAlignment('topRight')}
-								className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover"
-							>
+							<div className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover">
 								<svg width="24" height="23" viewBox="0 0 24 23" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path
 										fillRule="evenodd"
@@ -136,10 +144,7 @@ const ExtensionSettings = () => {
 									/>
 								</svg>
 							</div>
-							<div
-								onClick={() => handleAlignment('bottomLeft')}
-								className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover"
-							>
+							<div className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover">
 								<svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path
 										fillRule="evenodd"
@@ -149,10 +154,7 @@ const ExtensionSettings = () => {
 									/>
 								</svg>
 							</div>
-							<div
-								onClick={() => handleAlignment('bottomRight')}
-								className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover"
-							>
+							<div className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover">
 								<svg width="24" height="23" viewBox="0 0 24 23" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path
 										fillRule="evenodd"
