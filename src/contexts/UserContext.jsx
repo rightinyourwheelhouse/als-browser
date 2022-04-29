@@ -15,8 +15,12 @@ const UserContextProvider = ({ children }) => {
 	onAuthStateChanged(auth, (user) => {
 		if (user) {
 			setUser(user);
+
+			window.api.send('sendAuthToBrowserView', user.uid);
 		} else {
 			setUser(undefined);
+
+			window.api.send('sendAuthToBrowserView', null);
 		}
 	});
 
