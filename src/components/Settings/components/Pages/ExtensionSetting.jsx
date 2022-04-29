@@ -164,14 +164,22 @@ const ExtensionSettings = () => {
 				</div>
 			</SettingTile>
 
-			<SettingTile infoText="Schakel mouse tracking aan of uit." disabled={user ? false : true}>
-				<p className="text-lg font-bold">Mouse tracking</p>
-				<CustomSwitch name="mouseTracking" state={extensionStates.mouseTracking} handleOnChange={handleOnChange} />
+			<SettingTile infoText="Schakel muis traceren aan of uit.">
+				<CustomSwitch
+					title="Muis traceren"
+					name="mouseTracking"
+					state={extensionStates.mouseTracking}
+					handleOnChange={handleOnChange}
+				/>
 			</SettingTile>
 
 			<SettingTile infoText="Schakel achtervolgende knoppen aan of uit.">
-				<p className="text-lg font-bold">Achtervolgende knoppen</p>
-				<CustomSwitch name="snappingButtons" state={extensionStates.snappingButtons} handleOnChange={handleOnChange} />
+				<CustomSwitch
+					title="Achtervolgende knoppen"
+					name="snappingButtons"
+					state={extensionStates.snappingButtons}
+					handleOnChange={handleOnChange}
+				/>
 			</SettingTile>
 		</div>
 	);
