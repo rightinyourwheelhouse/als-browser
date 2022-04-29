@@ -1,22 +1,65 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Title from '../../../Typography/Title';
 import CustomSwitch from '../CustomSwitch';
 import SettingTile from '../SettingTile';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../../../../utils/FirebaseConfig';
+
+import { useUser } from '../../../../contexts/UserContext';
 
 import { MinusIcon } from '@heroicons/react/outline';
 import { PlusIcon } from '@heroicons/react/outline';
 
 const ExtensionSettings = () => {
-	let [scrollSpeed, setScrollSpeed] = useState(0);
+	const user = useUser();
 
-	const incrementScrollSpeed = () => {
+	const [scrollSpeed, setScrollSpeed] = useState(0);
+	const [extensionStates, setExtensionStates] = useState(false);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const docRef = doc(db, 'users', user.user.uid);
+			const docSnap = await getDoc(docRef);
+
+			if (docSnap.exists()) {
+				const data = docSnap.data();
+				if (data.extensionStates) {
+					setExtensionStates(data.extensionStates);
+					setScrollSpeed(data.extensionStates.scrollSpeed);
+				}
+			}
+		};
+
+		if (user.user) fetchData();
+	}, [user.user]);
+
+	const incrementScrollSpeed = async () => {
 		if (scrollSpeed >= 10) return;
 		setScrollSpeed(scrollSpeed + 1);
+
+		sendToDatabase('scrollSpeed', scrollSpeed + 1);
 	};
 
-	const decrementScrollSpeed = () => {
+	const decrementScrollSpeed = async () => {
 		if (scrollSpeed <= 1) return;
 		setScrollSpeed(scrollSpeed - 1);
+
+		sendToDatabase('scrollSpeed', scrollSpeed - 1);
+	};
+
+	const handleOnChange = async (name, state) => {
+		sendToDatabase(name, state);
+	};
+
+	const handleAlignment = async (alignment) => {
+		sendToDatabase('alignment', alignment);
+	};
+
+	const sendToDatabase = async (key, value) => {
+		if (user?.user?.uid) {
+			const docRef = doc(db, 'users', user.user.uid);
+			await setDoc(docRef, { extensionStates: { [key]: value } }, { merge: true });
+		}
 	};
 
 	return (
@@ -25,15 +68,23 @@ const ExtensionSettings = () => {
 				<Title className="mt-8">Extensie</Title>
 
 				<SettingTile infoText="Schakel alle functies aan of uit.">
-					<p className="text-lg font-bold">Volledige extensie</p>
-					<CustomSwitch />
+					<CustomSwitch
+						title="Volledige extensie"
+						name="extension"
+						state={extensionStates.extension}
+						handleOnChange={handleOnChange}
+					/>
 				</SettingTile>
 
 				<SettingTile infoText="Deze tool helpt je om te scrollen doorheen webpagina’s. Stel de snelheid in van het scrollen of kies waar de scrollhulp gepositioneerd staat op je webpagina.">
 					<div className="flex w-full flex-col">
 						<div className="my-2 flex items-center justify-between">
-							<p className="text-lg font-bold">Scrollhulp</p>
-							<CustomSwitch />
+							<CustomSwitch
+								title="Scrollhulp"
+								name="scrollHelp"
+								state={extensionStates.scrollHelp}
+								handleOnChange={handleOnChange}
+							/>
 						</div>
 
 						<div className="my-2 flex w-full items-center justify-between">
@@ -60,7 +111,10 @@ const ExtensionSettings = () => {
 						<div className="my-2 mt-4 flex w-full items-center justify-between">
 							<p className="text-lg font-bold">Uitlijning</p>
 							<div className="grid grid-cols-2 grid-rows-2 gap-2">
-								<div className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover">
+								<div
+									onClick={() => handleAlignment('topLeft')}
+									className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover"
+								>
 									<svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<path
 											fillRule="evenodd"
@@ -70,7 +124,10 @@ const ExtensionSettings = () => {
 										/>
 									</svg>
 								</div>
-								<div className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover">
+								<div
+									onClick={() => handleAlignment('topRight')}
+									className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover"
+								>
 									<svg width="24" height="23" viewBox="0 0 24 23" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<path
 											fillRule="evenodd"
@@ -80,7 +137,10 @@ const ExtensionSettings = () => {
 										/>
 									</svg>
 								</div>
-								<div className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover">
+								<div
+									onClick={() => handleAlignment('bottomLeft')}
+									className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover"
+								>
 									<svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<path
 											fillRule="evenodd"
@@ -90,7 +150,10 @@ const ExtensionSettings = () => {
 										/>
 									</svg>
 								</div>
-								<div className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover">
+								<div
+									onClick={() => handleAlignment('bottomRight')}
+									className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover"
+								>
 									<svg width="24" height="23" viewBox="0 0 24 23" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<path
 											fillRule="evenodd"
@@ -105,14 +168,18 @@ const ExtensionSettings = () => {
 					</div>
 				</SettingTile>
 
-				<SettingTile infoText="Schakel mouse tracking aan of uit.">
+				<SettingTile infoText="Schakel mouse tracking aan of uit." disabled={user.user ? false : true}>
 					<p className="text-lg font-bold">Mouse tracking</p>
-					<CustomSwitch />
+					<CustomSwitch name="mouseTracking" state={extensionStates.mouseTracking} handleOnChange={handleOnChange} />
 				</SettingTile>
 
 				<SettingTile infoText="Schakel achtervolgende knoppen aan of uit.">
 					<p className="text-lg font-bold">Achtervolgende knoppen</p>
-					<CustomSwitch />
+					<CustomSwitch
+						name="snappingButtons"
+						state={extensionStates.snappingButtons}
+						handleOnChange={handleOnChange}
+					/>
 				</SettingTile>
 			</div>
 		</>
