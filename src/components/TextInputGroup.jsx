@@ -13,14 +13,14 @@ const TextInputGroup = ({ label, name, value = '', placeholder, type, onChange, 
 	});
 	const errorText = meta.error && meta.touched ? meta.error : '';
 	return (
-		<div className="mb-4">
+		<div className="mb-4 flex w-80 justify-between">
 			<label htmlFor={name} className="text-base font-bold">
 				{label}
 			</label>
 
 			<input
 				{...field}
-				className={`${errorText ? 'border-skin-error border-2' : 'border-0'} text-input ml-6`}
+				className={`${errorText ?? 'border-skin-error border-2'}  border-2`}
 				type={type}
 				name={name}
 				placeholder={placeholder}

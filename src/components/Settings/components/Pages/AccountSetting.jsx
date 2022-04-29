@@ -16,8 +16,11 @@ const AccountSetting = () => {
 	};
 
 	return user ? (
-		<div>
-			<p>Je bent ingelogd</p> <button onClick={logout}>Uitloggen</button>
+		<div className="mt-4 text-center">
+			<p className="text-2xl font-bold">Je bent ingelogd</p>
+			<button className="mt-10 h-10 w-32 rounded-xl bg-red-500 text-white" onClick={logout}>
+				Uitloggen
+			</button>
 		</div>
 	) : (
 		<Login />

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Formik, Field } from 'formik';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { setDoc, doc, Timestamp } from 'firebase/firestore';
 
 import { useAuth } from '../../contexts/AuthContextProvider';
@@ -17,7 +17,7 @@ const Login = () => {
 			setSubmitting(true);
 			await signInWithEmailAndPassword(auth, values.email, values.password);
 
-			const user = auth.auth.currentUser;
+			const user = auth.currentUser;
 
 			// Create user ID in Firestore
 			const docData = {
@@ -29,16 +29,8 @@ const Login = () => {
 		}
 	};
 
-	const logout = async () => {
-		try {
-			await signOut(auth.auth);
-		} catch (error) {
-			return;
-		}
-	};
-
 	return (
-		<div className="flex h-auto max-w-md flex-col items-center justify-center rounded-sm bg-white p-10">
+		<div className="flex-colitems-center m-center flex max-w-md justify-center bg-white p-10">
 			<Formik
 				initialValues={{
 					email: '',
@@ -47,19 +39,19 @@ const Login = () => {
 				onSubmit={handleSubmit}
 			>
 				{({ handleSubmit, isSubmitting }) => (
-					<form onSubmit={handleSubmit} className="my-0 flex flex-col ">
+					<form onSubmit={handleSubmit} className="my-0 flex flex-col items-center">
 						<h1 className="my-4 text-center text-xl font-bold">Meld je aan</h1>
 						<div className="mb-4">
 							<Field type="input" as={TextInputGroup} name="email" placeholder="E-mail" label="E-mailadres" />
 							<Field type="password" as={TextInputGroup} name="password" placeholder="Password" label="Wachtwoord" />
 						</div>
 
-						<button disabled={isSubmitting}>Aanmelden</button>
+						<button className="h-10 w-32 rounded-xl bg-dark-blue text-white" disabled={isSubmitting}>
+							Aanmelden
+						</button>
 					</form>
 				)}
 			</Formik>
-
-			<button onClick={logout}>Uitloggen</button>
 		</div>
 	);
 };
