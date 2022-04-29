@@ -5,7 +5,7 @@ import Dashboard from './components/Dashboard/Dashboard';
 import { Routes, Route } from 'react-router-dom';
 import Settings from './components/Settings/Settings';
 
-import UserContextProvider from './contexts/UserContext';
+import AuthContextProvider from './contexts/AuthContextProvider';
 
 import { mouseData } from './utils/mouseData';
 
@@ -13,7 +13,7 @@ const App = () => {
 	mouseData();
 
 	return (
-		<UserContextProvider>
+		<AuthContextProvider>
 			<div className="grid h-full grid-rows-[max-content,1fr]">
 				<Toolbar />
 				<Routes>
@@ -21,7 +21,7 @@ const App = () => {
 					<Route path="settings/*" element={<Settings />}></Route>
 				</Routes>
 			</div>
-		</UserContextProvider>
+		</AuthContextProvider>
 	);
 };
 
