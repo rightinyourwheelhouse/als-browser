@@ -10,7 +10,7 @@ import { db } from './utils/FirebaseConfig';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const App = () => {
-	const auth = useUser();
+	const { user } = useUser();
 
 	let navigate = useNavigate();
 
@@ -22,17 +22,15 @@ const App = () => {
 	}, [navigate]);
 
 	useEffect(() => {
+		if (!user) return;
 		// recieve bookmark from radial
-		// om één of andere reden steekt de recieve de data in een array
 		window.api.recieve('bookmarkReply', ([bookmarkData]) => {
 			// add bookmark to firebase db collection
-			const bookmarkRef = doc(db, `users/${auth.auth.currentUser.uid}/bookmarks/${bookmarkData.title}`);
-
+			const bookmarkRef = doc(db, `users/${user.uid}/bookmarks/${bookmarkData.title}`);
 			// check if bookmark already exists
 			getDoc(bookmarkRef).then((docSnap) => {
 				if (docSnap.exists) {
 					// collection already exists
-
 					if (docSnap.data()) {
 						// bookmark already exists
 						alert('Bookmark already exists');
@@ -49,9 +47,7 @@ const App = () => {
 				}
 			});
 		});
-
-		// auth.auth.currentUser.uid als depencency veroorzaakt dat deze effect niet wordt uitgevoerd en heel de pagina niet wordt geladen.
-	}, []);
+	}, [user]);
 
 	return (
 		<div className="grid h-full grid-rows-[max-content,1fr]">
