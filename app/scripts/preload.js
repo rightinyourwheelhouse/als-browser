@@ -1,3 +1,3 @@
 require('./mouseTracking');
-require('./scrollHelp');
 require('./radialUI');
+require('./scrollHelp.js');

@@ -1,7 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Dashboard from '../Dashboard/Dashboard';
 import SearchBar from './SearchBar';
 import ToolbarIcon from './ToolbarIcon.jsx';
+
+import { useNavigate, useLocation } from 'react-router-dom';
+
+import LogoBrainWeb from '/assets/img/logo-brainweb.png';
 
 import { ArrowLeftIcon } from '@heroicons/react/outline';
 import { ArrowRightIcon } from '@heroicons/react/outline';
@@ -11,8 +15,10 @@ import { MinusSmIcon } from '@heroicons/react/outline';
 import { ArrowsExpandIcon } from '@heroicons/react/outline';
 import { XIcon } from '@heroicons/react/outline';
 
-
 const Toolbar = ({ onFocusChange }) => {
+	let navigate = useNavigate();
+	const location = useLocation();
+
 	const handleGoBack = () => {
 		window.api.send('goBack');
 	};
@@ -27,25 +33,36 @@ const Toolbar = ({ onFocusChange }) => {
 
 	const handleClose = () => {
 		// window.api.send('close');
-	const searchbar = document.getElementById('search-bar');
-            searchbar.focus();
-    };
+		const searchbar = document.getElementById('search-bar');
+		searchbar.focus();
+	};
 
 	const handleMinimize = () => {
 		window.api.send('minimize');
 	};
 
 	const handleDashboard = () => {
-		window.api.send('toggleDashboard');
+		navigate('/');
+
+		if (location.pathname === '/') {
+			window.api.send('toggleDashboard', true);
+		} else {
+			window.api.send('toggleDashboard', null);
+		}
 	};
 
 	const handleAdjustSize = () => {
 		window.api.send('adjustSize');
 	};
-    
-    window.api.recieve('ToggleTheDashboard', () => {
-        onFocusChange(Dashboard);
-    });
+
+	window.api.recieve('ToggleTheDashboard', () => {
+		onFocusChange(Dashboard);
+	});
+
+	const handleExtensionToggle = () => {
+		navigate('/settings/extension');
+		window.api.send('toggleExtension');
+	};
 
 	return (
 		<>
@@ -66,10 +83,14 @@ const Toolbar = ({ onFocusChange }) => {
 							<RefreshIcon />
 						</ToolbarIcon>
 
-						<SearchBar onFocusChange={onFocusChange} />
-
 						<ToolbarIcon onClick={handleDashboard}>
 							<HomeIcon />
+						</ToolbarIcon>
+
+						<SearchBar onFocusChange={onFocusChange} />
+
+						<ToolbarIcon onClick={handleExtensionToggle}>
+							<img src={LogoBrainWeb} alt="" />
 						</ToolbarIcon>
 					</div>
 

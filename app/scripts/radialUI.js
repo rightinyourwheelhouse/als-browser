@@ -322,7 +322,7 @@ const closeRadial = () => {
 const extension = () => {
 	const extension = document.getElementById('radial-ui-extension');
 	extension.addEventListener('click', () => {
-		console.log('extension');
+		ipcRenderer.send('toggleExtensionRadial');
 	});
 };
 
