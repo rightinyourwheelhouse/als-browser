@@ -33,12 +33,12 @@ const App = () => {
 					// collection already exists
 					if (docSnap.data()) {
 						// bookmark already exists
-						alert('Bookmark already exists');
+						window.api.send('alert-message-bookmark', true);
 					} else {
 						// bookmark does not exist
 						// add bookmark to collection
 						setDoc(bookmarkRef, bookmarkData).then(() => {
-							alert('Bookmark added');
+							window.api.send('alert-message-bookmark', false);
 						});
 					}
 				} else {

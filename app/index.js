@@ -196,3 +196,7 @@ ipcMain.on('searchBarFocus', (event, bool) => {
 ipcMain.on('bookmark', (event, arg) => {
 	mainWindow.webContents.send('bookmarkReply', arg);
 });
+
+ipcMain.on('alert-message-bookmark', (event, arg) => {
+	view.webContents.send('alert-message-bookmarkReply', arg);
+});
