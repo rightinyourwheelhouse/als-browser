@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
-const userContext = createContext();
+const authContext = createContext();
 
-export const useUser = () => {
-	return useContext(userContext);
+export const useAuth = () => {
+	return useContext(authContext);
 };
 
-const UserContextProvider = ({ children }) => {
+const AuthContextProvider = ({ children }) => {
 	const [user, setUser] = useState(undefined);
 
 	const auth = getAuth();
@@ -20,7 +20,7 @@ const UserContextProvider = ({ children }) => {
 		}
 	});
 
-	return <userContext.Provider value={{ user: user, auth: auth }}>{children}</userContext.Provider>;
+	return <authContext.Provider value={{ user: user, auth: auth }}>{children}</authContext.Provider>;
 };
 
-export default UserContextProvider;
+export default AuthContextProvider;

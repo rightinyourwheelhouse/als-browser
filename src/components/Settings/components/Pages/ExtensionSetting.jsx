@@ -5,18 +5,18 @@ import SettingTile from '../SettingTile';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../../../utils/FirebaseConfig';
 
-import { useUser } from '../../../../contexts/UserContext';
+import { useAuth } from '../../../../contexts/AuthContextProvider';
 
 import { MinusIcon } from '@heroicons/react/outline';
 import { PlusIcon } from '@heroicons/react/outline';
 
 const ExtensionSettings = () => {
-	const user = useUser();
+	const { user } = useAuth();
 	const [extensionStates, setExtensionStates] = useState(false);
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const docRef = doc(db, 'users', user.user.uid);
+			const docRef = doc(db, 'users', user.uid);
 			const docSnap = await getDoc(docRef);
 
 			if (docSnap.exists()) {
@@ -27,8 +27,8 @@ const ExtensionSettings = () => {
 			}
 		};
 
-		if (user.user) fetchData();
-	}, [user.user]);
+		if (user) fetchData();
+	}, [user]);
 
 	const incrementScrollSpeed = async () => {
 		if (extensionStates.scrollSpeed >= 10) return;
@@ -36,7 +36,7 @@ const ExtensionSettings = () => {
 		const scrollSpeed = extensionStates.scrollSpeed + 1;
 		try {
 			setExtensionStates({ ...extensionStates, scrollSpeed: scrollSpeed });
-			await sendToDatabase('scrollSpeed', scrollSpeed);
+			handleOnChange('scrollSpeed', scrollSpeed);
 		} catch (error) {
 			setExtensionStates(previousState);
 		}
@@ -48,7 +48,7 @@ const ExtensionSettings = () => {
 		const scrollSpeed = extensionStates.scrollSpeed - 1;
 		try {
 			setExtensionStates({ ...extensionStates, scrollSpeed: scrollSpeed });
-			await sendToDatabase('scrollSpeed', scrollSpeed);
+			handleOnChange('scrollSpeed', scrollSpeed);
 		} catch (error) {
 			setExtensionStates(previousState);
 		}
@@ -64,14 +64,9 @@ const ExtensionSettings = () => {
 		}
 	};
 
-	// const handleAlignment = async (alignment) => {
-
-	// 	sendToDatabase('alignment', alignment);
-	// };
-
 	const sendToDatabase = async (key, value) => {
-		if (user?.user?.uid) {
-			const docRef = doc(db, 'users', user.user.uid);
+		if (user?.uid) {
+			const docRef = doc(db, 'users', user.uid);
 			await setDoc(docRef, { extensionStates: { [key]: value } }, { merge: true });
 		}
 	};
@@ -169,7 +164,7 @@ const ExtensionSettings = () => {
 				</div>
 			</SettingTile>
 
-			<SettingTile infoText="Schakel mouse tracking aan of uit." disabled={user.user ? false : true}>
+			<SettingTile infoText="Schakel mouse tracking aan of uit." disabled={user ? false : true}>
 				<p className="text-lg font-bold">Mouse tracking</p>
 				<CustomSwitch name="mouseTracking" state={extensionStates.mouseTracking} handleOnChange={handleOnChange} />
 			</SettingTile>
