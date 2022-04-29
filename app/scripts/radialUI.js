@@ -270,7 +270,7 @@ const bookmark = () => {
 	const bookmark = document.getElementById('radial-ui-bookmark');
 	bookmark.addEventListener('click', () => {
 		const url = window.location.href;
-		const title = document.title;
+		const title = document.title.replaceAll('/', '-');
 
 		const rootUrl = window.location.origin;
 		const favicon = rootUrl + '/favicon.ico';

@@ -13,17 +13,17 @@ const creatHTMLAlertMessage = (arg) => {
 
 	const alertMessage = document.createElement('div');
 
-	const defaultStyleAlertMessage = `position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 99999;
-    width: 100%;
-    height: 50px;
+	const defaultStyleAlertMessage = `position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 99999 !important;
+    width: 100% !important;
+    height: 50px !important;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 16px;
-    font-family: Mulish;
+    font-size: 16px !important;
+    font-family: Mulish !important;
     `;
 
 	alertMessage.style.cssText = defaultStyleAlertMessage;
