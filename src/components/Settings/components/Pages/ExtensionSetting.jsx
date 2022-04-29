@@ -6,7 +6,7 @@ import SettingTile from '../SettingTile';
 import { MinusIcon } from '@heroicons/react/outline';
 import { PlusIcon } from '@heroicons/react/outline';
 
-const  ScrollHelp = () => {
+const ScrollHelp = () => {
 	let [scrollSpeed, setScrollSpeed] = useState(0);
 
 	const incrementScrollSpeed = () => {
@@ -98,28 +98,28 @@ const  ScrollHelp = () => {
 
 const ExtensionSettings = () => {
 	return (
-		<>
-			<div className="mx-10 ">
-				<Title className="mt-8">Extensie</Title>
+		<div className="mx-10 ">
+			<Title className="mt-8">Extensie</Title>
 
-				<SettingTile infoText="Schakel alle functies aan of uit.">
-					<p className="text-lg font-bold">Volledige extensie</p>
-					<CustomSwitch />
-				</SettingTile>
+			<SettingTile infoText="Schakel alle functies aan of uit.">
+				<p className="text-lg font-bold">Volledige extensie</p>
+				<CustomSwitch />
+			</SettingTile>
 
-				<SettingTile infoText="Deze tool helpt je om te scrollen doorheen webpagina’s. Stel de snelheid in van het scrollen of kies waar de scrollhulp gepositioneerd staat op je webpagina."><ScrollHelp /></ SettingTile>
+			<SettingTile infoText="Deze tool helpt je om te scrollen doorheen webpagina’s. Stel de snelheid in van het scrollen of kies waar de scrollhulp gepositioneerd staat op je webpagina.">
+				<ScrollHelp />
+			</SettingTile>
 
-				<SettingTile infoText="Schakel mouse tracking aan of uit.">
-					<p className="text-lg font-bold">Mouse tracking</p>
-					<CustomSwitch />
-				</SettingTile>
+			<SettingTile infoText="Schakel mouse tracking aan of uit.">
+				<p className="text-lg font-bold">Mouse tracking</p>
+				<CustomSwitch />
+			</SettingTile>
 
-				<SettingTile infoText="Schakel achtervolgende knoppen aan of uit.">
-					<p className="text-lg font-bold">Achtervolgende knoppen</p>
-					<CustomSwitch />
-				</SettingTile>
-			</div>
-		</>
+			<SettingTile infoText="Schakel achtervolgende knoppen aan of uit.">
+				<p className="text-lg font-bold">Achtervolgende knoppen</p>
+				<CustomSwitch />
+			</SettingTile>
+		</div>
 	);
 };
 
