@@ -7,7 +7,11 @@ import Settings from './components/Settings/Settings';
 
 import UserContextProvider from './contexts/UserContext';
 
+import { mouseData } from './utils/mouseData';
+
 const App = () => {
+	mouseData();
+
 	return (
 		<UserContextProvider>
 			<div className="grid h-full grid-rows-[max-content,1fr]">

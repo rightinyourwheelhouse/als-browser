@@ -189,3 +189,7 @@ ipcMain.on('searchBarFocus', (event, bool) => {
 ipcMain.on('sendAuthToBrowserView', (event, arg) => {
 	view.webContents.send('auth', arg);
 });
+
+ipcMain.on('cursorData', (event, arg) => {
+	mainWindow.webContents.send('cursorDataReply', arg);
+});
