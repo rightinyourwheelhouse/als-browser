@@ -111,7 +111,6 @@ ipcMain.on('searchURL', (event, url) => {
 	} else {
 		const newUrl = 'https://www.google.com/search?q=' + url;
 		view.webContents.loadURL(newUrl);
-		console.log(url, 'IS NOT VALID');
 	}
 
 	// When dashboard is loaded, set the browserView back
