@@ -1,35 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import SmallTile from './Tiles/SmallTile';
 import MediumTile from './Tiles/MediumTile';
 import Title from '../Typography/Title';
+import OnType from './OnType';
+import Clock from '../Clock';
+
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { PlusIcon } from '@heroicons/react/outline';
 
-const options = {
-	weekday: 'long',
-	month: 'long',
-	day: 'numeric',
-	hour: 'numeric',
-	minute: 'numeric',
-};
-
 const Dashboard = () => {
-	const [time, setTime] = useState(new Date().toLocaleDateString('nl-BE', options));
+	const navigate = useNavigate();
+	const location = useLocation();
 
-	useEffect(() => {
-		const interval = setInterval(() => setTime(new Date().toLocaleDateString('nl-BE', options)), 1000);
+	let params = new URLSearchParams(location.search);
 
-		return () => clearInterval(interval);
-	}, []);
+	const handleSettings = () => {
+		navigate('/settings/feedback');
+	};
 
-	return (
+	return !params.get('search') ? (
 		<div className="select-none">
-			<div className="mt-4 h-10 text-center">{time}</div>
-			<button className="absolute right-8 top-28 flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
+			<Clock />
+			<button
+				onClick={handleSettings}
+				className="absolute right-8 top-28 flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
+			>
 				<img className="h-14 w-14 rounded-full" src="https://i.imgur.com/jcuurYi.png" alt="" />
 				<h2 className="font-light">Instellingen</h2>
 			</button>
-
 			<div className="m-center mt-20 w-3/4">
 				<Title>Suggesties</Title>
 				<div className="mt-6 flex cursor-pointer flex-row gap-10">
@@ -38,7 +37,6 @@ const Dashboard = () => {
 					<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" url="www.nieuwsblad.be" />
 				</div>
 			</div>
-
 			<div className="m-center mt-20 w-3/4">
 				<Title>Meest bezocht</Title>
 				<div className="mt-6 flex cursor-pointer flex-row gap-10">
@@ -58,6 +56,8 @@ const Dashboard = () => {
 				</div>
 			</div>
 		</div>
+	) : (
+		<OnType />
 	);
 };
 

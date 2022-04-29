@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Toolbar from './components/Toolbar/Toolbar';
 import Dashboard from './components/Dashboard/Dashboard';
-import OnType from './components/Dashboard/OnType';
+
+import { Routes, Route } from 'react-router-dom';
+import Settings from './components/Settings/Settings';
 
 const App = () => {
-	const [searchBarStatus, setSearchBarStatus] = useState('Dashboard');
-
-	const handleFocusChange = (component) => {
-		component === 'OnType' ? setSearchBarStatus('OnType') : setSearchBarStatus('Dashboard');
-	};
-
 	return (
 		<>
-			<Toolbar onFocusChange={handleFocusChange} />
-			{searchBarStatus === 'OnType' ? <OnType /> : <Dashboard />}
+			<div className="grid h-full grid-rows-[max-content,1fr]">
+				<Toolbar />
+				<Routes>
+					<Route path="/" element={<Dashboard />} />
+					<Route path="settings/*" element={<Settings />}></Route>
+				</Routes>
+			</div>
 		</>
 	);
 };

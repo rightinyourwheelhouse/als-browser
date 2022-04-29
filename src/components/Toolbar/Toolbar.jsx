@@ -1,7 +1,10 @@
 import React from 'react';
-import Dashboard from '../Dashboard/Dashboard';
 import SearchBar from './SearchBar';
 import ToolbarIcon from './ToolbarIcon.jsx';
+
+import { useNavigate, useLocation } from 'react-router-dom';
+
+import LogoBrainWeb from '/assets/img/logo-brainweb.png';
 
 import { ArrowLeftIcon } from '@heroicons/react/outline';
 import { ArrowRightIcon } from '@heroicons/react/outline';
@@ -12,6 +15,9 @@ import { ArrowsExpandIcon } from '@heroicons/react/outline';
 import { XIcon } from '@heroicons/react/outline';
 
 const Toolbar = ({ onFocusChange }) => {
+	let navigate = useNavigate();
+	const location = useLocation();
+
 	const handleGoBack = () => {
 		window.api.send('goBack');
 	};
@@ -33,59 +39,68 @@ const Toolbar = ({ onFocusChange }) => {
 	};
 
 	const handleDashboard = () => {
-		window.api.send('toggleDashboard');
+		navigate('/');
+
+		if (location.pathname === '/') {
+			window.api.send('toggleDashboard', true);
+		} else {
+			window.api.send('toggleDashboard', null);
+		}
 	};
 
 	const handleAdjustSize = () => {
 		window.api.send('adjustSize');
 	};
 
-	window.api.recieve('ToggleTheDashboard', () => {
-		onFocusChange(Dashboard);
-	});
+	const handleExtensionToggle = () => {
+		navigate('/settings/extension');
+		window.api.send('toggleExtension');
+	};
 
 	return (
-		<>
-			<div className="drop-shadow-browser draggable w-full">
-				<div className="flex h-20 items-center justify-between bg-slate-100 pl-4 pr-4">
-					<div className="flex cursor-pointer flex-row gap-4">
-						<ToolbarIcon onClick={handleGoBack}>
-							<ArrowLeftIcon />
-						</ToolbarIcon>
+		<div className="drop-shadow-browser draggable w-full">
+			<div className="flex h-20 items-center justify-between bg-slate-100 pl-4 pr-4">
+				<div className="flex cursor-pointer flex-row gap-4">
+					<ToolbarIcon onClick={handleGoBack}>
+						<ArrowLeftIcon />
+					</ToolbarIcon>
 
-						<ToolbarIcon onClick={handleGoForward}>
-							<ArrowRightIcon />
-						</ToolbarIcon>
-					</div>
+					<ToolbarIcon onClick={handleGoForward}>
+						<ArrowRightIcon />
+					</ToolbarIcon>
+				</div>
 
-					<div className="flex flex-row items-center gap-4">
-						<ToolbarIcon onClick={handleRefresh}>
-							<RefreshIcon />
-						</ToolbarIcon>
+				<div className="flex flex-row items-center gap-4">
+					<ToolbarIcon onClick={handleRefresh}>
+						<RefreshIcon />
+					</ToolbarIcon>
 
-						<SearchBar onFocusChange={onFocusChange} />
+					<ToolbarIcon onClick={handleDashboard}>
+						<HomeIcon />
+					</ToolbarIcon>
 
-						<ToolbarIcon onClick={handleDashboard}>
-							<HomeIcon />
-						</ToolbarIcon>
-					</div>
+					<SearchBar onFocusChange={onFocusChange} />
 
-					<div className="flex flex-row gap-2">
-						<ToolbarIcon onClick={handleMinimize}>
-							<MinusSmIcon />
-						</ToolbarIcon>
+					<ToolbarIcon onClick={handleExtensionToggle}>
+						<img src={LogoBrainWeb} alt="" />
+					</ToolbarIcon>
+				</div>
 
-						<ToolbarIcon onClick={handleAdjustSize}>
-							<ArrowsExpandIcon />
-						</ToolbarIcon>
+				<div className="flex flex-row gap-2">
+					<ToolbarIcon onClick={handleMinimize}>
+						<MinusSmIcon />
+					</ToolbarIcon>
 
-						<ToolbarIcon onClick={handleClose}>
-							<XIcon />
-						</ToolbarIcon>
-					</div>
+					<ToolbarIcon onClick={handleAdjustSize}>
+						<ArrowsExpandIcon />
+					</ToolbarIcon>
+
+					<ToolbarIcon onClick={handleClose}>
+						<XIcon />
+					</ToolbarIcon>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 };
 

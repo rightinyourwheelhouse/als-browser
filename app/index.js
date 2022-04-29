@@ -18,6 +18,8 @@ function createWindow() {
 		nodeIntegration: true,
 		enableRemoteModule: true,
 		frame: false,
+		minWidth: 1200,
+		minHeight: 750,
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
 		},
@@ -27,10 +29,9 @@ function createWindow() {
 
 	createBrowserView();
 
-	// Open the DevTools.
 	if (isDev) {
 		mainWindow.loadURL('http://localhost:3000');
-		mainWindow.webContents.openDevTools({ mode: 'detach' });
+		mainWindow.webContents.openDevTools();
 	} else {
 		mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
 	}
@@ -54,6 +55,8 @@ function createBrowserView() {
 			preload: path.join(__dirname, 'scripts/preload.js'),
 		},
 	});
+
+	view.setBackgroundColor('#fff');
 	mainWindow.setBrowserView(view);
 	view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
 
@@ -95,20 +98,17 @@ ipcMain.on('goForward', () => {
 });
 
 ipcMain.on('searchURL', (event, url) => {
+	// eslint-disable-next-line no-useless-escape
 	const exp =
-		// eslint-disable-next-line no-useless-escape
-		/((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}\.)+(?:(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])|(?:biz|b[abdefghijmnorstvwyz])|(?:cat|com|coop|c[acdfghiklmnoruvxyz])|d[ejkmoz]|(?:edu|e[cegrstu])|f[ijkmor]|(?:gov|g[abdefghilmnpqrstuwy])|h[kmnrtu]|(?:info|int|i[delmnoqrst])|(?:jobs|j[emop])|k[eghimnrwyz]|l[abcikrstuvy]|(?:mil|mobi|museum|m[acdghklmnopqrstuvwxyz])|(?:name|net|n[acefgilopruz])|(?:org|om)|(?:pro|p[aefghklmnrstwy])|qa|r[eouw]|s[abcdeghijklmnortuvyz]|(?:tel|travel|t[cdfghjklmnoprtvwz])|u[agkmsyz]|v[aceginu]|w[fs]|y[etu]|z[amw]))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/gi;
+		/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gm;
+
 	const regex = new RegExp(exp);
 
 	if (regex.test(url)) {
-		if (!url.includes('www')) {
-			url = 'www.' + url;
-		}
-		if (!url.includes('http://')) {
-			url = 'http://' + url;
-		}
+		const newUrl = url.replace('https://', '').replace('http://', '').replace('www.', '');
+		url = `https://www.${newUrl}`;
 	} else {
-		url = 'http://www.google.com/search?q=' + url;
+		url = 'https://www.google.com/search?q=' + url;
 	}
 	view.webContents.loadURL(url);
 
@@ -133,12 +133,24 @@ ipcMain.on('close', () => {
 	mainWindow.close();
 });
 
-ipcMain.on('toggleDashboard', () => {
-	// This causes a memory leak
-	// event.reply('ToggleTheDashboard', true);
-	view.getBounds().width === 0 && view.getBounds().height === 0
-		? view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 })
-		: view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
+ipcMain.on('toggleDashboard', (event, arg) => {
+	// view.getBounds().width === 0 && view.getBounds().height === 0;
+	const viewOpen = view.getBounds().width > 0 && view.getBounds().height > 0;
+	const viewClosed = view.getBounds().width === 0 && view.getBounds().height === 0;
+
+	if (viewOpen) {
+		view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
+	} else if (viewClosed && arg) {
+		view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
+	}
+});
+
+ipcMain.on('toggleExtension', () => {
+	const viewOpen = view.getBounds().width > 0 && view.getBounds().height > 0;
+
+	if (viewOpen) {
+		view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
+	}
 });
 
 ipcMain.on('changeURL', (event, url) => {

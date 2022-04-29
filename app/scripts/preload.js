@@ -1,2 +1,3 @@
 require('./mouseTracking');
-require('./scrollHelp');
+require('./scrollHelp.js');
+
