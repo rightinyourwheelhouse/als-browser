@@ -104,14 +104,38 @@ ipcMain.on('searchURL', (event, url) => {
 
 	const regex = new RegExp(exp);
 
+	// const newUrl = new URL(url);
+
+	// console.log(newUrl);
+
 	if (regex.test(url)) {
-		if (url.includes('www')) url = 'https://' + url;
-		if (!url.includes('www')) url = 'https://www.' + url;
-		view.webContents.loadURL(url);
+		console.log('VALID', url);
+
+		const newUrl = url.replace('https://', '').replace('http://', '').replace('www.', '');
+
+		console.log(newUrl);
+
+		url = `https://www.${newUrl}`;
+
+		// if (!url.includes('www.') || !url.includes('http://') || !url.includes('https://')) {
+		// 	// if (!url.includes('http://') || !url.includes('https://')) {
+		// 	// 	url = 'https://www.' + url;
+		// 	// }
+		// }
+		// if (url.includes('www.')) {
+		// 	console.log('if2');
+		// 	if (!url.includes('http://') || !url.includes('https://')) url = 'https://' + url;
+		// }
+
+		// if (url.includes('www.')) {
+		// 	url = 'https://' + url;
+		// }
 	} else {
-		const newUrl = 'https://www.google.com/search?q=' + url;
-		view.webContents.loadURL(newUrl);
+		url = 'https://www.google.com/search?q=' + url;
 	}
+
+	console.log(url);
+	view.webContents.loadURL(url);
 
 	// When dashboard is loaded, set the browserView back
 	if (view.getBounds().width === 0 && view.getBounds().height === 0)
