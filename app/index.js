@@ -50,7 +50,6 @@ function createWindow() {
 function createBrowserView() {
 	view = new BrowserView({
 		nodeIntegration: true,
-		enableRemoteModule: true,
 		webPreferences: {
 			preload: path.join(__dirname, 'scripts/preload.js'),
 		},
@@ -185,4 +184,8 @@ ipcMain.on('searchBarFocus', (event, bool) => {
 
 ipcMain.on('extensionStates', (event, payload) => {
 	view.webContents.send('extensionStatesReply', payload);
+});
+
+ipcMain.on('getExtensionStates', () => {
+	mainWindow.webContents.send('getExtensionStatesReply');
 });

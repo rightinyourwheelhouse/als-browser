@@ -14,7 +14,6 @@ const AuthContextProvider = ({ children }) => {
 	const auth = getAuth();
 
 	const [user, setUser] = useState(undefined);
-	const [extensionStates, setExtensionStates] = useState(undefined);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -24,19 +23,22 @@ const AuthContextProvider = ({ children }) => {
 			if (docSnap.exists()) {
 				const data = docSnap.data();
 				if (data.extensionStates) {
-					setExtensionStates(data.extensionStates);
+					// Get the init state for webview
+					window.api.send('extensionStates', data.extensionStates);
 				}
 			}
 		};
 
 		if (user) fetchData();
+
+		window.api.recieve('getExtensionStatesReply', () => {
+			if (user) fetchData();
+		});
 	}, [user]);
 
 	onAuthStateChanged(auth, (user) => {
 		if (user) {
 			setUser(user);
-			// Get the init state for webview
-			window.api.send('extensionStates', extensionStates);
 		} else {
 			setUser(undefined);
 		}
