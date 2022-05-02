@@ -73,11 +73,8 @@ const createOverlay = () => {
 
 const deleteOverlay = () => {
 	const overlay = document.getElementById('scrollhelp-overlay');
-	overlay.remove();
-};
+	if (overlay) overlay.remove();
 
-// const initOverlay = () => {
-// 	document.addEventListener('DOMContentLoaded', () => {
-// 		registerListerners();
-// 	});
-// };
+	document.removeEventListener('mouseenter', registerListerners);
+	document.removeEventListener('mouseleave', registerListerners);
+};
