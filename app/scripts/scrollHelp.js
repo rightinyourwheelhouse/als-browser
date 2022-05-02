@@ -55,7 +55,7 @@ const registerListerners = () => {
 };
 
 ipcRenderer.on('extensionStatesReply', (event, payload) => {
-	if (payload.state && payload.name === 'scrollHelp') {
+	if (payload?.state && payload.name === 'scrollHelp') {
 		createOverlay();
 	} else {
 		deleteOverlay();
