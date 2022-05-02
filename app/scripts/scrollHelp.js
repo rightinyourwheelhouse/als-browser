@@ -1,3 +1,5 @@
+const { ipcRenderer } = require('electron');
+
 const overlay = `
 
 <div style="position: fixed; right: 2rem; bottom: 2rem; z-index: 999; background-color: white; border: solid #205493 2px; display: flex; flex-direction: column; gap: 1rem; justify-content: center; align-items:center; padding: .8rem; border-radius: .5rem;">
@@ -52,11 +54,30 @@ const registerListerners = () => {
 	});
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+ipcRenderer.on('extensionStatesReply', (event, payload) => {
+	if (payload.state && payload.name === 'scrollHelp') {
+		createOverlay();
+	} else {
+		deleteOverlay();
+	}
+});
+
+const createOverlay = () => {
 	const container = document.createElement('div');
 	container.id = 'scrollhelp-overlay';
 	container.innerHTML = overlay;
 	document.body.appendChild(container);
 
 	registerListerners();
-});
+};
+
+const deleteOverlay = () => {
+	const overlay = document.getElementById('scrollhelp-overlay');
+	overlay.remove();
+};
+
+// const initOverlay = () => {
+// 	document.addEventListener('DOMContentLoaded', () => {
+// 		registerListerners();
+// 	});
+// };

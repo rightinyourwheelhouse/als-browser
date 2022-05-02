@@ -1,5 +1,8 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../utils/FirebaseConfig';
 
 const authContext = createContext();
 
@@ -8,13 +11,32 @@ export const useAuth = () => {
 };
 
 const AuthContextProvider = ({ children }) => {
-	const [user, setUser] = useState(undefined);
-
 	const auth = getAuth();
+
+	const [user, setUser] = useState(undefined);
+	const [extensionStates, setExtensionStates] = useState(undefined);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const docRef = doc(db, 'users', user.uid);
+			const docSnap = await getDoc(docRef);
+
+			if (docSnap.exists()) {
+				const data = docSnap.data();
+				if (data.extensionStates) {
+					setExtensionStates(data.extensionStates);
+				}
+			}
+		};
+
+		if (user) fetchData();
+	}, [user]);
 
 	onAuthStateChanged(auth, (user) => {
 		if (user) {
 			setUser(user);
+			// Get the init state for webview
+			window.api.send('extensionStates', extensionStates);
 		} else {
 			setUser(undefined);
 		}

@@ -59,6 +59,8 @@ const ExtensionSettings = () => {
 		try {
 			setExtensionStates({ ...extensionStates, [name]: state });
 			await sendToDatabase(name, state);
+			const obj = { name: name, state: state };
+			window.api.send('extensionStates', obj);
 		} catch (error) {
 			setExtensionStates(previousState);
 		}
