@@ -8,10 +8,8 @@ const tfnode = require('@tensorflow/tfjs-node');
  * BUGS/PROBLEMS
  * everything is in this file, meaning the model needs to be loaded again on every page, needs to be refactored to background workers.
  * curretly an old lstm model is used, needs to be updated(not important right now)
- * button snapper is currently not working correctly=> url not snaping 
- * 													=> only using middle of element gives weird results sometimes => using corner sand middle is more jittery and changes very often 
- * 														not necessarily better
- * Need to find way to easily override/drop/unsnap snapped button
+ * buttonsnapper is replace by shortcut button, which links to predicted button
+ * shortcut button is removed when no button is nearby or when the traveled distance is too short.
  */
 
 
@@ -19,11 +17,12 @@ const tfnode = require('@tensorflow/tfjs-node');
  let clickableItems;
  let elements = [];
  let clickableItemsFiltered = [];
+ //enabled is hardcoded, need to be option
  let enabled = true;
  //variable to save the last element that was closest to the prediction
  let previousClosestElement = null;
  let previousClosestObject;
- //the btton that propagates click events to the original event
+ //the button that propagates click events to the original event
  let shortcutButton;
  let shortcutLocationInterval = 5;
  let shortcutLocationCounter = 0;
@@ -37,30 +36,6 @@ let queue = [];
 //are used for drawing the squares that show current work
 let lastInput = [];
 let lastPrediction = [];
-
-// dummy input and output, can be used for debugging purposes and shows how data shoud be structured
-let dummyArrayInput =  
-	[[0.235, 0.7322222],
-    [0.235, 0.7322222],
-    [0.236875, 0.7188889],
-    [0.244375, 0.68666667],
-    [0.25625, 0.6422222],
-    [0.271875, 0.58444446],
-    [0.29625, 0.5144445],
-    [0.324375, 0.43222222],
-    [0.3525, 0.35222223],
-    [0.385625, 0.28111112]] ;
-let dummyArrayPred = 
-	[[0.4240572154521942,0.2215619683265686],
-    [0.4446035921573639,0.17167557775974274],
-    [0.47596296668052673,0.1460321992635727],
-    [0.4925856590270996,0.11547081172466278],
-    [0.519591212272644,0.09868846833705902],
-    [0.5410516858100891,0.09312471747398376],
-    [0.5660907030105591,0.07625503838062286],
-    [0.5738454461097717,0.06663133949041367],
-    [0.5824887156486511,0.05864809826016426],
-    [0.5943309664726257,0.05022048577666283]];
 
 // the last recorded X and Y positions of the cursor	
 let clientX;
@@ -104,9 +79,10 @@ const registerListeners = () => {
 	//window.addEventListener('beforeunload', handleBeforeUnload);
 };
 /**
- * regsiter mouse movement in intervals and save it
+ * register mouse movement in intervals and save it
  * also saves windowdimensions
  * if the window dimensions change, the canvas is deleted and redrawn
+ * the shortcut button is also moved every few timesteps
  */
 const handleMouseMove = (e) => {
 	if (pageX != window.innerWidth ||  pageY !=window.innerHeight){
@@ -264,6 +240,7 @@ function point(x_co, y_co, cont, predBool){
 /**
  * Get the individual positions of all clickable items these are absolute pixel positions.
  * also removes and recreates the canvas that visualises the predictions, otherwise it does not follow the users scrollbehaviour
+ * ClickableItems filters containes actual html object, shortcut clicks are propagated through the shortcut button to these objects
  */
 const getAllClickableItems = () => {
 	if (drawingCanvas){
@@ -271,23 +248,6 @@ const getAllClickableItems = () => {
 	}
 	createCanvas();
 	elements = [];
-	/*
-	clickableItems.forEach((item) => {
-		const rect = item.getBoundingClientRect();
-		const elementObj = {
-			tag: item,
-			left: rect.left,
-			top: rect.top,
-			className: item.className,
-			width: rect.width,
-			height: rect.height,
-			title: item.textContent,
-			href: item.href,
-		};
-		if (elementObj.left != 0 && elementObj.top != 0) elements.push(elementObj);
-	});
-	*/
-
 	for (let i = 0; i < clickableItems.length; i++) {
 		item = clickableItems[i]
 		const rect = item.getBoundingClientRect();
@@ -314,7 +274,7 @@ const getAllClickableItems = () => {
  * 
  * @param {[windowSize,features] } prediction contains the mouse cursor prediction made by the aiModel
  * checks which clickable html elements lies closest to the end point of the prediction(windowsize - 1)
- * then tries to move the element to the users mouse and changes its colours.
+ * Then checks if there are qny nearby html elements, if there are, it links the shortcut button to this element.
  */
 const checkCloseElements = (prediction) => {
 	let xPosPredictionEndPoint = prediction[0][windowSize-1][0] * window.innerWidth 
@@ -326,9 +286,6 @@ const checkCloseElements = (prediction) => {
 	
 	let closestDistance;
 	let closestElement;
-	let closestElementPosX;
-	let closestElementPosY;
-	
 	if (previousClosestElement) removeProperties(previousClosestElement, 'background-color', 'color', 'transform', 'z-index');
 	foundCloseElement = false
 	for (let i = 0; i < elements.length; i++){
@@ -371,18 +328,21 @@ const checkCloseElements = (prediction) => {
 	}else{
 		removeProperties(closestElement, 'background-color', 'color', 'transform', 'z-index');}
 	if (!enabled) removeProperties(closestElement, 'background-color', 'color', 'transform', 'z-index');
-	//legacy code, here for reference 
-	//transform: translate(${clientX - closestElementPosX}px, ${clientY- closestElementPosY}px);
-	//transform: translate(${clientX - shortcutButtonPosMiddle[0] }px, ${clientY- shortcutButtonPosMiddle[1]}px);
 };
+
+/*
+ * moves the shortcut button to the cursor position
+ * if the travled distance is to small(slow precise movement or slowing down qt destination), the shortcut button is removed and deactivated
+ * 
+ */
 function moveShortCutButton(){
 	shortcutButton.style.cssText = `
 	background-color:green;
 	color:white;
 	z-index: 99999;	
 	`;	
-	shortcutButton.style.top = clientY + windowY+ -5 +"px"
-	shortcutButton.style.left = clientX + windowX+ -5 +"px"
+	shortcutButton.style.top = clientY + windowY+"px"
+	shortcutButton.style.left = clientX + windowX +"px"
 	shortcutButton.style.position = "absolute";
 	if (queue.length == 10){
 		let euclideanDistance = Math.sqrt(Math.pow(queue[9][0] - queue[0][0], 2) +  
@@ -395,14 +355,22 @@ function moveShortCutButton(){
 		
 	   }else{
 		   shortcutButton.disabled = false;
-		   if (previousClosestElement.title === ""){
+		   if (previousClosestElement.title === "" ){
 			shortcutButton.textContent = 'shortcut'
-		   }else{
+		   }
+		   if ( previousClosestElement.title.length > 30){
+			shortcutButton.textContent = previousClosestElement.title.slice(0, 30)
+		   }
+		   else{
 			shortcutButton.textContent = previousClosestElement.title
 		   }
 	   }
    }
 }
+
+/**
+ * propagates the clicks of the shortcut button to the last object that passed the closeobject events
+ */
 function shortCutClick(){
 	console.log(previousClosestObject)
 	previousClosestObject.click()
@@ -545,7 +513,6 @@ function createShortCutButton(){
  * first get all clickable items
  * initialise listeners
  * start the mouse pointer detection system/interval
-
  */
 const init = () => {
   	console.log("start up mouse prediction") 
