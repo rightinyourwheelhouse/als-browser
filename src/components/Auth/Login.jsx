@@ -54,7 +54,7 @@ const Login = ({ setLoginActive }) => {
 
 	return (
 		<div>
-			<div className="flex-colitems-center m-center flex max-w-md justify-center bg-white p-10">
+			<div className="mt-8 flex flex-col items-center">
 				<Formik
 					initialValues={{
 						email: '',
@@ -64,15 +64,21 @@ const Login = ({ setLoginActive }) => {
 					validationSchema={validationSchema}
 				>
 					{({ handleSubmit, isSubmitting }) => (
-						<form onSubmit={handleSubmit} className="my-0 flex flex-col items-center">
-							<h1 className="my-4 text-center text-xl font-bold">Meld je aan</h1>
+						<form onSubmit={handleSubmit} className="w-96 rounded-md border-2 border-slate-500 bg-slate-200 p-8">
+							<h1 className="mb-8 text-xl font-bold">Meld je aan</h1>
 							{error && <ErrorBanner error={error} />}
 							<div className="mb-4">
 								<Field type="input" as={TextInputGroup} name="email" placeholder="E-mail" label="E-mailadres" />
-								<Field type="password" as={TextInputGroup} name="password" placeholder="Password" label="Wachtwoord" />
+								<Field
+									type="password"
+									as={TextInputGroup}
+									name="password"
+									placeholder="Wachtwoord"
+									label="Wachtwoord"
+								/>
 							</div>
 
-							<button className="h-10 w-32 rounded-lg bg-dark-blue text-white" disabled={isSubmitting}>
+							<button className="mt-8 h-10 w-full rounded-lg bg-dark-blue text-white" disabled={isSubmitting}>
 								Aanmelden
 							</button>
 						</form>

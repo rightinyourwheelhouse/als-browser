@@ -23,7 +23,9 @@ const ListBoxSelect = ({ label, name, value = '', type, onChange, onBlur, option
 
 			<select
 				{...field}
-				className={`${errorText ? 'border-skin-error border-2' : 'border-0'} select-input`}
+				className={`${
+					errorText ? 'border-2 border-red-600' : 'border-0'
+				} focus:ring-skin-accent placeholder:text-md mt-2 mb-4 h-10 w-full rounded-md border-2 py-0 px-4 text-sm font-medium hover:border hover:border-dark-blue hover:shadow-[0px_0px_0px_4px_#4c7bea4c] hover:transition-all focus:outline-none focus:ring-2 focus:ring-offset-2`}
 				type={type}
 				name={name}
 				value={currentValue}
@@ -34,12 +36,7 @@ const ListBoxSelect = ({ label, name, value = '', type, onChange, onBlur, option
 				onBlur={onBlur}
 			>
 				{options.map((item) => (
-					<option
-						hidden={item.hidden}
-						key={item.id}
-						value={item.value}
-						className="text-skin-darker my-1 text-sm font-semibold"
-					>
+					<option hidden={item.hidden} key={item.id} value={item.value} className=" my-1 text-sm font-semibold">
 						{item.label}
 					</option>
 				))}

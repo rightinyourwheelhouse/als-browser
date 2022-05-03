@@ -86,8 +86,8 @@ const Register = ({ setLoginActive }) => {
 	};
 
 	return (
-		<div className=" absolute top-0 left-0 flex h-screen w-screen items-center justify-center">
-			<div className="bg-skin-white flex h-auto max-w-md flex-col items-center justify-center rounded-sm p-10">
+		<div>
+			<div className="mt-8 flex flex-col items-center">
 				<Formik
 					initialValues={{
 						email: '',
@@ -101,8 +101,8 @@ const Register = ({ setLoginActive }) => {
 					onSubmit={handleSubmit}
 				>
 					{({ handleSubmit, isSubmitting }) => (
-						<form onSubmit={handleSubmit} className="my-0 mx-auto flex flex-col ">
-							<h1 className="h1 mb-4">Registreren</h1>
+						<form onSubmit={handleSubmit} className="w-96 rounded-md border-2 border-slate-500 bg-slate-200 p-8">
+							<h1 className="mb-8 text-xl font-bold">Registreren</h1>
 
 							{error && <ErrorBanner error={error} />}
 							<div className="mb-4">
@@ -142,7 +142,7 @@ const Register = ({ setLoginActive }) => {
 								<div className="mt-4 mb-8">
 									<div className="flex flex-row items-center gap-2">
 										<input
-											className="h-5 w-5"
+											className="h-5 w-5 "
 											checked={hasDeviceSpecification}
 											type="checkbox"
 											name="other_device"
@@ -165,7 +165,9 @@ const Register = ({ setLoginActive }) => {
 								/>
 							</div>
 
-							<button disabled={isSubmitting}>Registreren</button>
+							<button className="mt-8 h-10 w-full rounded-lg bg-dark-blue text-white" disabled={isSubmitting}>
+								Registreren
+							</button>
 						</form>
 					)}
 				</Formik>
