@@ -76,14 +76,14 @@ const ExtensionSettings = () => {
 		<div className="mx-10 ">
 			<Title className="mt-8">Extensie</Title>
 
-			<SettingTile infoText="Schakel alle functies aan of uit.">
+			{/* <SettingTile infoText="Schakel alle functies aan of uit.">
 				<CustomSwitch
 					title="Volledige extensie"
 					name="extension"
 					state={extensionStates.extension}
 					handleOnChange={handleOnChange}
 				/>
-			</SettingTile>
+			</SettingTile> */}
 
 			<SettingTile infoText="Deze tool helpt je om te scrollen doorheen webpagina’s. Stel de snelheid in van het scrollen of kies waar de scrollhulp gepositioneerd staat op je webpagina.">
 				<div className="flex w-full flex-col">
@@ -117,7 +117,7 @@ const ExtensionSettings = () => {
 							/>
 						</div>
 					</div>
-					<div className="my-2 mt-4 flex w-full items-center justify-between">
+					{/* <div className="my-2 mt-4 flex w-full items-center justify-between">
 						<p className="text-lg font-bold">Uitlijning</p>
 						<div className="grid grid-cols-2 grid-rows-2 gap-2">
 							<div className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover">
@@ -161,7 +161,7 @@ const ExtensionSettings = () => {
 								</svg>
 							</div>
 						</div>
-					</div>
+					</div> */}
 				</div>
 			</SettingTile>
 
@@ -170,6 +170,15 @@ const ExtensionSettings = () => {
 					title="Muis traceren"
 					name="mouseTracking"
 					state={extensionStates.mouseTracking}
+					handleOnChange={handleOnChange}
+				/>
+			</SettingTile>
+
+			<SettingTile infoText="Schakel muis predictie aan of uit.">
+				<CustomSwitch
+					title="Muis predictie"
+					name="mousePrediction"
+					state={extensionStates.mousePrediction}
 					handleOnChange={handleOnChange}
 				/>
 			</SettingTile>
