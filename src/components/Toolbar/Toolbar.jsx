@@ -32,9 +32,7 @@ const Toolbar = ({ onFocusChange }) => {
 	};
 
 	const handleClose = () => {
-		// window.api.send('close');
-		const searchbar = document.getElementById('search-bar');
-		searchbar.focus();
+		window.api.send('close');
 	};
 
 	const handleMinimize = () => {
