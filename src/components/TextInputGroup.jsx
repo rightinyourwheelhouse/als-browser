@@ -1,5 +1,6 @@
 import { useField } from 'formik';
 import React, { useState } from 'react';
+import ErrorMessage from './Auth/ErrorMessage';
 
 const TextInputGroup = ({ label, name, value = '', placeholder, type, onChange, onBlur }) => {
 	const [currentValue, setCurrentValue] = useState(value);
@@ -32,6 +33,8 @@ const TextInputGroup = ({ label, name, value = '', placeholder, type, onChange, 
 				onBlur={onBlur}
 				autoComplete="off"
 			/>
+
+			{errorText && <ErrorMessage errorText={errorText} />}
 		</div>
 	);
 };
