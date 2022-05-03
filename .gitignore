@@ -17,5 +17,7 @@ dist
 .idea
 .DS_Store
 
+electron-builder.yml
+
 out/
 app/build

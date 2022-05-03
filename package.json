@@ -5,6 +5,10 @@
   "description": "Browser for the ALS-liga",
   "main": "app/index.js",
   "author": "Jamie-Lee Hart, Tommy Tytgat, Ewout Verhamme",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/rightinyourwheelhouse/als-browser.git"
+  },
   "license": "MIT",
   "build": {
     "appId": "ALS-browser",
@@ -33,7 +37,9 @@
     "preview": "vite preview",
     "electron:dev": "concurrently \"cross-env BROWSER=none npm run dev\" \"wait-on -c waitOnConfig.json http-get://localhost:3000/ && electron .\"",
     "electron:build": "npm run build && electron-builder --mac",
-    "electron:build:all": "npm run build && electron-builder -mw"
+    "electron:build:all": "npm run build && electron-builder -mw",
+    "electron-build": "electron-builder build --mac --win --publish never",
+    "deploy": "electron-builder build --mac --win --publish always"
   },
   "dependencies": {
     "@firebase/auth": "^0.19.12",
@@ -44,6 +50,7 @@
     "dotenv": "^16.0.0",
     "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
+    "electron-updater": "^5.0.1",
     "eslint-plugin-react-hooks": "^4.3.0",
     "firebase": "^9.6.11",
     "formik": "^2.2.9",

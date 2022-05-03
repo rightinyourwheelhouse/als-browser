@@ -1,6 +1,7 @@
 // electron/electron.js
 const path = require('path');
 const { app, BrowserWindow, BrowserView, ipcMain, nativeTheme } = require('electron');
+const { autoUpdater } = require('electron-updater');
 
 const isDev = require('electron-is-dev');
 
@@ -71,6 +72,7 @@ function createBrowserView() {
 
 app.whenReady().then(() => {
 	createWindow();
+	autoUpdater.checkForUpdatesAndNotify();
 	app.on('activate', function () {
 		// On macOS it's common to re-create a window in the app when the
 		// dock icon is clicked and there are no other windows open.
@@ -86,6 +88,10 @@ app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
 		app.quit();
 	}
+});
+
+ipcMain.on('app_version', (event) => {
+	event.sender.send('app_version', { version: app.getVersion() });
 });
 
 ipcMain.on('goBack', () => {
@@ -196,4 +202,14 @@ ipcMain.on('getLatestOverlayLocation', () => {
 
 ipcMain.on('setLatestOverlayLocation', (event, ...payload) => {
 	mainWindow.webContents.send('setLatestOverlayLocationReply', ...payload);
+});
+
+autoUpdater.on('update-available', () => {
+	mainWindow.webContents.send('update_available');
+});
+autoUpdater.on('update-downloaded', () => {
+	mainWindow.webContents.send('update_downloaded');
+});
+ipcMain.on('restart_app', () => {
+	autoUpdater.quitAndInstall();
 });
