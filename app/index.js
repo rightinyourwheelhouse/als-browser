@@ -36,6 +36,7 @@ function createWindow() {
 	} else {
 		mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
 	}
+	mainWindow.webContents.openDevTools();
 
 	// Events
 	mainWindow.on('resize', function () {
