@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContextProvider';
 
 export const MouseData = () => {
 	const { user } = useAuth();
-	console.log(user);
+	const [currentWebPageTitle, setCurrentWebPageTitle] = useState('');
 
 	const MAX_QUEUE_SIZE = 250;
 	let queue = [];
@@ -15,11 +15,13 @@ export const MouseData = () => {
 	let batchRef;
 	let batchSnap;
 
+	let mouseTrackingActive = true;
+
 	useEffect(() => {
 		if (!user) return;
 
 		window.api.recieve('webPageDataReply', ([data]) => {
-			console.log('webPageDataReply', data);
+			setCurrentWebPageTitle(data.title);
 			setDoc(doc(db, `users/${user.uid}/visitedPages`, data.title), {
 				url: data.url,
 				title: data.title,
@@ -27,4 +29,90 @@ export const MouseData = () => {
 			});
 		});
 	}, [user]);
+
+	useEffect(() => {
+		if (!user) return;
+
+		window.api.recieve('cursorDataReply', ([data]) => {
+			(async () => {
+				if (mouseTrackingActive && data.pageX != undefined && data.pageY != undefined) {
+					device = await getUserDevice();
+
+					if (!batchRef) {
+						batchRef = doc(db, `users/${user.uid}/visitedPages/${currentWebPageTitle}/mouseTracking`, 'mouseData');
+					}
+
+					if (!batchSnap) {
+						batchSnap = await getDoc(batchRef);
+						if (!batchSnap.exists()) {
+							await setDoc(batchRef, {
+								values: [],
+							});
+						}
+					}
+
+					queue.push(
+						arrayUnion({
+							mouse: {
+								clientX: data.clientX,
+								clientY: data.clientY,
+								click: data.isClick,
+							},
+							pageX: data.pageX,
+							pageY: data.pageY,
+							device: device,
+							timestamp: data.timestamp,
+							htmlElement: data.element || null,
+						}),
+					);
+
+					if (queue.length >= MAX_QUEUE_SIZE) {
+						let batch = writeBatch(db);
+						queue.forEach((event) => {
+							batch.update(batchRef, 'values', event);
+						});
+
+						await sendbatch(batch);
+					}
+				}
+			})();
+		});
+	}, [currentWebPageTitle]);
+
+	const getUserDevice = async () => {
+		if (!user) return;
+		if (device) return device;
+
+		let deviceRef = doc(db, `users/${user.uid}`);
+		let userSnap = await getDoc(deviceRef);
+
+		// Return empty device when no device is set
+		return userSnap.data()?.device ?? '';
+	};
+
+	const sendbatch = async (batch) => {
+		if (!user) return;
+		queue = [];
+
+		await batch.commit();
+	};
+
+	useEffect(() => {
+		if (!user) return;
+
+		window.api.recieve('beforeunloadReply', () => {
+			(async () => {
+				if (!queue.length) return;
+
+				let batch = writeBatch(db);
+				queue.forEach((queueItem) => {
+					batch.update(batchRef, 'values', queueItem);
+				});
+
+				queue = [];
+
+				await batch.commit();
+			})();
+		});
+	}, []);
 };

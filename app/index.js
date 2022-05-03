@@ -190,3 +190,7 @@ ipcMain.on('cursorData', (event, arg) => {
 ipcMain.on('webPageData', (event, arg) => {
 	mainWindow.webContents.send('webPageDataReply', arg);
 });
+
+ipcMain.on('beforeunload', () => {
+	mainWindow.webContents.send('beforeunloadReply');
+});

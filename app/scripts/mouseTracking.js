@@ -37,6 +37,7 @@ const registerListeners = () => {
 const handleBeforeUnload = () => {
 	// send message to mainbrowser
 	console.log('beforeunload');
+	ipcRenderer.send('beforeunload');
 };
 
 const handleClick = (e) => {
