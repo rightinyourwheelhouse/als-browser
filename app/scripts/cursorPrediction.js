@@ -18,9 +18,16 @@ const tfnode = require('@tensorflow/tfjs-node');
 //get all the buttons and links of the current document/page
  let clickableItems;
  let elements = [];
+ let clickableItemsFiltered = [];
  let enabled = true;
  //variable to save the last element that was closest to the prediction
- let previousClosestElement;
+ let previousClosestElement = null;
+ let previousClosestObject;
+ //the btton that propagates click events to the original event
+ let shortcutButton;
+ let shortcutLocationInterval = 5;
+ let shortcutLocationCounter = 0;
+ let foundCloseElement = false;
 
 // array for saving a [windowsize, features] array with the last mouse positions 
 let queue = [];
@@ -109,13 +116,17 @@ const handleMouseMove = (e) => {
 			drawingCanvas.remove();
 		}
 		createCanvas();
+		
 	}
 	clientX = e.clientX;
 	clientY = e.clientY;
 	pageX = window.innerWidth;
 	pageY = window.innerHeight;
-
-	
+	shortcutLocationCounter ++;
+	if( shortcutLocationCounter >= shortcutLocationInterval ){
+		moveShortCutButton();
+		shortcutLocationCounter = 0;
+	}
 	clearTimeout(timeOut);
 
 	if (mouseTrackingActive) {
@@ -188,6 +199,7 @@ const startInterval = () => {
  */
 function createCanvas(){
 	const bodyElement = document.getElementsByTagName("body")[0];
+
 	windowX = window.scrollX
 	windowY = window.scrollY
 	drawingCanvas = document.createElement('canvas');
@@ -197,9 +209,10 @@ function createCanvas(){
 	drawingCanvas.style.top = windowY+"px";
 	drawingCanvas.style.left = windowX+"px"
 	drawingCanvas.style.position = "absolute";
-	drawingCanvas.style.zIndex = 10000000000;
+	drawingCanvas.style.zIndex = 99990;
 	drawingCanvas.style.pointerEvents = "none"
 	
+
 	bodyElement.appendChild(drawingCanvas);
 }
 
@@ -258,7 +271,7 @@ const getAllClickableItems = () => {
 	}
 	createCanvas();
 	elements = [];
-	
+	/*
 	clickableItems.forEach((item) => {
 		const rect = item.getBoundingClientRect();
 		const elementObj = {
@@ -273,6 +286,27 @@ const getAllClickableItems = () => {
 		};
 		if (elementObj.left != 0 && elementObj.top != 0) elements.push(elementObj);
 	});
+	*/
+
+	for (let i = 0; i < clickableItems.length; i++) {
+		item = clickableItems[i]
+		const rect = item.getBoundingClientRect();
+		const elementObj = {
+			tag: item,
+			left: rect.left,
+			top: rect.top,
+			className: item.className,
+			width: rect.width,
+			height: rect.height,
+			title: item.textContent,
+			href: item.href,
+		};
+		if (elementObj.left != 0 && elementObj.top != 0) {
+			elements.push(elementObj);
+			clickableItemsFiltered.push(clickableItems[i])
+		}
+	
+	  } 
 }; 
 
 
@@ -295,52 +329,85 @@ const checkCloseElements = (prediction) => {
 	let closestElementPosX;
 	let closestElementPosY;
 	
-	if (previousClosestElement)
-		removeProperties(previousClosestElement, 'background-color', 'color', 'transform', 'z-index');
-
-	// Check over the array which one is the closest
-	// need to change this, noz it sometimes does not select the item as the middle is to far away because of a large element, banner etc
-	elements.forEach((element) => {
+	if (previousClosestElement) removeProperties(previousClosestElement, 'background-color', 'color', 'transform', 'z-index');
+	foundCloseElement = false
+	for (let i = 0; i < elements.length; i++){
+		let element  = elements[i]
 		let elementPoints = []
-		const elementPosMiddle = [element.left + element.width / 2 , element.top + element.height / 2]
 		
+		const elementPosMiddle = [element.left + element.width / 2 , element.top + element.height / 2]
 		const elementTopLeft = [element.left , element.top ]
 		const elementBottomLeft = [element.left , element.bottom]
 		const elementTopRight = [element.right , element.top]
 		const elementBottomRight = [element.right , element.bottom]
 		elementPoints.push(elementPosMiddle,elementTopLeft,elementBottomLeft,elementTopRight,elementBottomRight )
-		
-		elementPoints.forEach((position) => {
-			const distance = Math.sqrt(Math.pow(xPosPredictionEndPoint- position[0], 2) + Math.pow(yPosPredictionEndPoint - position[1], 2));
+	
+		for (let j = 0; j < elementPoints.length; j++){
+			position = elementPoints[0]
+			let distance = Math.sqrt(Math.pow(xPosPredictionEndPoint- position[0], 2) + Math.pow(yPosPredictionEndPoint - position[1], 2));
 			if (!closestElement) closestElement = element;
 			if (!closestDistance) closestDistance = distance;
 			if (!previousClosestElement) previousClosestElement = element;
 			// Update everything when condition is met
 			if (distance < closestDistance && distance < 150 && enabled) {
+				foundCloseElement = true
 				closestDistance = distance;
 				closestElement = element;
+				previousClosestObject = clickableItemsFiltered[i]
 				closestElementPosX = elementPoints[0][0];
 				closestElementPosY = elementPoints[0][1];
 			}
-		});
-
-		
-	});
-	
-	previousClosestElement = closestElement;
-	
-	
-	if (closestElement.tag) {
-		closestElement.tag.style.cssText = `
-	background-color:#52C287;
-	color:white;
-	transform: translate(${clientX - closestElementPosX}px, ${clientY- closestElementPosY}px);
-	z-index: 99999;
-	`;
+		}
 	}
-	if (!enabled) removeProperties(closestElement, 'background-color', 'color', 'transform', 'z-index');
 	
+	if (closestElement.tag && foundCloseElement) {
+		closestElement.tag.style.cssText = `
+		background-color:#52C287;
+		color:white;
+		z-index: 99999;
+		`;
+		previousClosestElement = closestElement;
+		moveShortCutButton()	
+	}else{
+		removeProperties(closestElement, 'background-color', 'color', 'transform', 'z-index');}
+	if (!enabled) removeProperties(closestElement, 'background-color', 'color', 'transform', 'z-index');
+	//legacy code, here for reference 
+	//transform: translate(${clientX - closestElementPosX}px, ${clientY- closestElementPosY}px);
+	//transform: translate(${clientX - shortcutButtonPosMiddle[0] }px, ${clientY- shortcutButtonPosMiddle[1]}px);
 };
+function moveShortCutButton(){
+	shortcutButton.style.cssText = `
+	background-color:green;
+	color:white;
+	z-index: 99999;	
+	`;	
+	shortcutButton.style.top = clientY + windowY+ -5 +"px"
+	shortcutButton.style.left = clientX + windowX+ -5 +"px"
+	shortcutButton.style.position = "absolute";
+	if (queue.length == 10){
+		let euclideanDistance = Math.sqrt(Math.pow(queue[9][0] - queue[0][0], 2) +  
+		   Math.pow(queue[9][1] - queue[0][1], 2));
+		   
+	   if (euclideanDistance < 0.05 || foundCloseElement == false){
+		   shortcutButton.disabled = true;
+		   shortcutButton.style.visibility = 'hidden';
+		   removeProperties(previousClosestElement, 'background-color', 'color', 'transform', 'z-index');
+		
+	   }else{
+		   shortcutButton.disabled = false;
+		   if (previousClosestElement.title === ""){
+			shortcutButton.textContent = 'shortcut'
+		   }else{
+			shortcutButton.textContent = previousClosestElement.title
+		   }
+	   }
+   }
+}
+function shortCutClick(){
+	console.log(previousClosestObject)
+	previousClosestObject.click()
+
+}
 
 const removeProperties = (element, ...properties) => {
 	properties.forEach((property) => element.tag.style.removeProperty(property));
@@ -357,8 +424,8 @@ const removeProperties = (element, ...properties) => {
 	features = 2;
 	//The model Must be saved on a server it seems, this is the url to it's location
 	//thx ewout for your hosting services/ deprecated when used inside browser
-	//inside browser files can be used instead of hosting
-	modelUrl = "https://ewoutverhamme.be/aimodel/model.json"
+	//inside the browser files can be used instead of hosting
+	//modelUrl = "https://ewoutverhamme.be/aimodel/model.json"
   
 	//dummy data used for debugging purposes
 	dummyArray =  [
@@ -407,6 +474,72 @@ const removeProperties = (element, ...properties) => {
 	}
   }  
   
+  function createButtonStyle(){
+	var styles =   `.btn41-43 {
+		padding: 10px 25px;
+		font-family: "Roboto", sans-serif;
+		font-weight: 500;
+		background: transparent;
+		outline: none !important;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		position: relative;
+		display: inline-block;
+	  }
+	  
+	  .btn-42 {
+		border: 2px solid rgb(255, 255, 255);
+		z-index: 1;
+		color: white;
+	  }
+	  
+	  .btn-42:after {
+		position: absolute;
+		content: "";
+		width: 100%;
+		height: 0;
+		bottom: 0;
+		left: 0;
+		z-index: -1;
+		background: rgb(255, 255, 255);
+		transition: all 0.3s ease;
+	  }
+	  
+	  .btn-42:hover {
+		color: rgb(0, 0, 0);
+	  }
+	  
+	  .btn-42:hover:after {
+		top: 0;
+		height: 100%;
+	  }
+	  
+	  .btn-42:active {
+		top: 2px;
+	  }`
+	var styleSheet = document.createElement("style")
+	styleSheet.innerText = styles
+	document.head.appendChild(styleSheet)
+  }
+function createShortCutButton(){
+	
+	shortcutButton = document.createElement('button')
+	//shortcutButton.style.class = "btn41-43 btn-42"
+	shortcutButton.id = 'shortcutButton'
+	shortcutButton.onclick = shortCutClick
+	shortcutButton.position = "absolute";
+	shortcutButton.style.top = 0+"px";
+	shortcutButton.style.left = 0+"px"
+	shortcutButton.style.position = "absolute";
+	shortcutButton.width = 20;
+	shortcutButton.height = 20;
+	shortcutButton.zIndex = 99999;
+	shortcutButton.textContent = 'shortcut'
+	shortcutButton.style.background = 'blue'
+	shortcutButton.disabled = false;
+	const bodyElement = document.getElementsByTagName("body")[0];
+	bodyElement.appendChild(shortcutButton)
+}  
 /**
  * initialising the extension page
  * first get all clickable items
@@ -415,8 +548,10 @@ const removeProperties = (element, ...properties) => {
 
  */
 const init = () => {
-  	console.log("start up mouse prediction")
-	clickableItems = document.querySelectorAll('button ,a');
+  	console.log("start up mouse prediction") 
+	clickableItems = document.querySelectorAll('button ,a ,g-menu');  
+	createButtonStyle()  
+	createShortCutButton()
 	registerListeners();
 	startInterval();
 	createCanvas();
