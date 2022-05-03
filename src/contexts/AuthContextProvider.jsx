@@ -33,16 +33,15 @@ const AuthContextProvider = ({ children }) => {
 			if (user) fetchData();
 		});
 
-		window.api.recieve('setLatestOverlayLocationReply', (payload) => {
-			// console.log(user.uid);
-			// if (user) {
-			// 	const docRef = doc(db, 'users', user.uid);
-			// 	setDoc(
-			// 		docRef,
-			// 		{ extensionStates: { scrollHelpPosition: { top: payload.top, left: payload.left } } },
-			// 		{ merge: true },
-			// 	);
-			// }
+		window.api.recieve('setLatestOverlayLocationReply', (...payload) => {
+			if (user) {
+				const docRef = doc(db, 'users', user.uid);
+				setDoc(
+					docRef,
+					{ extensionStates: { scrollHelpPosition: { top: payload[0][0], left: payload[0][1] } } },
+					{ merge: true },
+				);
+			}
 		});
 		if (user) fetchData();
 	}, [user]);

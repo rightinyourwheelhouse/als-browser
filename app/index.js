@@ -194,6 +194,6 @@ ipcMain.on('getLatestOverlayLocation', () => {
 	mainWindow.webContents.send('getLatestOverlayLocationReply');
 });
 
-ipcMain.on('setLatestOverlayLocation', (event, payload) => {
-	mainWindow.webContents.send('setLatestOverlayLocationReply', payload);
+ipcMain.on('setLatestOverlayLocation', (event, ...payload) => {
+	mainWindow.webContents.send('setLatestOverlayLocationReply', ...payload);
 });

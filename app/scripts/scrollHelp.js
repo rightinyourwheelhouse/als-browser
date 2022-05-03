@@ -26,6 +26,9 @@ const overlay = `
 let interval;
 let dragged;
 
+let scrollHelpPosX;
+let scrollHelpPosY;
+
 const handleSetInterval = (scrollDir) => {
 	interval = setInterval(() => {
 		window.scrollBy(0, scrollDir);
@@ -40,6 +43,11 @@ const registerListerners = () => {
 	const up = document.querySelector('.wh-up');
 	const overlay = document.querySelector('.wh-overlay');
 	const down = document.querySelector('.wh-down');
+
+	if (scrollHelpPosX && scrollHelpPosY) {
+		overlay.style.top = scrollHelpPosY;
+		overlay.style.left = scrollHelpPosX;
+	}
 
 	overlay.addEventListener('mouseenter', () => {
 		overlay.style.opacity = '1';
@@ -63,16 +71,10 @@ const registerListerners = () => {
 		e.preventDefault();
 		dragged.style.opacity = '1';
 
-		const boundaries = dragged.getBoundingClientRect();
-		const top = `${e.clientY - boundaries.height / 2}px`;
-		const left = `${e.clientX - boundaries.width / 2}px`;
-
 		const { clientX: mouseX, clientY: mouseY } = e;
 		const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
 		const menuHeight = 200;
 		const menuWidth = 90;
-		// dragged.style.top = top;
-		// dragged.style.left = left;
 
 		if (windowWidth - mouseX < menuWidth) {
 			dragged.style.left = windowWidth - (menuWidth + 10) + 'px';
@@ -91,8 +93,9 @@ const registerListerners = () => {
 		}
 
 		// Send data to React
-		const payload = { top: top, left: left };
-		ipcRenderer.send('setLatestOverlayLocation', payload);
+		const top = dragged.style.top;
+		const left = dragged.style.left;
+		ipcRenderer.send('setLatestOverlayLocation', top, left);
 	});
 
 	down.addEventListener('mouseenter', () => {
@@ -109,6 +112,11 @@ ipcRenderer.on('extensionStatesReply', (event, payload) => {
 		createOverlay();
 	} else {
 		deleteOverlay();
+	}
+
+	if (payload.scrollHelpPosition) {
+		scrollHelpPosX = payload.scrollHelpPosition.left;
+		scrollHelpPosY = payload.scrollHelpPosition.top;
 	}
 });
 
