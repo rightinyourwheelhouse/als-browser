@@ -11,7 +11,7 @@ const overlay = `
          </svg>
       </div>
    </div>
-   <div style="width:1.5rem; height:1.5rem;" ><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6.5 8a.5.5 0 00-.5-.5H1.5a.5.5 0 000 1H6a.5.5 0 00.5-.5z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M3.854 5.646a.5.5 0 00-.708 0l-2 2a.5.5 0 000 .708l2 2a.5.5 0 00.708-.708L2.207 8l1.647-1.646a.5.5 0 000-.708zM9.5 8a.5.5 0 01.5-.5h4.5a.5.5 0 010 1H10a.5.5 0 01-.5-.5z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M12.146 5.646a.5.5 0 01.708 0l2 2a.5.5 0 010 .708l-2 2a.5.5 0 01-.708-.708L13.793 8l-1.647-1.646a.5.5 0 010-.708zM8 9.5a.5.5 0 00-.5.5v4.5a.5.5 0 001 0V10a.5.5 0 00-.5-.5z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M5.646 12.146a.5.5 0 000 .708l2 2a.5.5 0 00.708 0l2-2a.5.5 0 00-.708-.708L8 13.793l-1.646-1.647a.5.5 0 00-.708 0zM8 6.5a.5.5 0 01-.5-.5V1.5a.5.5 0 011 0V6a.5.5 0 01-.5.5z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M5.646 3.854a.5.5 0 010-.708l2-2a.5.5 0 01.708 0l2 2a.5.5 0 01-.708.708L8 2.207 6.354 3.854a.5.5 0 01-.708 0z" clip-rule="evenodd"></path></svg></div>
+   <div style="width:15px; height:15px;" ><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6.5 8a.5.5 0 00-.5-.5H1.5a.5.5 0 000 1H6a.5.5 0 00.5-.5z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M3.854 5.646a.5.5 0 00-.708 0l-2 2a.5.5 0 000 .708l2 2a.5.5 0 00.708-.708L2.207 8l1.647-1.646a.5.5 0 000-.708zM9.5 8a.5.5 0 01.5-.5h4.5a.5.5 0 010 1H10a.5.5 0 01-.5-.5z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M12.146 5.646a.5.5 0 01.708 0l2 2a.5.5 0 010 .708l-2 2a.5.5 0 01-.708-.708L13.793 8l-1.647-1.646a.5.5 0 010-.708zM8 9.5a.5.5 0 00-.5.5v4.5a.5.5 0 001 0V10a.5.5 0 00-.5-.5z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M5.646 12.146a.5.5 0 000 .708l2 2a.5.5 0 00.708 0l2-2a.5.5 0 00-.708-.708L8 13.793l-1.646-1.647a.5.5 0 00-.708 0zM8 6.5a.5.5 0 01-.5-.5V1.5a.5.5 0 011 0V6a.5.5 0 01-.5.5z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M5.646 3.854a.5.5 0 010-.708l2-2a.5.5 0 01.708 0l2 2a.5.5 0 01-.708.708L8 2.207 6.354 3.854a.5.5 0 01-.708 0z" clip-rule="evenodd"></path></svg></div>
    <div class="wh-down" style="cursor: pointer; background-color: white; filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.1));  width: 50px; height: 50px; display: flex; justify-content: center; align-items:center; border-radius: 999px">
       <div
          style="display: flex; align-items: center;">
@@ -29,10 +29,12 @@ let dragged;
 let scrollHelpPosX;
 let scrollHelpPosY;
 
-const handleSetInterval = (scrollDir) => {
+let scrollSpeed;
+
+const handleOnMouseEnter = (scrollDir) => {
 	interval = setInterval(() => {
 		window.scrollBy(0, scrollDir);
-	}, 10);
+	}, 5);
 };
 
 const handleOnMouseLeave = () => {
@@ -57,7 +59,7 @@ const registerListerners = () => {
 	});
 
 	up.addEventListener('mouseenter', () => {
-		handleSetInterval(-10);
+		handleOnMouseEnter(-scrollSpeed);
 	});
 
 	up.addEventListener('mouseleave', () => {
@@ -99,7 +101,7 @@ const registerListerners = () => {
 	});
 
 	down.addEventListener('mouseenter', () => {
-		handleSetInterval(10);
+		handleOnMouseEnter(scrollSpeed);
 	});
 
 	down.addEventListener('mouseleave', () => {
@@ -118,6 +120,8 @@ ipcRenderer.on('extensionStatesReply', (event, payload) => {
 		scrollHelpPosX = payload.scrollHelpPosition.left;
 		scrollHelpPosY = payload.scrollHelpPosition.top;
 	}
+
+	if (payload.scrollSpeed) scrollSpeed = payload.scrollSpeed;
 });
 
 const createOverlay = () => {
