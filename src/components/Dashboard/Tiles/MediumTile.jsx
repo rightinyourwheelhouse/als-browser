@@ -2,7 +2,7 @@ import React from 'react';
 
 const MediumTile = ({ title, img, url }) => {
 	const handleChangeUrl = () => {
-		window.api.send('changeURL', url);
+		window.api.send('searchURL', url);
 	};
 	return (
 		<button
