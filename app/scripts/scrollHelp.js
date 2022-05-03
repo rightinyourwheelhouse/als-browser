@@ -3,7 +3,7 @@ const { ipcRenderer } = require('electron');
 ipcRenderer.send('getExtensionStates');
 
 const overlay = `
-<div class="wh-overlay" draggable="true" style="cursor: pointer; position: fixed; right: 2rem; bottom: 2rem; z-index: 999; background-color: white; border: solid #205493 2px; display: flex; flex-direction: column; gap: 1rem; justify-content: center; align-items:center; padding: .8rem; border-radius: .5rem; width:90px; height:200px">
+<div class="wh-overlay" draggable="true" style="opacity: .7;cursor: pointer; position: fixed; right: 2rem; bottom: 2rem; z-index: 999; background-color: white; border: solid #205493 2px; display: flex; flex-direction: column; gap: 1rem; justify-content: center; align-items:center; padding: .8rem; border-radius: .5rem; width:90px; height:200px">
    <div class="wh-up" style="background-color: white; filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.1));  width: 50px; height: 50px; display: flex; justify-content: center; align-items:center; border-radius: 999px">
       <div>
          <svg width="37" height="22" viewBox="0 0 37 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -38,8 +38,15 @@ const handleOnMouseLeave = () => {
 
 const registerListerners = () => {
 	const up = document.querySelector('.wh-up');
-	const overlay = document.getElementById('scrollhelp-overlay');
+	const overlay = document.querySelector('.wh-overlay');
 	const down = document.querySelector('.wh-down');
+
+	overlay.addEventListener('mouseenter', () => {
+		overlay.style.opacity = '1';
+	});
+	overlay.addEventListener('mouseleave', () => {
+		overlay.style.opacity = '.7';
+	});
 
 	up.addEventListener('mouseenter', () => {
 		handleSetInterval(-10);
@@ -49,42 +56,43 @@ const registerListerners = () => {
 		handleOnMouseLeave();
 	});
 
-	overlay.addEventListener('dragenter', () => {
-		overlay.style.display = 'none';
-	});
+	document.addEventListener('dragstart', (e) => (dragged = e.target));
+	document.addEventListener('dragover', (e) => e.preventDefault());
 
-	let elementPosX;
-	let elementPosY;
+	document.addEventListener('drop', (e) => {
+		e.preventDefault();
+		dragged.style.opacity = '1';
 
-	overlay.addEventListener('drag', (e) => {
-		dragged = e.target;
-		const element = e.target.getBoundingClientRect();
+		const boundaries = dragged.getBoundingClientRect();
+		const top = `${e.clientY - boundaries.height / 2}px`;
+		const left = `${e.clientX - boundaries.width / 2}px`;
 
-		elementPosX = element.left + element.width / 2;
-		elementPosY = element.top + element.height / 2;
-	});
+		const { clientX: mouseX, clientY: mouseY } = e;
+		const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
+		const menuHeight = 200;
+		const menuWidth = 90;
+		// dragged.style.top = top;
+		// dragged.style.left = left;
 
-	overlay.addEventListener('dragend', (e) => {
-		overlay.style.display = 'flex';
-
-		// if e.clientX exceeds (the width of the window - 105px) then set dragged.style.left to window.innerWidth - 105px
-		// => makes X-margin of about 10px
-		if (e.clientX > window.innerWidth - 105) {
-			dragged.style.left = window.innerWidth - 105 + 'px';
-		} else if (e.clientX < 10) {
-			dragged.style.left = 10 + 'px';
+		if (windowWidth - mouseX < menuWidth) {
+			dragged.style.left = windowWidth - (menuWidth + 10) + 'px';
+		} else if (mouseX < menuWidth) {
+			dragged.style.left = '10px';
 		} else {
-			dragged.style.left = e.clientX - elementPosX + 'px';
+			dragged.style.left = mouseX - menuWidth / 2 + 'px';
 		}
-		// if e.clientY exceeds (the height of the window - 175px) then set dragged.style.left to window.innerWidth - 175px
-		// => makes Y-margin of about 10px
-		if (e.clientY > window.innerHeight - 220) {
-			dragged.style.top = window.innerHeight - 220 + 'px';
-		} else if (e.clientY < 10) {
-			dragged.style.top = 10 + 'px';
+
+		if (windowHeight - mouseY < menuHeight) {
+			dragged.style.top = windowHeight - (menuHeight + 10) + 'px';
+		} else if (mouseY < menuHeight) {
+			dragged.style.top = '10px';
 		} else {
-			dragged.style.top = e.clientY - elementPosY + 'px';
+			dragged.style.top = mouseY - menuHeight / 2 + 'px';
 		}
+
+		// Send data to React
+		const payload = { top: top, left: left };
+		ipcRenderer.send('setLatestOverlayLocation', payload);
 	});
 
 	down.addEventListener('mouseenter', () => {
@@ -113,14 +121,15 @@ const createOverlay = () => {
 		setTimeout(() => {
 			document.body.appendChild(container);
 			registerListerners();
-		}, 400);
+		}, 500);
 	}
 };
 
 const deleteOverlay = () => {
 	const overlay = document.getElementById('scrollhelp-overlay');
-	if (overlay) overlay.remove();
-
-	document.removeEventListener('mouseenter', registerListerners());
-	document.removeEventListener('mouseleave', registerListerners());
+	if (overlay) {
+		document.removeEventListener('mouseenter', registerListerners());
+		document.removeEventListener('mouseleave', registerListerners());
+		overlay.remove();
+	}
 };

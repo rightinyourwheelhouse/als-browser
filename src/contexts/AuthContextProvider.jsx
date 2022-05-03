@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../utils/FirebaseConfig';
 
 const authContext = createContext();
@@ -29,11 +29,22 @@ const AuthContextProvider = ({ children }) => {
 			}
 		};
 
-		if (user) fetchData();
-
 		window.api.recieve('getExtensionStatesReply', () => {
 			if (user) fetchData();
 		});
+
+		window.api.recieve('setLatestOverlayLocationReply', (payload) => {
+			// console.log(user.uid);
+			// if (user) {
+			// 	const docRef = doc(db, 'users', user.uid);
+			// 	setDoc(
+			// 		docRef,
+			// 		{ extensionStates: { scrollHelpPosition: { top: payload.top, left: payload.left } } },
+			// 		{ merge: true },
+			// 	);
+			// }
+		});
+		if (user) fetchData();
 	}, [user]);
 
 	onAuthStateChanged(auth, (user) => {

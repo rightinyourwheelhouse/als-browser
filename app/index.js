@@ -189,3 +189,11 @@ ipcMain.on('extensionStates', (event, payload) => {
 ipcMain.on('getExtensionStates', () => {
 	mainWindow.webContents.send('getExtensionStatesReply');
 });
+
+ipcMain.on('getLatestOverlayLocation', () => {
+	mainWindow.webContents.send('getLatestOverlayLocationReply');
+});
+
+ipcMain.on('setLatestOverlayLocation', (event, payload) => {
+	mainWindow.webContents.send('setLatestOverlayLocationReply', payload);
+});
