@@ -1,27 +1,9 @@
 const { ipcRenderer } = require('electron');
-// const { arrayUnion, doc, getDoc, setDoc, writeBatch, Timestamp } = require('firebase/firestore');
-
-// const { db } = require('../utils/firebaseConfig');
-
-let user;
-
-ipcRenderer.on('auth', (event, userUID) => {
-	if (userUID) {
-		user = userUID;
-	}
-});
-
-const MAX_QUEUE_SIZE = 250;
-const interval = 30;
-let queue = [];
-
-let device;
-let batchRef;
-let batchSnap;
-
-let previousTimestamp = new Date().getTime();
 
 let mouseTrackingActive = false;
+
+const interval = 30;
+let previousTimestamp = new Date().getTime();
 
 let currentWebPageURL = window.location.href;
 let currentWebPageTitle;

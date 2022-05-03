@@ -183,10 +183,10 @@ ipcMain.on('searchBarFocus', (event, bool) => {
 		: view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
 });
 
-ipcMain.on('sendAuthToBrowserView', (event, arg) => {
-	view.webContents.send('auth', arg);
-});
-
 ipcMain.on('cursorData', (event, arg) => {
 	mainWindow.webContents.send('cursorDataReply', arg);
+});
+
+ipcMain.on('webPageData', (event, arg) => {
+	mainWindow.webContents.send('webPageDataReply', arg);
 });
