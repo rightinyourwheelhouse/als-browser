@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import SmallTile from './Tiles/SmallTile';
 import MediumTile from './Tiles/MediumTile';
 import Title from '../Typography/Title';
@@ -10,27 +10,16 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { PlusIcon } from '@heroicons/react/outline';
 
 const Dashboard = () => {
-	const [showDashboard, setShowDashboard] = useState(true);
-
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	useEffect(() => {
-		let params = new URLSearchParams(location.search);
-		const searchParams = params.get('search');
-
-		if (searchParams) {
-			setShowDashboard(false);
-		} else {
-			setShowDashboard(true);
-		}
-	}, [location.search]);
+	let params = new URLSearchParams(location.search);
 
 	const handleSettings = () => {
 		navigate('/settings/feedback');
 	};
 
-	return showDashboard ? (
+	return !params.get('search') ? (
 		<div className="select-none">
 			<Clock />
 			<button

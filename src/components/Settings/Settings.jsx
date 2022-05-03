@@ -63,40 +63,38 @@ const Settings = () => {
 	];
 
 	return (
-		<>
-			<div className="grid grid-cols-[minmax(12rem,16rem),1fr] gap-4">
-				<div className="mi z-10 flex flex-col gap-4 bg-slate-100 drop-shadow-2xl">
-					<Title className="my-8 text-center">Instellingen</Title>
-					{tabs.map((tab, index) => (
-						<NavLink
-							className={({ isActive }) => {
-								const classes =
-									'text-dark-grey w-full rounded-br-full rounded-tr-full p-2 text-left text-lg font-light hover:bg-white';
-								return isActive ? `bg-white font-bold outline-none drop-shadow-light ${classes}` : classes;
-							}}
-							to={`/settings/${tab.link}`}
-							key={index}
-						>
-							<div className="ml-4 flex items-center gap-3">
-								<tab.icon className="h-6 w-6 stroke-2" />
-								<p>{tab.tabName}</p>
-							</div>
-						</NavLink>
-					))}
-				</div>
-
-				<div className="">
-					<Routes>
-						<Route path="feedback" element={<FeedbackSetting />} />
-						<Route path="account" element={<AccountSetting />} />
-						<Route path="passwords" element={<PasswordSetting />} />
-						<Route path="extension" element={<ExtensionSetting />} />
-						<Route path="history" element={<HistorySetting />} />
-						<Route path="about" element={<AboutSetting />} />
-					</Routes>
-				</div>
+		<div className="grid grid-cols-[minmax(12rem,16rem),1fr] gap-4">
+			<div className="mi z-10 flex flex-col gap-4 bg-slate-100 drop-shadow-2xl">
+				<Title className="my-8 text-center">Instellingen</Title>
+				{tabs.map((tab, index) => (
+					<NavLink
+						className={({ isActive }) => {
+							const classes =
+								'text-dark-grey w-full rounded-br-full rounded-tr-full p-2 text-left text-lg font-light hover:bg-white';
+							return isActive ? `bg-white font-bold outline-none drop-shadow-light ${classes}` : classes;
+						}}
+						to={`/settings/${tab.link}`}
+						key={index}
+					>
+						<div className="ml-4 flex items-center gap-3">
+							<tab.icon className="h-6 w-6 stroke-2" />
+							<p>{tab.tabName}</p>
+						</div>
+					</NavLink>
+				))}
 			</div>
-		</>
+
+			<div className="">
+				<Routes>
+					<Route path="feedback" element={<FeedbackSetting />} />
+					<Route path="account" element={<AccountSetting />} />
+					<Route path="passwords" element={<PasswordSetting />} />
+					<Route path="extension" element={<ExtensionSetting />} />
+					<Route path="history" element={<HistorySetting />} />
+					<Route path="about" element={<AboutSetting />} />
+				</Routes>
+			</div>
+		</div>
 	);
 };
 

@@ -105,12 +105,10 @@ ipcMain.on('searchURL', (event, url) => {
 	const regex = new RegExp(exp);
 
 	if (regex.test(url)) {
-		if (url.includes('www')) url = 'https://' + url;
-		if (!url.includes('www')) url = 'https://www.' + url;
-		view.webContents.loadURL(url);
+		const newUrl = url.replace('https://', '').replace('http://', '').replace('www.', '');
+		url = `https://www.${newUrl}`;
 	} else {
-		const newUrl = 'https://www.google.com/search?q=' + url;
-		view.webContents.loadURL(newUrl);
+		url = 'https://www.google.com/search?q=' + url;
 	}
 
 	// When dashboard is loaded, set the browserView back

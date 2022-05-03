@@ -63,51 +63,49 @@ const Toolbar = ({ onFocusChange }) => {
 	};
 
 	return (
-		<>
-			<div className="drop-shadow-browser draggable w-full">
-				<div className="flex h-20 items-center justify-between bg-slate-100 pl-4 pr-4">
-					<div className="flex cursor-pointer flex-row gap-4">
-						<ToolbarIcon onClick={handleGoBack}>
-							<ArrowLeftIcon />
-						</ToolbarIcon>
+		<div className="drop-shadow-browser draggable w-full">
+			<div className="flex h-20 items-center justify-between bg-slate-100 pl-4 pr-4">
+				<div className="flex cursor-pointer flex-row gap-4">
+					<ToolbarIcon onClick={handleGoBack}>
+						<ArrowLeftIcon />
+					</ToolbarIcon>
 
-						<ToolbarIcon onClick={handleGoForward}>
-							<ArrowRightIcon />
-						</ToolbarIcon>
-					</div>
+					<ToolbarIcon onClick={handleGoForward}>
+						<ArrowRightIcon />
+					</ToolbarIcon>
+				</div>
 
-					<div className="flex flex-row items-center gap-4">
-						<ToolbarIcon onClick={handleRefresh}>
-							<RefreshIcon />
-						</ToolbarIcon>
+				<div className="flex flex-row items-center gap-4">
+					<ToolbarIcon onClick={handleRefresh}>
+						<RefreshIcon />
+					</ToolbarIcon>
 
-						<ToolbarIcon onClick={handleDashboard}>
-							<HomeIcon />
-						</ToolbarIcon>
+					<ToolbarIcon onClick={handleDashboard}>
+						<HomeIcon />
+					</ToolbarIcon>
 
-						<SearchBar onFocusChange={onFocusChange} />
+					<SearchBar onFocusChange={onFocusChange} />
 
-						<ToolbarIcon onClick={handleExtensionToggle}>
-							<img src={LogoBrainWeb} alt="" />
-						</ToolbarIcon>
-					</div>
+					<ToolbarIcon onClick={handleExtensionToggle}>
+						<img src={LogoBrainWeb} alt="" />
+					</ToolbarIcon>
+				</div>
 
-					<div className="flex flex-row gap-2">
-						<ToolbarIcon onClick={handleMinimize}>
-							<MinusSmIcon />
-						</ToolbarIcon>
+				<div className="flex flex-row gap-2">
+					<ToolbarIcon onClick={handleMinimize}>
+						<MinusSmIcon />
+					</ToolbarIcon>
 
-						<ToolbarIcon onClick={handleAdjustSize}>
-							<ArrowsExpandIcon />
-						</ToolbarIcon>
+					<ToolbarIcon onClick={handleAdjustSize}>
+						<ArrowsExpandIcon />
+					</ToolbarIcon>
 
-						<ToolbarIcon onClick={handleClose}>
-							<XIcon />
-						</ToolbarIcon>
-					</div>
+					<ToolbarIcon onClick={handleClose}>
+						<XIcon />
+					</ToolbarIcon>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 };
 
