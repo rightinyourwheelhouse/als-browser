@@ -61,6 +61,7 @@ const Settings = () => {
 			icon: InformationCircleIcon,
 		},
 	];
+
 	return (
 		<div className="grid grid-cols-[minmax(12rem,16rem),1fr] gap-4">
 			<div className="mi z-10 flex flex-col gap-4 bg-slate-100 drop-shadow-2xl">
