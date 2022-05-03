@@ -5,12 +5,12 @@ import Dashboard from './components/Dashboard/Dashboard';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Settings from './components/Settings/Settings';
 
-import { useUser } from './contexts/UserContext';
+import { useAuth } from './contexts/AuthContextProvider';
 import { db } from './utils/FirebaseConfig';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const App = () => {
-	const { user } = useUser();
+	const { user } = useAuth();
 
 	let navigate = useNavigate();
 
@@ -57,7 +57,6 @@ const App = () => {
 				<Route path="settings/*" element={<Settings />}></Route>
 			</Routes>
 		</div>
-
 	);
 };
 
