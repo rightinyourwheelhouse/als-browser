@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Routes, Route, NavLink } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
 
 import ExtensionSetting from './components/Pages/ExtensionSetting';
 import FeedbackSetting from './components/Pages/FeedbackSetting';
@@ -17,7 +18,32 @@ import { PuzzleIcon } from '@heroicons/react/outline';
 import { BookOpenIcon } from '@heroicons/react/outline';
 import { InformationCircleIcon } from '@heroicons/react/outline';
 
+import { db } from '../../utils/FirebaseConfig';
+import { useAuth } from '../../contexts/AuthContextProvider';
+
 const Settings = () => {
+	const { user } = useAuth();
+	const [device, setDevice] = useState('');
+	const [deviceSpecification, setDeviceSpecification] = useState('');
+	const [hasDeviceSpecification, setHasDeviceSpecification] = useState(false);
+
+	useEffect(() => {
+		const getUserDevice = async () => {
+			if (user) {
+				const userDoc = doc(db, 'users', user.uid);
+				const userData = await getDoc(userDoc);
+				setDevice(userData.data().device);
+
+				if (userData.data().device === 'Andere') {
+					setHasDeviceSpecification(true);
+					setDeviceSpecification(userData.data().deviceSpecification);
+				}
+			}
+		};
+
+		getUserDevice();
+	}, [user]);
+
 	const tabs = [
 		{
 			tabName: 'Feedback',
@@ -86,7 +112,17 @@ const Settings = () => {
 			<div className="">
 				<Routes>
 					<Route path="feedback" element={<FeedbackSetting />} />
-					<Route path="account" element={<AccountSetting />} />
+					<Route
+						path="account"
+						element={
+							<AccountSetting
+								device={device}
+								deviceSpecification={deviceSpecification}
+								hasDeviceSpecification={hasDeviceSpecification}
+								setHasDeviceSpecification={setHasDeviceSpecification}
+							/>
+						}
+					/>
 					<Route path="passwords" element={<PasswordSetting />} />
 					<Route path="extension" element={<ExtensionSetting />} />
 					<Route path="history" element={<HistorySetting />} />

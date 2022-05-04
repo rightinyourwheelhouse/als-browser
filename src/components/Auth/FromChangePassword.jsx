@@ -25,8 +25,6 @@ const validationSchemaPasswordChange = Yup.object().shape({
 const FormChangePassword = ({ user, setToast }) => {
 	const [error, setError] = useState('');
 
-	console.log(user);
-
 	const handleSubmitPasswordChange = async (values, { setSubmitting }) => {
 		// To change password we need to reauthenticate the user
 

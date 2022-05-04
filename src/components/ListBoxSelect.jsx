@@ -25,7 +25,7 @@ const ListBoxSelect = ({ label, name, value = '', type, onChange, onBlur, option
 				{...field}
 				className={`${
 					errorText ? 'border-2 border-red-600' : 'border-0'
-				} focus:ring-skin-accent placeholder:text-md mt-2 mb-4 h-10 w-full rounded-md border-2 py-0 px-4 text-sm font-medium hover:border hover:border-dark-blue hover:shadow-[0px_0px_0px_4px_#4c7bea4c] hover:transition-all focus:outline-none focus:ring-2 focus:ring-offset-2`}
+				} focus:ring-skin-accent placeholder:text-md mt-2 mb-4 h-10 w-full max-w-lg rounded-md border-2 py-0 px-4 text-sm font-medium hover:border hover:border-dark-blue hover:shadow-[0px_0px_0px_4px_#4c7bea4c] hover:transition-all focus:outline-none focus:ring-2 focus:ring-offset-2`}
 				type={type}
 				name={name}
 				value={currentValue}
