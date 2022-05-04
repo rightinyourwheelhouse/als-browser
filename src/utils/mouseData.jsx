@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './FirebaseConfig';
-import { arrayUnion, doc, getDoc, setDoc, writeBatch, Timestamp } from 'firebase/firestore';
+import { arrayUnion, doc, getDoc, setDoc, writeBatch } from 'firebase/firestore';
 
 import { useAuth } from '../contexts/AuthContextProvider';
 
@@ -33,13 +33,13 @@ export const MouseData = () => {
 	useEffect(() => {
 		if (!user) return;
 
-		window.api.recieve('cursorDataReply', ([data]) => {
-			(async () => {
+		window.api.recieve('cursorDataReply', async ([data]) => {
+			if (data.currentWebPageTitle == currentWebPageTitle) {
 				if (mouseTrackingActive && data.pageX != undefined && data.pageY != undefined) {
 					device = await getUserDevice();
 
 					if (!batchRef) {
-						batchRef = doc(db, `users/${user.uid}/visitedPages/${currentWebPageTitle}/mouseTracking`, 'mouseData');
+						batchRef = doc(db, `users/${user.uid}/visitedPages/${data.currentWebPageTitle}/mouseTracking`, 'mouseData');
 					}
 
 					if (!batchSnap) {
@@ -75,7 +75,7 @@ export const MouseData = () => {
 						await sendbatch(batch);
 					}
 				}
-			})();
+			}
 		});
 	}, [currentWebPageTitle]);
 
@@ -100,19 +100,18 @@ export const MouseData = () => {
 	useEffect(() => {
 		if (!user) return;
 
-		window.api.recieve('beforeunloadReply', () => {
-			(async () => {
-				if (!queue.length) return;
+		window.api.recieve('beforeunloadReply', async () => {
+			if (!queue.length) return;
 
-				let batch = writeBatch(db);
-				queue.forEach((queueItem) => {
-					batch.update(batchRef, 'values', queueItem);
-				});
+			let batch = writeBatch(db);
 
-				queue = [];
+			queue.forEach((queueItem) => {
+				batch.update(batchRef, 'values', queueItem);
+			});
 
-				await batch.commit();
-			})();
+			await sendbatch(batch);
+
+			batchRef = null;
 		});
-	}, []);
+	}, [user, queue, sendbatch, batchRef]);
 };
