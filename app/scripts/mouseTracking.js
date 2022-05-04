@@ -20,7 +20,7 @@ const registerListeners = () => {
 	window.addEventListener('beforeunload', handleBeforeUnload);
 
 	// Get the current web page title
-	document.addEventListener('DOMContentLoaded', () => {
+	window.addEventListener('load', () => {
 		currentWebPageTitle = document.title.replaceAll('/', '-');
 
 		const webPageData = {
@@ -73,6 +73,7 @@ const setCursorData = (timestamp, clientX, clientY, isClick, pageX, pageY, eleme
 		pageX,
 		pageY,
 		element,
+		currentWebPageTitle: document.title.replaceAll('/', '-'),
 	};
 
 	// send cursorData to mainbrowser
