@@ -1,7 +1,5 @@
 const { ipcRenderer } = require('electron');
 
-let mouseTrackingActive = false;
-
 const interval = 30;
 let previousTimestamp = new Date().getTime();
 
@@ -21,22 +19,36 @@ const registerListeners = () => {
 
 	// Get the current web page title
 	window.addEventListener('load', () => {
-		currentWebPageTitle = document.title.replaceAll('/', '-');
+		if (!document.title) {
+			let webPageData;
 
-		const webPageData = {
-			url: currentWebPageURL,
-			title: currentWebPageTitle,
-			lastVisit: currentWebPageTime,
-		};
+			setTimeout(() => {
+				currentWebPageTitle = document.title.replaceAll('/', '-');
 
-		// send webPageData to mainbrowser
-		ipcRenderer.send('webPageData', webPageData);
+				webPageData = {
+					url: currentWebPageURL,
+					title: currentWebPageTitle,
+					lastVisit: currentWebPageTime,
+				};
+
+				ipcRenderer.send('webPageData', webPageData);
+			}, 1000);
+		} else {
+			currentWebPageTitle = document.title.replaceAll('/', '-');
+			const webPageData = {
+				url: currentWebPageURL,
+				title: currentWebPageTitle,
+				lastVisit: currentWebPageTime,
+			};
+
+			// send webPageData to mainbrowser
+			ipcRenderer.send('webPageData', webPageData);
+		}
 	});
 };
 
 const handleBeforeUnload = () => {
 	// send message to mainbrowser
-	console.log('beforeunload');
 	ipcRenderer.send('beforeunload');
 };
 
