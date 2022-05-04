@@ -1,7 +1,7 @@
 {
   "name": "als-browser",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Browser for the ALS-liga",
   "main": "app/index.js",
   "author": "Jamie-Lee Hart, Tommy Tytgat, Ewout Verhamme",
