@@ -6,7 +6,7 @@ import FormChangeDevice from './FormChangeDevice';
 import FormChangeEmail from './FormChangeEmail';
 import FormChangePassword from './FromChangePassword';
 
-const Account = ({ user, logout, device, deviceSpecification, hasDeviceSpecification, setHasDeviceSpecification }) => {
+const Account = ({ user, device, deviceSpecification, hasDeviceSpecification, setHasDeviceSpecification }) => {
 	const [toast, setToast] = useState(false);
 
 	return (
@@ -27,10 +27,6 @@ const Account = ({ user, logout, device, deviceSpecification, hasDeviceSpecifica
 			/>
 
 			<DeleteAccount user={user} />
-
-			<button className="mt-10 h-10 w-32 rounded-lg bg-red-500 text-white" onClick={logout}>
-				Uitloggen
-			</button>
 		</div>
 	);
 };

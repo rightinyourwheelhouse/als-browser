@@ -3,21 +3,12 @@ import Login from '../../../Auth/Login';
 import Register from '../../../Auth/Register';
 
 import { useAuth } from '../../../../contexts/AuthContextProvider';
-import { signOut } from 'firebase/auth';
 import Title from '../../../Typography/Title';
 import Account from '../../../Auth/Account';
 
 const AccountSetting = ({ device, deviceSpecification, hasDeviceSpecification, setHasDeviceSpecification }) => {
-	const { user, auth } = useAuth();
+	const { user } = useAuth();
 	const [loginActive, setLoginActive] = useState(true);
-
-	const logout = async () => {
-		try {
-			await signOut(auth);
-		} catch (error) {
-			return;
-		}
-	};
 
 	return (
 		<div id="account_overflow" className="h-[calc(100vh-80px)] overflow-y-scroll px-10 pb-16">
@@ -26,7 +17,6 @@ const AccountSetting = ({ device, deviceSpecification, hasDeviceSpecification, s
 				{user && (
 					<Account
 						user={user}
-						logout={logout}
 						device={device}
 						deviceSpecification={deviceSpecification}
 						hasDeviceSpecification={hasDeviceSpecification}
