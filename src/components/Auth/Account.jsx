@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import Toast from '../Toast';
+import DeleteAccount from './DeleteAccount';
 import FormChangeDevice from './FormChangeDevice';
 import FormChangeEmail from './FormChangeEmail';
 import FormChangePassword from './FromChangePassword';
@@ -24,6 +25,8 @@ const Account = ({ user, logout, device, deviceSpecification, hasDeviceSpecifica
 				hasDeviceSpecification={hasDeviceSpecification}
 				setHasDeviceSpecification={setHasDeviceSpecification}
 			/>
+
+			<DeleteAccount user={user} />
 
 			<button className="mt-10 h-10 w-32 rounded-lg bg-red-500 text-white" onClick={logout}>
 				Uitloggen
