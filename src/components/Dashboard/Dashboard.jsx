@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SmallTile from './Tiles/SmallTile';
 import MediumTile from './Tiles/MediumTile';
 import Title from '../Typography/Title';
@@ -19,8 +19,13 @@ const Dashboard = () => {
 		navigate('/settings/feedback');
 	};
 
-	window.api.recieve('update_available', () => {
-		console.log('UPDATE AVAILABLE');
+	useEffect(() => {
+		window.api.recieve('update_available', () => {
+			console.log('A new update is available. Downloading now...');
+		});
+		window.api.recieve('update_downloaded', () => {
+			console.log('Update Downloaded. It will be installed on restart. Restart now?');
+		});
 	});
 
 	const restartApp = () => {
@@ -29,8 +34,11 @@ const Dashboard = () => {
 
 	return !params.get('search') ? (
 		<div className="select-none">
-			<p className="text-center">Version 1.0.0</p>
-			<button onClick={restartApp}>Restart app</button>
+			<div className="m-center">
+				<p className="text-center">Version 1.0.0</p>
+				<button onClick={restartApp}>Restart app</button>
+			</div>
+
 			<Clock />
 			<button
 				onClick={handleSettings}
