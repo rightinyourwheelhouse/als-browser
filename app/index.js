@@ -47,6 +47,10 @@ function createWindow() {
 			if (view) view.setBounds({ x: 0, y: 80, width: size[0], height: size[1] - 80 });
 		}
 	});
+
+	mainWindow.once('ready-to-show', () => {
+		autoUpdater.checkForUpdatesAndNotify();
+	});
 }
 
 function createBrowserView() {
@@ -73,7 +77,6 @@ function createBrowserView() {
 
 app.whenReady().then(() => {
 	createWindow();
-	autoUpdater.checkForUpdatesAndNotify();
 	app.on('activate', function () {
 		// On macOS it's common to re-create a window in the app when the
 		// dock icon is clicked and there are no other windows open.
@@ -206,11 +209,13 @@ ipcMain.on('setLatestOverlayLocation', (event, ...payload) => {
 });
 
 autoUpdater.on('update-available', () => {
+	console.log('new update available');
+	autoUpdater.quitAndInstall();
 	mainWindow.webContents.send('update_available');
 });
-autoUpdater.on('update-downloaded', () => {
-	mainWindow.webContents.send('update_downloaded');
-});
-ipcMain.on('restart_app', () => {
-	autoUpdater.quitAndInstall();
-});
+// autoUpdater.on('update-downloaded', () => {
+// 	mainWindow.webContents.send('update_downloaded');
+// });
+// ipcMain.on('restart_app', () => {
+// 	autoUpdater.quitAndInstall();
+// });

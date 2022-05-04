@@ -1,7 +1,7 @@
 {
   "name": "als-browser",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.1",
   "description": "Browser for the ALS-liga",
   "main": "app/index.js",
   "author": "Jamie-Lee Hart, Tommy Tytgat, Ewout Verhamme",
@@ -36,7 +36,7 @@
     "preview": "vite preview",
     "electron:dev": "concurrently \"cross-env BROWSER=none npm run dev\" \"wait-on -c waitOnConfig.json http-get://localhost:3000/ && electron .\"",
     "electron:build-mac": "npm run build && electron-builder --mac",
-    "electron:build-win": "npm run build && electron-builder -win",
+    "electron:build-win": "npm run build && electron-builder --win",
     "electron:build:all": "npm run build && electron-builder -mw",
     "electron-build": "electron-builder build --win --publish never",
     "deploy": "electron-builder build --win --publish always"
