@@ -20,7 +20,7 @@ const AccountSetting = () => {
 	};
 
 	return (
-		<div className="h-[calc(100vh-80px)] overflow-y-scroll px-10 pb-16">
+		<div id="account_overflow" className="h-[calc(100vh-80px)] overflow-y-scroll px-10 pb-16">
 			<Title className="mt-8">Account</Title>
 			<div className="">
 				{user && <Account user={user} logout={logout} />}

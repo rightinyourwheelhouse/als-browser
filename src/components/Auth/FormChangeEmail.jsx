@@ -45,7 +45,6 @@ const FormChangeEmail = ({ user, setToast }) => {
 				}, 5000);
 
 				await updateEmail(user, values.email);
-				window.scrollTo(0, 0);
 			} catch (error) {
 				const errorHandling = ErrorHandling(error);
 				setError(errorHandling);
