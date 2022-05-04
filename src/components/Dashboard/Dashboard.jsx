@@ -19,9 +19,18 @@ const Dashboard = () => {
 		navigate('/settings/feedback');
 	};
 
+	window.api.recieve('update_available', () => {
+		console.log('UPDATE AVAILABLE');
+	});
+
+	const restartApp = () => {
+		window.api.send('restart_app');
+	};
+
 	return !params.get('search') ? (
 		<div className="select-none">
-			<p>Version 1.0.1</p>
+			<p className="text-center">Version 1.0.0</p>
+			<button onClick={restartApp}>Restart app</button>
 			<Clock />
 			<button
 				onClick={handleSettings}

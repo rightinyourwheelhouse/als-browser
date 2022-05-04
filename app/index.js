@@ -8,6 +8,10 @@ const isDev = require('electron-is-dev');
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) app.quit();
 
+setInterval(() => {
+	autoUpdater.checkForUpdatesAndNotify();
+}, 5000);
+
 let mainWindow;
 let view;
 
@@ -209,9 +213,11 @@ ipcMain.on('setLatestOverlayLocation', (event, ...payload) => {
 });
 
 autoUpdater.on('update-available', () => {
-	console.log('new update available');
-	autoUpdater.quitAndInstall();
 	mainWindow.webContents.send('update_available');
+});
+
+ipcMain.on('restart_app', () => {
+	autoUpdater.quitAndInstall();
 });
 // autoUpdater.on('update-downloaded', () => {
 // 	mainWindow.webContents.send('update_downloaded');

@@ -1,7 +1,7 @@
 {
   "name": "als-browser",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Browser for the ALS-liga",
   "main": "app/index.js",
   "author": "rightinyourwheelhouse",
@@ -11,21 +11,13 @@
   },
   "license": "MIT",
   "build": {
-    "dmg": {
-      "contents": [
-        {
-          "x": 110,
-          "y": 150
-        },
-        {
-          "x": 240,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
+    "appId":"com.wheelhouse.browser",
+    "productName": "ALSbrowser",
+    "publish": {
+      "provider": "github"
     },
     "win": {
+      "publish": "github",
       "target": "nsis",
       "icon": "build/icon.ico"
     }
@@ -38,8 +30,8 @@
     "electron:build-mac": "npm run build && electron-builder --mac",
     "electron:build-win": "npm run build && electron-builder --win",
     "electron:build:all": "npm run build && electron-builder -mw",
-    "electron-build": "electron-builder build --win --publish never",
-    "deploy": "electron-builder build --win --publish always"
+    "electron-build": "npm run build && electron-builder build --win --publish never",
+    "deploy": "npm run build && electron-builder build --win --publish always"
   },
   "dependencies": {
     "@firebase/auth": "^0.19.12",
