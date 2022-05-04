@@ -24,7 +24,7 @@ const tfnode = require('@tensorflow/tfjs-node');
  let previousClosestObject;
  //the button that propagates click events to the original event
  let shortcutButton;
- let shortcutLocationInterval = 5;
+ let shortcutLocationInterval = 3;
  let shortcutLocationCounter = 0;
  let foundCloseElement = false;
 
@@ -332,7 +332,7 @@ const checkCloseElements = (prediction) => {
 
 /*
  * moves the shortcut button to the cursor position
- * if the travled distance is to small(slow precise movement or slowing down qt destination), the shortcut button is removed and deactivated
+ * if the travled distance is to small(slow precise movement or slowing down to destination), the shortcut button is removed and deactivated
  * 
  */
 function moveShortCutButton(){
@@ -341,8 +341,8 @@ function moveShortCutButton(){
 	color:white;
 	z-index: 99999;	
 	`;	
-	shortcutButton.style.top = clientY + windowY+"px"
-	shortcutButton.style.left = clientX + windowX +"px"
+	shortcutButton.style.top = clientY + windowY - 5 +"px"
+	shortcutButton.style.left = clientX + windowX- 5 +"px"
 	shortcutButton.style.position = "absolute";
 	if (queue.length == 10){
 		let euclideanDistance = Math.sqrt(Math.pow(queue[9][0] - queue[0][0], 2) +  
@@ -361,10 +361,13 @@ function moveShortCutButton(){
 		   if ( previousClosestElement.title.length > 30){
 			shortcutButton.textContent = previousClosestElement.title.slice(0, 30)
 		   }
-		   else{
+		   if ( previousClosestElement.title.length <= 30 && previousClosestElement.title.length > 3 ){
 			shortcutButton.textContent = previousClosestElement.title
 		   }
+		   else{shortcutButton.textContent = 'shortcut' }
+		   console.log(previousClosestElement)
 	   }
+	   
    }
 }
 
