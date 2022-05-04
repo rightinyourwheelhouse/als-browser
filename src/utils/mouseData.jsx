@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './FirebaseConfig';
-import { arrayUnion, doc, getDoc, setDoc, writeBatch } from 'firebase/firestore';
+import { arrayUnion, doc, getDoc, setDoc, writeBatch, onSnapshot } from 'firebase/firestore';
 
 import { useAuth } from '../contexts/AuthContextProvider';
 
 export const MouseData = () => {
 	const { user } = useAuth();
 	const [currentWebPageTitle, setCurrentWebPageTitle] = useState('');
+	const [mouseTrackingActive, setMouseTrackingActive] = useState(false);
 
 	const MAX_QUEUE_SIZE = 250;
 	let queue = [];
@@ -15,7 +16,19 @@ export const MouseData = () => {
 	let batchRef;
 	let batchSnap;
 
-	let mouseTrackingActive = true;
+	useEffect(() => {
+		if (!user) return;
+
+		const unsub = onSnapshot(doc(db, 'users', user.uid), (snap) => {
+			if (snap.exists()) {
+				const data = snap.data();
+				if (data.extensionStates) setMouseTrackingActive(data.extensionStates.mouseTracking);
+			}
+		});
+		return () => {
+			unsub();
+		};
+	}, [user]);
 
 	useEffect(() => {
 		if (!user) return;
@@ -81,6 +94,7 @@ export const MouseData = () => {
 
 	const getUserDevice = async () => {
 		if (!user) return;
+
 		if (device) return device;
 
 		let deviceRef = doc(db, `users/${user.uid}`);
