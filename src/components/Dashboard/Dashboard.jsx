@@ -21,7 +21,7 @@ const Dashboard = () => {
 
 	return !params.get('search') ? (
 		<div className="select-none">
-			<p>Version 1.0.0</p>
+			<p>Version 1.0.1</p>
 			<Clock />
 			<button
 				onClick={handleSettings}
