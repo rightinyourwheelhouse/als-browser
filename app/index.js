@@ -1,7 +1,6 @@
 // electron/electron.js
 const path = require('path');
 const { app, BrowserWindow, BrowserView, ipcMain, nativeTheme } = require('electron');
-const log = require('electron-log');
 const { autoUpdater } = require('electron-updater');
 
 const isDev = require('electron-is-dev');
@@ -9,15 +8,11 @@ const isDev = require('electron-is-dev');
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) app.quit();
 
-autoUpdater.logger = log;
-autoUpdater.logger.transports.file.level = 'info';
-log.info('App starting...');
 
 let mainWindow;
 let view;
 
 function sendStatusToWindow(text) {
-	log.info(text);
 	mainWindow.webContents.send('message', text);
 }
 
