@@ -12,7 +12,7 @@ import { PlusIcon } from '@heroicons/react/outline';
 
 const ExtensionSettings = () => {
 	const { user } = useAuth();
-	const [extensionStates, setExtensionStates] = useState(false);
+	const [extensionStates, setExtensionStates] = useState({});
 
 	useEffect(() => {
 		const fetchData = async () => {
