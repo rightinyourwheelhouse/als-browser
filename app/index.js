@@ -12,7 +12,60 @@ let loadingScreen;
 let mainWindow;
 let view;
 
-function createWindow() {
+function sendLoadingStatusToWindow(text) {
+	loadingScreen.webContents.send('message', text);
+}
+
+const createLoadingScreen = () => {
+	loadingScreen = new BrowserWindow({
+		width: 300,
+		height: 350,
+		frame: false,
+		webPreferences: {
+			preload: path.join(__dirname, 'preload.js'),
+		},
+	});
+	loadingScreen.setResizable(false);
+	loadingScreen.loadURL('file://' + __dirname + '/loading/loading.html');
+	loadingScreen.on('closed', () => (loadingScreen = null));
+	loadingScreen.webContents.on('did-finish-load', () => {
+		loadingScreen.show();
+	});
+
+	autoUpdater.on('checking-for-update', () => {
+		sendLoadingStatusToWindow('Controleren op update...');
+	});
+
+	autoUpdater.on('update-available', () => {
+		sendLoadingStatusToWindow('Update gevonden');
+	});
+
+	autoUpdater.on('update-not-available', () => {
+		sendLoadingStatusToWindow('Applicatie starten...');
+		loadingScreen.close();
+		createWindow();
+	});
+
+	autoUpdater.on('error', () => {
+		sendLoadingStatusToWindow('Er is iets fout gelopen... ');
+		loadingScreen.close();
+		createWindow();
+	});
+
+	autoUpdater.on('download-progress', (progressObj) => {
+		let log_message = 'Download speed: ' + progressObj.bytesPerSecond;
+		log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+		log_message = log_message + ' (' + progressObj.transferred + '/' + progressObj.total + ')';
+		sendLoadingStatusToWindow(log_message);
+	});
+
+	autoUpdater.on('update-downloaded', () => {
+		sendLoadingStatusToWindow('Update gedownload, herstarten...');
+		autoUpdater.quitAndInstall();
+	});
+};
+
+const createWindow = () => {
 	// Always set the theme to light
 	nativeTheme.themeSource = 'light';
 
@@ -52,7 +105,7 @@ function createWindow() {
 	mainWindow.once('ready-to-show', () => {
 		autoUpdater.checkForUpdatesAndNotify();
 	});
-}
+};
 
 function createBrowserView() {
 	view = new BrowserView({
@@ -85,57 +138,7 @@ app.whenReady().then(() => {
 
 	createLoadingScreen();
 	autoUpdater.checkForUpdatesAndNotify();
-	setTimeout(() => {
-		createWindow();
-	}, 20000);
 });
-
-function sendLoadingStatusToWindow(text) {
-	loadingScreen.webContents.send('message', text);
-}
-
-const createLoadingScreen = () => {
-	loadingScreen = new BrowserWindow({
-		width: 900,
-		height: 700,
-		frame: false,
-		webPreferences: {
-			preload: path.join(__dirname, 'preload.js'),
-		},
-	});
-	loadingScreen.webContents.openDevTools();
-	loadingScreen.setResizable(false);
-	loadingScreen.loadURL('file://' + __dirname + '/loading/loading.html');
-	loadingScreen.on('closed', () => (loadingScreen = null));
-	loadingScreen.webContents.on('did-finish-load', () => {
-		loadingScreen.show();
-	});
-
-	autoUpdater.on('checking-for-update', () => {
-		sendLoadingStatusToWindow('Checking for update...');
-	});
-	
-	autoUpdater.on('update-available', () => {
-		sendLoadingStatusToWindow('Update available.');
-	});
-
-	autoUpdater.on('update-not-available', () => {
-		sendLoadingStatusToWindow('Update not available.');
-	});
-
-	autoUpdater.on('error', (err) => {
-		sendLoadingStatusToWindow('Error in auto-updater. ' + err);
-	});
-	autoUpdater.on('download-progress', (progressObj) => {
-		let log_message = 'Download speed: ' + progressObj.bytesPerSecond;
-		log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
-		log_message = log_message + ' (' + progressObj.transferred + '/' + progressObj.total + ')';
-		sendLoadingStatusToWindow(log_message);
-	});
-	autoUpdater.on('update-downloaded', () => {
-		sendLoadingStatusToWindow('Update downloaded');
-	});
-};
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -271,8 +274,4 @@ autoUpdater.on('update-available', () => {
 
 autoUpdater.on('update-downloaded', () => {
 	mainWindow.webContents.send('update_downloaded');
-});
-
-ipcMain.on('restart_app', () => {
-	autoUpdater.quitAndInstall();
 });
