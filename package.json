@@ -6,16 +6,18 @@
   "main": "app/index.js",
   "author": "rightinyourwheelhouse",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/rightinyourwheelhouse/als-browser.git"
+    "type": "git",
+    "url": "https://github.com/rightinyourwheelhouse/als-browser.git"
   },
   "license": "MIT",
   "build": {
-    "publish": [{
+    "publish": [
+      {
         "provider": "github",
         "owner": "rightinyourwheelhouse",
         "repo": "als-browser"
-    }]
+      }
+    ]
   },
   "scripts": {
     "dev": "vite",
