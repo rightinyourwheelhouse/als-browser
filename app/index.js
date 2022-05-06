@@ -54,7 +54,7 @@ const createLoadingScreen = () => {
 	});
 
 	autoUpdater.on('download-progress', (progressObj) => {
-		const message = progressObj.percent + '% gedownload';
+		const message = progressObj.percent.toFixed(2) + '% gedownload';
 		sendLoadingStatusToWindow(message);
 	});
 
