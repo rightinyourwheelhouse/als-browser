@@ -43,13 +43,13 @@ const createLoadingScreen = () => {
 	autoUpdater.on('update-not-available', () => {
 		sendLoadingStatusToWindow('Applicatie starten...');
 		loadingScreen.close();
-		createWindow();
+		if (!mainWindow) createWindow();
 	});
 
 	autoUpdater.on('error', () => {
 		sendLoadingStatusToWindow('Er is iets fout gelopen... ');
 		loadingScreen.close();
-		createWindow();
+		if (!mainWindow) createWindow();
 	});
 
 	autoUpdater.on('download-progress', (progressObj) => {
