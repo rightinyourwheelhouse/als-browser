@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import SmallTile from './Tiles/SmallTile';
 import MediumTile from './Tiles/MediumTile';
 import Title from '../Typography/Title';
@@ -12,14 +12,17 @@ import { PlusIcon } from '@heroicons/react/outline';
 import { useAuth } from '../../contexts/AuthContextProvider';
 import { query, collection, limit, doc, getDoc, setDoc, onSnapshot, getDocs, orderBy } from 'firebase/firestore';
 import { db } from '../../utils/FirebaseConfig';
+import AddBookmark from './AddBookmark';
 
 const Dashboard = () => {
+	const [deleteBookmark, setDeleteBookmark] = useState(false);
+	const [addBookmark, setAddBookmark] = useState(false);
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { user } = useAuth();
 	const [bookmarks, setBookmarks] = useState([]);
 	const [bookmarksUpdated, setBookmarksUpdated] = useState(false);
-	let bookmarkCount;
+	const bookmarkCountRef = useRef();
 
 	let params = new URLSearchParams(location.search);
 
@@ -61,7 +64,7 @@ const Dashboard = () => {
 		window.api.recieve('bookmarkReply', ([bookmarkData]) => {
 			const queryRefLength = query(collection(db, 'users', `${user.uid}/bookmarks`));
 			onSnapshot(queryRefLength, (snapshot) => {
-				bookmarkCount = snapshot.size;
+				bookmarkCountRef.current = snapshot.size;
 			});
 
 			// add bookmark to firebase db collection
@@ -77,12 +80,12 @@ const Dashboard = () => {
 							type: 'warning',
 						});
 					} else {
-						if (bookmarkCount >= 10) {
+						if (bookmarkCountRef.current >= 10) {
 							window.api.send('alert-message-bookmark', {
 								message: 'U hebt het maximum aantal bladwijzers bereikt',
 								type: 'warning',
 							});
-						} else if (bookmarkCount < 10) {
+						} else if (bookmarkCountRef.current < 10) {
 							// bookmark does not exist
 							// add bookmark to collection
 							setDoc(bookmarkRef, bookmarkData).then(() => {
@@ -104,45 +107,63 @@ const Dashboard = () => {
 	}, [user]);
 
 	return !params.get('search') ? (
-		<div className="select-none overflow-y-auto">
-			<Clock />
-			<button
-				onClick={handleSettings}
-				className="absolute right-8 top-28 flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
-			>
-				<img className="h-14 w-14 rounded-full" src="https://i.imgur.com/jcuurYi.png" alt="" />
-				<h2 className="font-light">Instellingen</h2>
-			</button>
-			<div className="m-center mt-8 w-3/4">
-				<div className="mb-10">
-					<Title>Suggesties</Title>
+		<>
+			{addBookmark && (
+				<AddBookmark setAddBookmark={setAddBookmark} user={user} setBookmarksUpdated={setBookmarksUpdated} />
+			)}
+			<div className="select-none overflow-y-auto">
+				<Clock />
+				<button
+					onClick={handleSettings}
+					className="absolute right-8 top-28 flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
+				>
+					<img className="h-14 w-14 rounded-full" src="https://i.imgur.com/jcuurYi.png" alt="" />
+					<h2 className="font-light">Instellingen</h2>
+				</button>
+				<div className="m-center mt-8 w-3/4">
+					<div className="mb-10">
+						<Title>Suggesties</Title>
+					</div>
+					<div className="flex cursor-pointer flex-row gap-10">
+						<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" url="www.nieuwsblad.be" />
+						<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" url="www.nieuwsblad.be" />
+						<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" url="www.nieuwsblad.be" />
+					</div>
 				</div>
-				<div className="flex cursor-pointer flex-row gap-10">
-					<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" url="www.nieuwsblad.be" />
-					<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" url="www.nieuwsblad.be" />
-					<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" url="www.nieuwsblad.be" />
-				</div>
-			</div>
-			<div className="m-center mt-16 mb-16 w-3/4">
-				<div className="mb-10 flex items-center justify-between">
-					<Title>Bladwijzers</Title>
-				</div>
-				<div className="flex cursor-pointer flex-row flex-wrap justify-center ">
-					{bookmarks.map((bookmark) => (
-						<SmallTile key={bookmark.title} title={bookmark.title} img={bookmark.favicon} url={bookmark.url} />
-					))}
+				<div className="m-center mt-16 mb-16 w-3/4">
+					<div className="mb-10 flex items-center justify-between">
+						<Title>Bladwijzers</Title>
+						<button onClick={() => setDeleteBookmark(!deleteBookmark)}>Verwijder</button>
+					</div>
+					<div className="flex cursor-pointer flex-row flex-wrap justify-center ">
+						{bookmarks.map((bookmark) => (
+							<SmallTile
+								key={bookmark.title}
+								title={bookmark.title}
+								img={bookmark.favicon}
+								url={bookmark.url}
+								deleteBookmark={deleteBookmark}
+								setBookmarksUpdated={setBookmarksUpdated}
+							/>
+						))}
 
-					{bookmarks.length < 10 && (
-						<button className="mx-4 flex w-32 flex-col items-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover">
-							<div className="drop-shadow-browser flex h-20 w-20  items-center justify-center rounded-2xl bg-white">
-								<PlusIcon className="h-10 w-10" />
-							</div>
-							<h2 className="w-32 truncate font-mulish text-base font-medium">Toevoegen</h2>
-						</button>
-					)}
+						{bookmarks.length < 10 && (
+							<button
+								onClick={() => {
+									setAddBookmark(true);
+								}}
+								className="mx-4 flex w-32 flex-col items-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
+							>
+								<div className="drop-shadow-browser flex h-20 w-20  items-center justify-center rounded-2xl bg-white">
+									<PlusIcon className="h-10 w-10" />
+								</div>
+								<h2 className="w-32 truncate font-mulish text-base font-medium">Toevoegen</h2>
+							</button>
+						)}
+					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	) : (
 		<OnType />
 	);
