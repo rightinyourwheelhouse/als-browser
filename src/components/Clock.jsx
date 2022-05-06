@@ -17,7 +17,7 @@ const Clock = () => {
 		return () => clearInterval(interval);
 	}, []);
 
-	return <div className="mt-4 h-10 text-center">{time}</div>;
+	return <div className="mt-8 h-10 text-center">{time}</div>;
 };
 
 export default Clock;
