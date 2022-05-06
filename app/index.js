@@ -47,17 +47,15 @@ const createLoadingScreen = () => {
 		if (!mainWindow) createWindow();
 	});
 
-	autoUpdater.on('error', (err) => {
-		sendLoadingStatusToWindow('Er is iets fout gelopen...' + err.toString());
-		// loadingScreen.close();
-		// if (!mainWindow) createWindow();
+	autoUpdater.on('error', () => {
+		sendLoadingStatusToWindow('Er is iets fout gelopen...');
+		loadingScreen.close();
+		if (!mainWindow) createWindow();
 	});
 
 	autoUpdater.on('download-progress', (progressObj) => {
-		let log_message = 'Download speed: ' + progressObj.bytesPerSecond;
-		log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
-		log_message = log_message + ' (' + progressObj.transferred + '/' + progressObj.total + ')';
-		sendLoadingStatusToWindow(log_message);
+		const message = progressObj.percent + '% gedownload';
+		sendLoadingStatusToWindow(message);
 	});
 
 	autoUpdater.on('update-downloaded', () => {
