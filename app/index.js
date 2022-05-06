@@ -114,12 +114,15 @@ const createLoadingScreen = () => {
 	autoUpdater.on('checking-for-update', () => {
 		sendLoadingStatusToWindow('Checking for update...');
 	});
+	
 	autoUpdater.on('update-available', () => {
 		sendLoadingStatusToWindow('Update available.');
 	});
+
 	autoUpdater.on('update-not-available', () => {
 		sendLoadingStatusToWindow('Update not available.');
 	});
+
 	autoUpdater.on('error', (err) => {
 		sendLoadingStatusToWindow('Error in auto-updater. ' + err);
 	});
