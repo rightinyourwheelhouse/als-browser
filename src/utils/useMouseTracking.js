@@ -11,7 +11,6 @@ export const useMouseTracking = () => {
 
 	const deviceRef = useRef();
 	const queueRef = useRef([]);
-	const batchSnapRef = useRef();
 	const batchReferenceRef = useRef();
 
 	const MAX_QUEUE_SIZE = 250;
@@ -58,7 +57,6 @@ export const useMouseTracking = () => {
 	const sendBatch = useCallback(
 		async (batch) => {
 			if (!user) return;
-			console.log('sendBatch', batch);
 			queueRef.current = [];
 
 			await batch.commit();
@@ -80,8 +78,8 @@ export const useMouseTracking = () => {
 						'mouseData',
 					);
 
-					batchSnapRef.current = await getDoc(batchReferenceRef.current);
-					if (!batchSnapRef.current.exists()) {
+					const batchSnap = await getDoc(batchReferenceRef.current);
+					if (!batchSnap.exists()) {
 						await setDoc(batchReferenceRef.current, {
 							values: [],
 						});
@@ -128,8 +126,8 @@ export const useMouseTracking = () => {
 			});
 
 			await sendBatch(batch);
-
-			batchReferenceRef.current = null;
 		});
+
+		batchReferenceRef.current = null;
 	}, [user, queueRef, sendBatch, batchReferenceRef]);
 };
