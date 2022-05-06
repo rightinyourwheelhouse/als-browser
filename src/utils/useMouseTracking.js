@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { db } from './FirebaseConfig';
 import { arrayUnion, doc, getDoc, setDoc, writeBatch, onSnapshot } from 'firebase/firestore';
 
 import { useAuth } from '../contexts/AuthContextProvider';
 
-export const MouseData = () => {
+export const useMouseTracking = () => {
 	const { user } = useAuth();
 	const [currentWebPageTitle, setCurrentWebPageTitle] = useState('');
 	const [mouseTrackingActive, setMouseTrackingActive] = useState(false);
 
-	const MAX_QUEUE_SIZE = 250;
-	let queue = [];
+	const deviceRef = useRef();
+	const queueRef = useRef([]);
+	const batchSnapRef = useRef();
+	const batchReferenceRef = useRef();
 
-	let device;
-	let batchRef;
-	let batchSnap;
+	const MAX_QUEUE_SIZE = 250;
 
 	useEffect(() => {
 		if (!user) return;
@@ -49,22 +49,26 @@ export const MouseData = () => {
 		window.api.recieve('cursorDataReply', async ([data]) => {
 			if (data.currentWebPageTitle == currentWebPageTitle) {
 				if (mouseTrackingActive && data.pageX != undefined && data.pageY != undefined) {
-					device = await getUserDevice();
+					deviceRef.current = await getUserDevice();
 
-					if (!batchRef) {
-						batchRef = doc(db, `users/${user.uid}/visitedPages/${data.currentWebPageTitle}/mouseTracking`, 'mouseData');
+					if (!batchReferenceRef.current) {
+						batchReferenceRef.current = doc(
+							db,
+							`users/${user.uid}/visitedPages/${data.currentWebPageTitle}/mouseTracking`,
+							'mouseData',
+						);
 					}
 
-					if (!batchSnap) {
-						batchSnap = await getDoc(batchRef);
-						if (!batchSnap.exists()) {
-							await setDoc(batchRef, {
+					if (!batchSnapRef.current) {
+						batchSnapRef.current = await getDoc(batchReferenceRef.current);
+						if (!batchSnapRef.current.exists()) {
+							await setDoc(batchReferenceRef.current, {
 								values: [],
 							});
 						}
 					}
 
-					queue.push(
+					queueRef.current.push(
 						arrayUnion({
 							mouse: {
 								clientX: data.clientX,
@@ -73,59 +77,62 @@ export const MouseData = () => {
 							},
 							pageX: data.pageX,
 							pageY: data.pageY,
-							device: device,
+							device: deviceRef.current,
 							timestamp: data.timestamp,
 							htmlElement: data.element || null,
 						}),
 					);
 
-					if (queue.length >= MAX_QUEUE_SIZE) {
+					if (queueRef.current.length >= MAX_QUEUE_SIZE) {
 						let batch = writeBatch(db);
-						queue.forEach((event) => {
-							batch.update(batchRef, 'values', event);
+						queueRef.current.forEach((event) => {
+							batch.update(batchReferenceRef.current, 'values', event);
 						});
 
-						await sendbatch(batch);
+						await sendBatch(batch);
 					}
 				}
 			}
 		});
-	}, [currentWebPageTitle]);
+	}, [user, currentWebPageTitle, getUserDevice, sendBatch, mouseTrackingActive]);
 
-	const getUserDevice = async () => {
+	const getUserDevice = useCallback(async () => {
 		if (!user) return;
 
-		if (device) return device;
+		if (deviceRef.current) return deviceRef.current;
 
-		let deviceRef = doc(db, `users/${user.uid}`);
-		let userSnap = await getDoc(deviceRef);
+		let deviceReference = doc(db, `users/${user.uid}`);
+		let userSnap = await getDoc(deviceReference);
 
 		// Return empty device when no device is set
 		return userSnap.data()?.device ?? '';
-	};
+	}, [user, deviceRef]);
 
-	const sendbatch = async (batch) => {
-		if (!user) return;
-		queue = [];
+	const sendBatch = useCallback(
+		async (batch) => {
+			if (!user) return;
+			queueRef.current = [];
 
-		await batch.commit();
-	};
+			await batch.commit();
+		},
+		[user, queueRef],
+	);
 
 	useEffect(() => {
 		if (!user) return;
 
 		window.api.recieve('beforeunloadReply', async () => {
-			if (!queue.length) return;
+			if (!queueRef.current.length) return;
 
 			let batch = writeBatch(db);
 
-			queue.forEach((queueItem) => {
-				batch.update(batchRef, 'values', queueItem);
+			queueRef.current.forEach((queueItem) => {
+				batch.update(batchReferenceRef.current, 'values', queueItem);
 			});
 
-			await sendbatch(batch);
+			await sendBatch(batch);
 
-			batchRef = null;
+			batchReferenceRef.current = null;
 		});
-	}, [user, queue, sendbatch, batchRef]);
+	}, [user, queueRef, sendBatch, batchReferenceRef]);
 };

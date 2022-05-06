@@ -5,10 +5,10 @@ import Dashboard from './components/Dashboard/Dashboard';
 import { Routes, Route } from 'react-router-dom';
 import Settings from './components/Settings/Settings';
 
-import { MouseData } from './utils/mouseData';
+import { useMouseTracking } from './utils/useMouseTracking';
 
 const App = () => {
-	MouseData();
+	useMouseTracking();
 
 	return (
 		<div className="grid h-full grid-rows-[max-content,1fr]">
