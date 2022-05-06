@@ -25,7 +25,6 @@ const createLoadingScreen = () => {
 			preload: path.join(__dirname, 'preload.js'),
 		},
 	});
-	loadingScreen.webContents.openDevTools();
 	loadingScreen.setResizable(false);
 	loadingScreen.loadURL('file://' + __dirname + '/loading/loading.html');
 	loadingScreen.on('closed', () => (loadingScreen = null));
@@ -44,8 +43,8 @@ const createLoadingScreen = () => {
 
 	autoUpdater.on('update-not-available', () => {
 		sendLoadingStatusToWindow('Applicatie starten...');
-		// loadingScreen.close();
-		// if (!mainWindow) createWindow();
+		loadingScreen.close();
+		if (!mainWindow) createWindow();
 	});
 
 	autoUpdater.on('error', (err) => {
