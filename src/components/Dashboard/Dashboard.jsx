@@ -19,19 +19,9 @@ const Dashboard = () => {
 		navigate('/settings/feedback');
 	};
 
-	useEffect(() => {
-		window.api.recieve('update_available', () => {
-			console.log('A new update is available. Downloading now...');
-		});
-		window.api.recieve('update_downloaded', () => {
-			console.log('Update Downloaded. It will be installed on restart. Restart now?');
-		});
-	});
-
 	return !params.get('search') ? (
 		<div className="select-none">
 			<p className="text-center">Version 1.0.0</p>
-
 			<Clock />
 			<button
 				onClick={handleSettings}
