@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import SmallTile from './Tiles/SmallTile';
 import MediumTile from './Tiles/MediumTile';
 import Title from '../Typography/Title';
@@ -21,7 +21,7 @@ const Dashboard = () => {
 
 	return !params.get('search') ? (
 		<div className="select-none">
-			<p className="text-center">Version 1.0.0</p>
+			<p className="text-center">Version 1.0.1</p>
 			<Clock />
 			<button
 				onClick={handleSettings}

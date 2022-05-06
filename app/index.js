@@ -25,6 +25,7 @@ const createLoadingScreen = () => {
 			preload: path.join(__dirname, 'preload.js'),
 		},
 	});
+	loadingScreen.webContents.openDevTools();
 	loadingScreen.setResizable(false);
 	loadingScreen.loadURL('file://' + __dirname + '/loading/loading.html');
 	loadingScreen.on('closed', () => (loadingScreen = null));
