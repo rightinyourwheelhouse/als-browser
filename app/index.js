@@ -38,13 +38,13 @@ const createLoadingScreen = () => {
 	});
 
 	autoUpdater.on('update-available', () => {
-		sendLoadingStatusToWindow('Update gevonden');
+		sendLoadingStatusToWindow('Update gevonden, bezig met downloaden...');
 	});
 
 	autoUpdater.on('update-not-available', () => {
 		sendLoadingStatusToWindow('Applicatie starten...');
-		loadingScreen.close();
-		if (!mainWindow) createWindow();
+		// loadingScreen.close();
+		// if (!mainWindow) createWindow();
 	});
 
 	autoUpdater.on('error', () => {
