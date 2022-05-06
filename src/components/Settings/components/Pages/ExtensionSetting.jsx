@@ -105,7 +105,7 @@ const ExtensionSettings = () => {
 							/>
 							<input
 								className="border-1 mx-4 w-12 border-dark-blue bg-white pl-3"
-								value={extensionStates.scrollSpeed}
+								value={extensionStates.scrollSpeed || 2}
 								onChange={(e) => (e.target.value = extensionStates.scrollSpeed)}
 								min="1"
 								max="5"
