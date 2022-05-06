@@ -28,16 +28,9 @@ const Dashboard = () => {
 		});
 	});
 
-	const restartApp = () => {
-		window.api.send('restart_app');
-	};
-
 	return !params.get('search') ? (
 		<div className="select-none">
-			<div className="m-center">
-				<p className="text-center">Version 1.0.0</p>
-				<button onClick={restartApp}>Restart app</button>
-			</div>
+			<p className="text-center">Version 1.0.0</p>
 
 			<Clock />
 			<button

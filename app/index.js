@@ -48,8 +48,8 @@ const createLoadingScreen = () => {
 
 	autoUpdater.on('error', () => {
 		sendLoadingStatusToWindow('Er is iets fout gelopen... ');
-		loadingScreen.close();
-		if (!mainWindow) createWindow();
+		// loadingScreen.close();
+		// if (!mainWindow) createWindow();
 	});
 
 	autoUpdater.on('download-progress', (progressObj) => {
