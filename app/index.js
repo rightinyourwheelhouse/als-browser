@@ -47,8 +47,8 @@ const createLoadingScreen = () => {
 		// if (!mainWindow) createWindow();
 	});
 
-	autoUpdater.on('error', () => {
-		sendLoadingStatusToWindow('Er is iets fout gelopen... ');
+	autoUpdater.on('error', (err) => {
+		sendLoadingStatusToWindow('Er is iets fout gelopen...' + err);
 		// loadingScreen.close();
 		// if (!mainWindow) createWindow();
 	});
