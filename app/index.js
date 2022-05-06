@@ -89,9 +89,7 @@ const createWindow = () => {
 	} else {
 		mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
 	}
-	mainWindow.webContents.openDevTools();
 
-	// Events
 	mainWindow.on('resize', function () {
 		const size = mainWindow.getSize();
 		if (view.getBounds().width === 0 && view.getBounds().height === 0) {
@@ -132,7 +130,6 @@ app.whenReady().then(() => {
 	});
 
 	createLoadingScreen();
-	autoUpdater.checkForUpdatesAndNotify();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
