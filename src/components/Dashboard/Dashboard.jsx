@@ -10,7 +10,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { PlusIcon } from '@heroicons/react/outline';
 
 import { useAuth } from '../../contexts/AuthContextProvider';
-import { query, collection, limit, doc, getDoc, setDoc, onSnapshot, getDocs } from 'firebase/firestore';
+import { query, collection, limit, doc, getDoc, setDoc, onSnapshot, getDocs, orderBy } from 'firebase/firestore';
 import { db } from '../../utils/FirebaseConfig';
 
 const Dashboard = () => {
@@ -33,7 +33,7 @@ const Dashboard = () => {
 		const fetchData = async () => {
 			let bookmarksArray = [];
 
-			const queryRef = query(collection(db, 'users', `${user.uid}/bookmarks`), limit(10));
+			const queryRef = query(collection(db, 'users', `${user.uid}/bookmarks`), limit(10), orderBy('createdAt', 'desc'));
 
 			const querySnapshot = await getDocs(queryRef);
 			querySnapshot.forEach((doc) => {
