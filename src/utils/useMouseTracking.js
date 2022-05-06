@@ -43,6 +43,29 @@ export const useMouseTracking = () => {
 		});
 	}, [user]);
 
+	const getUserDevice = useCallback(async () => {
+		if (!user) return;
+
+		if (deviceRef.current) return deviceRef.current;
+
+		let deviceReference = doc(db, `users/${user.uid}`);
+		let userSnap = await getDoc(deviceReference);
+
+		// Return empty device when no device is set
+		return userSnap.data()?.device ?? '';
+	}, [user, deviceRef]);
+
+	const sendBatch = useCallback(
+		async (batch) => {
+			if (!user) return;
+			console.log('sendBatch', batch);
+			queueRef.current = [];
+
+			await batch.commit();
+		},
+		[user, queueRef],
+	);
+
 	useEffect(() => {
 		if (!user) return;
 
@@ -51,21 +74,17 @@ export const useMouseTracking = () => {
 				if (mouseTrackingActive && data.pageX != undefined && data.pageY != undefined) {
 					deviceRef.current = await getUserDevice();
 
-					if (!batchReferenceRef.current) {
-						batchReferenceRef.current = doc(
-							db,
-							`users/${user.uid}/visitedPages/${data.currentWebPageTitle}/mouseTracking`,
-							'mouseData',
-						);
-					}
+					batchReferenceRef.current = doc(
+						db,
+						`users/${user.uid}/visitedPages/${data.currentWebPageTitle}/mouseTracking`,
+						'mouseData',
+					);
 
-					if (!batchSnapRef.current) {
-						batchSnapRef.current = await getDoc(batchReferenceRef.current);
-						if (!batchSnapRef.current.exists()) {
-							await setDoc(batchReferenceRef.current, {
-								values: [],
-							});
-						}
+					batchSnapRef.current = await getDoc(batchReferenceRef.current);
+					if (!batchSnapRef.current.exists()) {
+						await setDoc(batchReferenceRef.current, {
+							values: [],
+						});
 					}
 
 					queueRef.current.push(
@@ -95,28 +114,6 @@ export const useMouseTracking = () => {
 			}
 		});
 	}, [user, currentWebPageTitle, getUserDevice, sendBatch, mouseTrackingActive]);
-
-	const getUserDevice = useCallback(async () => {
-		if (!user) return;
-
-		if (deviceRef.current) return deviceRef.current;
-
-		let deviceReference = doc(db, `users/${user.uid}`);
-		let userSnap = await getDoc(deviceReference);
-
-		// Return empty device when no device is set
-		return userSnap.data()?.device ?? '';
-	}, [user, deviceRef]);
-
-	const sendBatch = useCallback(
-		async (batch) => {
-			if (!user) return;
-			queueRef.current = [];
-
-			await batch.commit();
-		},
-		[user, queueRef],
-	);
 
 	useEffect(() => {
 		if (!user) return;
