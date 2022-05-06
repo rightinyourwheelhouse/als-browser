@@ -29,8 +29,9 @@ const createLoadingScreen = () => {
 	loadingScreen.setResizable(false);
 	loadingScreen.loadURL('file://' + __dirname + '/loading/loading.html');
 	loadingScreen.on('closed', () => (loadingScreen = null));
-	loadingScreen.webContents.on('did-finish-load', () => {
-		loadingScreen.show();
+
+	loadingScreen.once('ready-to-show', () => {
+		autoUpdater.checkForUpdatesAndNotify();
 	});
 
 	autoUpdater.on('checking-for-update', () => {
@@ -48,7 +49,7 @@ const createLoadingScreen = () => {
 	});
 
 	autoUpdater.on('error', (err) => {
-		sendLoadingStatusToWindow('Er is iets fout gelopen...' + err);
+		sendLoadingStatusToWindow('Er is iets fout gelopen...' + err.toString());
 		// loadingScreen.close();
 		// if (!mainWindow) createWindow();
 	});
@@ -101,10 +102,6 @@ const createWindow = () => {
 		} else {
 			if (view) view.setBounds({ x: 0, y: 80, width: size[0], height: size[1] - 80 });
 		}
-	});
-
-	mainWindow.once('ready-to-show', () => {
-		autoUpdater.checkForUpdatesAndNotify();
 	});
 };
 
@@ -263,16 +260,4 @@ ipcMain.on('getLatestOverlayLocation', () => {
 
 ipcMain.on('setLatestOverlayLocation', (event, ...payload) => {
 	mainWindow.webContents.send('setLatestOverlayLocationReply', ...payload);
-});
-
-ipcMain.on('app_version', (event) => {
-	event.sender.send('app_version', { version: app.getVersion() });
-});
-
-autoUpdater.on('update-available', () => {
-	mainWindow.webContents.send('update_available');
-});
-
-autoUpdater.on('update-downloaded', () => {
-	mainWindow.webContents.send('update_downloaded');
 });
