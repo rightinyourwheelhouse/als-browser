@@ -107,6 +107,8 @@ const createRadialUiHtml = (e) => {
   overflow: hidden;
   box-sizing: border-box;
   font-family: Mulish;
+  margin: 0;
+  padding: 0;
   display: none;`;
 
 	const defaultStyleButton = `fill: white;
@@ -170,6 +172,8 @@ const createRadialUiHtml = (e) => {
 	});
 
 	const defaultStyleClose = `"${defaultStyleMask} width: 100px;
+  margin: 0;
+  padding: 0;
   font-family: Mulish;
   border: 3px solid white;
   color: white;
@@ -279,6 +283,7 @@ const bookmark = () => {
 			url,
 			title,
 			favicon,
+			createdAt: new Date().toLocaleString(),
 		};
 
 		ipcRenderer.send('bookmark', bookmark);
