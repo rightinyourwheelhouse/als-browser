@@ -50,7 +50,6 @@ function createWindow() {
 function createBrowserView() {
 	view = new BrowserView({
 		nodeIntegration: true,
-		enableRemoteModule: true,
 		webPreferences: {
 			preload: path.join(__dirname, 'scripts/preload.js'),
 		},
@@ -110,7 +109,6 @@ ipcMain.on('searchURL', (event, url) => {
 	} else {
 		url = 'https://www.google.com/search?q=' + url;
 	}
-	view.webContents.loadURL(url);
 
 	// When dashboard is loaded, set the browserView back
 	if (view.getBounds().width === 0 && view.getBounds().height === 0)
@@ -153,6 +151,15 @@ ipcMain.on('toggleExtension', () => {
 	}
 });
 
+ipcMain.on('focusSearchBarRadialUi', (event, arg) => {
+	mainWindow.webContents.focus();
+	mainWindow.webContents.send('focusSearchBarRadialUiReply', arg);
+});
+
+ipcMain.on('toggleExtensionRadial', (event, arg) => {
+	mainWindow.webContents.send('toggleExtensionRadialReply', arg);
+});
+
 ipcMain.on('changeURL', (event, url) => {
 	const exp =
 		// eslint-disable-next-line no-useless-escape
@@ -181,4 +188,31 @@ ipcMain.on('searchBarFocus', (event, bool) => {
 	bool
 		? view.setBounds({ x: 0, y: 0, width: 0, height: 0 })
 		: view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
+});
+
+ipcMain.on('extensionStates', (event, payload) => {
+	view.webContents.send('extensionStatesReply', payload);
+});
+
+ipcMain.on('setExtensionState', (event, payload) => {
+	view.webContents.send('extensionStatesReply', payload);
+});
+
+ipcMain.on('getExtensionStates', () => {
+	mainWindow.webContents.send('getExtensionStatesReply');
+});
+
+ipcMain.on('getLatestOverlayLocation', () => {
+	mainWindow.webContents.send('getLatestOverlayLocationReply');
+});
+
+ipcMain.on('setLatestOverlayLocation', (event, ...payload) => {
+	mainWindow.webContents.send('setLatestOverlayLocationReply', ...payload);
+
+ipcMain.on('bookmark', (event, arg) => {
+	mainWindow.webContents.send('bookmarkReply', arg);
+});
+
+ipcMain.on('alert-message-bookmark', (event, arg) => {
+	view.webContents.send('alert-message-bookmarkReply', arg);
 });

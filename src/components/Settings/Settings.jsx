@@ -89,6 +89,7 @@ const Settings = () => {
 		},
 	];
 
+
 	const logout = async () => {
 		try {
 			await signOut(auth);
