@@ -129,7 +129,11 @@ app.whenReady().then(() => {
 		if (BrowserWindow.getAllWindows().length === 0) createWindow();
 	});
 
-	createLoadingScreen();
+	if (isDev) {
+		createWindow();
+	} else {
+		createLoadingScreen();
+	}
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
