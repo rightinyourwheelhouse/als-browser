@@ -24,7 +24,6 @@ const overlay = `
 `;
 
 let interval;
-let dragged;
 
 let scrollHelpPosX;
 let scrollHelpPosY;
@@ -69,7 +68,6 @@ const registerListerners = () => {
 		handleOnMouseLeave();
 	});
 
-	document.addEventListener('dragstart', (e) => (dragged = e.target));
 	document.addEventListener('dragover', (e) => e.preventDefault());
 
 	document.addEventListener('drop', (e) => {
@@ -120,12 +118,12 @@ ipcRenderer.on('extensionStatesReply', (event, payload) => {
 
 	if (payload.scrollHelpPosition) {
 		const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
-		const left = parseInt(payload.scrollHelpPosition.left.replace('px', ''));
-		const top = parseInt(payload.scrollHelpPosition.top.replace('px', ''));
+		const left = payload.scrollHelpPosition.left.replace('px', '');
+		const top = payload.scrollHelpPosition.top.replace('px', '');
 
-		if (windowWidth <= left + menuWidth) {
+		if (windowWidth <= parseInt(left, 10) + menuWidth) {
 			scrollHelpPosX = windowWidth - menuWidth + 'px';
-		} else if (windowHeight <= top + menuHeight) {
+		} else if (windowHeight <= parseInt(top, 10) + menuHeight) {
 			scrollHelpPosY = windowHeight - menuHeight + 'px';
 		} else {
 			scrollHelpPosX = payload.scrollHelpPosition.left;
@@ -141,11 +139,11 @@ const createOverlay = () => {
 		const container = document.createElement('div');
 		container.id = 'scrollhelp-overlay';
 		container.innerHTML = overlay;
-		// This needs some delay to prevent error
-		setTimeout(() => {
+		// Wait for dom to be ready for injection
+		window.addEventListener('DOMContentLoaded', () => {
 			document.body.appendChild(container);
 			registerListerners();
-		}, 500);
+		});
 	}
 };
 
@@ -155,6 +153,5 @@ const deleteOverlay = () => {
 		document.removeEventListener('mouseenter', registerListerners());
 		document.removeEventListener('mouseleave', registerListerners());
 		overlay.remove();
-		dragged = undefined;
 	}
 };
