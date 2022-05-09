@@ -15,6 +15,7 @@ const ExtensionSettings = () => {
 	const [extensionStates, setExtensionStates] = useState({});
 
 	useEffect(() => {
+		if (!user) return;
 		const fetchData = async () => {
 			const docRef = doc(db, 'users', user.uid);
 			const docSnap = await getDoc(docRef);
@@ -26,8 +27,7 @@ const ExtensionSettings = () => {
 				}
 			}
 		};
-
-		if (user) fetchData();
+		fetchData();
 	}, [user]);
 
 	const incrementScrollSpeed = async () => {
@@ -59,7 +59,7 @@ const ExtensionSettings = () => {
 		try {
 			setExtensionStates({ ...extensionStates, [name]: state });
 			await sendToDatabase(name, state);
-			window.api.send('getExtensionStates');
+			window.api.send('extensionStates', { ...extensionStates, [name]: state });
 		} catch (error) {
 			setExtensionStates(previousState);
 		}

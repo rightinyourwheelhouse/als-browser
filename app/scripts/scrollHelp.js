@@ -31,10 +31,13 @@ let scrollHelpPosY;
 
 let scrollSpeed;
 
+const menuHeight = 200;
+const menuWidth = 90;
+
 const handleOnMouseEnter = (scrollDir) => {
 	interval = setInterval(() => {
 		window.scrollBy(0, scrollDir);
-	}, 5);
+	}, 10);
 };
 
 const handleOnMouseLeave = () => {
@@ -71,32 +74,31 @@ const registerListerners = () => {
 
 	document.addEventListener('drop', (e) => {
 		e.preventDefault();
-		dragged.style.opacity = '1';
+		overlay.style.opacity = '1';
 
 		const { clientX: mouseX, clientY: mouseY } = e;
 		const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
-		const menuHeight = 200;
-		const menuWidth = 90;
 
 		if (windowWidth - mouseX < menuWidth) {
-			dragged.style.left = windowWidth - (menuWidth + 10) + 'px';
+			overlay.style.left = windowWidth - (menuWidth + 10) + 'px';
 		} else if (mouseX < menuWidth) {
-			dragged.style.left = '10px';
+			overlay.style.left = '10px';
 		} else {
-			dragged.style.left = mouseX - menuWidth / 2 + 'px';
+			overlay.style.left = mouseX - menuWidth / 2 + 'px';
 		}
 
 		if (windowHeight - mouseY < menuHeight) {
-			dragged.style.top = windowHeight - (menuHeight + 10) + 'px';
+			overlay.style.top = windowHeight - (menuHeight + 10) + 'px';
 		} else if (mouseY < menuHeight) {
-			dragged.style.top = '10px';
+			overlay.style.top = '10px';
 		} else {
-			dragged.style.top = mouseY - menuHeight / 2 + 'px';
+			overlay.style.top = mouseY - menuHeight / 2 + 'px';
 		}
 
 		// Send data to React
-		const top = dragged.style.top;
-		const left = dragged.style.left;
+		const top = overlay.style.top;
+		const left = overlay.style.left;
+
 		ipcRenderer.send('setLatestOverlayLocation', top, left);
 	});
 
@@ -117,8 +119,18 @@ ipcRenderer.on('extensionStatesReply', (event, payload) => {
 	}
 
 	if (payload.scrollHelpPosition) {
-		scrollHelpPosX = payload.scrollHelpPosition.left;
-		scrollHelpPosY = payload.scrollHelpPosition.top;
+		const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
+		const left = parseInt(payload.scrollHelpPosition.left.replace('px', ''));
+		const top = parseInt(payload.scrollHelpPosition.top.replace('px', ''));
+
+		if (windowWidth <= left + menuWidth) {
+			scrollHelpPosX = windowWidth - menuWidth + 'px';
+		} else if (windowHeight <= top + menuHeight) {
+			scrollHelpPosY = windowHeight - menuHeight + 'px';
+		} else {
+			scrollHelpPosX = payload.scrollHelpPosition.left;
+			scrollHelpPosY = payload.scrollHelpPosition.top;
+		}
 	}
 
 	if (payload.scrollSpeed) scrollSpeed = payload.scrollSpeed;
@@ -143,5 +155,6 @@ const deleteOverlay = () => {
 		document.removeEventListener('mouseenter', registerListerners());
 		document.removeEventListener('mouseleave', registerListerners());
 		overlay.remove();
+		dragged = undefined;
 	}
 };
