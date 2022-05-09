@@ -16,6 +16,7 @@ const AuthContextProvider = ({ children }) => {
 	const [user, setUser] = useState(undefined);
 
 	useEffect(() => {
+		if (user) return;
 		const fetchData = async () => {
 			const docRef = doc(db, 'users', user.uid);
 			const docSnap = await getDoc(docRef);
@@ -30,20 +31,18 @@ const AuthContextProvider = ({ children }) => {
 		};
 
 		window.api.recieve('getExtensionStatesReply', () => {
-			if (user) fetchData();
+			fetchData();
 		});
 
 		window.api.recieve('setLatestOverlayLocationReply', (...payload) => {
-			if (user) {
-				const docRef = doc(db, 'users', user.uid);
-				setDoc(
-					docRef,
-					{ extensionStates: { scrollHelpPosition: { top: payload[0][0], left: payload[0][1] } } },
-					{ merge: true },
-				);
-			}
+			const docRef = doc(db, 'users', user.uid);
+			setDoc(
+				docRef,
+				{ extensionStates: { scrollHelpPosition: { top: payload[0][0], left: payload[0][1] } } },
+				{ merge: true },
+			);
 		});
-		if (user) fetchData();
+		fetchData();
 	}, [user]);
 
 	onAuthStateChanged(auth, (user) => {
