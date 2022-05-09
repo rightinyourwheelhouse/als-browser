@@ -50,7 +50,6 @@ function createWindow() {
 function createBrowserView() {
 	view = new BrowserView({
 		nodeIntegration: true,
-		enableRemoteModule: true,
 		webPreferences: {
 			preload: path.join(__dirname, 'scripts/preload.js'),
 		},
@@ -190,6 +189,25 @@ ipcMain.on('searchBarFocus', (event, bool) => {
 		? view.setBounds({ x: 0, y: 0, width: 0, height: 0 })
 		: view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
 });
+
+ipcMain.on('extensionStates', (event, payload) => {
+	view.webContents.send('extensionStatesReply', payload);
+});
+
+ipcMain.on('setExtensionState', (event, payload) => {
+	view.webContents.send('extensionStatesReply', payload);
+});
+
+ipcMain.on('getExtensionStates', () => {
+	mainWindow.webContents.send('getExtensionStatesReply');
+});
+
+ipcMain.on('getLatestOverlayLocation', () => {
+	mainWindow.webContents.send('getLatestOverlayLocationReply');
+});
+
+ipcMain.on('setLatestOverlayLocation', (event, ...payload) => {
+	mainWindow.webContents.send('setLatestOverlayLocationReply', ...payload);
 
 ipcMain.on('bookmark', (event, arg) => {
 	mainWindow.webContents.send('bookmarkReply', arg);
