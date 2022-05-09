@@ -109,7 +109,6 @@ ipcMain.on('searchURL', (event, url) => {
 	} else {
 		url = 'https://www.google.com/search?q=' + url;
 	}
-	view.webContents.loadURL(url);
 
 	// When dashboard is loaded, set the browserView back
 	if (view.getBounds().width === 0 && view.getBounds().height === 0)
@@ -150,6 +149,15 @@ ipcMain.on('toggleExtension', () => {
 	if (viewOpen) {
 		view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
 	}
+});
+
+ipcMain.on('focusSearchBarRadialUi', (event, arg) => {
+	mainWindow.webContents.focus();
+	mainWindow.webContents.send('focusSearchBarRadialUiReply', arg);
+});
+
+ipcMain.on('toggleExtensionRadial', (event, arg) => {
+	mainWindow.webContents.send('toggleExtensionRadialReply', arg);
 });
 
 ipcMain.on('changeURL', (event, url) => {
@@ -200,4 +208,11 @@ ipcMain.on('getLatestOverlayLocation', () => {
 
 ipcMain.on('setLatestOverlayLocation', (event, ...payload) => {
 	mainWindow.webContents.send('setLatestOverlayLocationReply', ...payload);
+
+ipcMain.on('bookmark', (event, arg) => {
+	mainWindow.webContents.send('bookmarkReply', arg);
+});
+
+ipcMain.on('alert-message-bookmark', (event, arg) => {
+	view.webContents.send('alert-message-bookmarkReply', arg);
 });
