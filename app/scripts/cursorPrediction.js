@@ -365,7 +365,6 @@ function moveShortCutButton(){
 			shortcutButton.textContent = previousClosestElement.title
 		   }
 		   else{shortcutButton.textContent = 'shortcut' }
-		   console.log(previousClosestElement)
 	   }
 	   
    }
@@ -375,7 +374,6 @@ function moveShortCutButton(){
  * propagates the clicks of the shortcut button to the last object that passed the closeobject events
  */
 function shortCutClick(){
-	console.log(previousClosestObject)
 	previousClosestObject.click()
 
 }
@@ -531,7 +529,6 @@ const init = () => {
 const pointerPredictor= new PointerPredictor();
 
 document.addEventListener("DOMContentLoaded", function(){
-	clickableItems = document.querySelectorAll('button ,a');
     init()
 });
 
