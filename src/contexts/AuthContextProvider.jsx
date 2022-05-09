@@ -16,7 +16,7 @@ const AuthContextProvider = ({ children }) => {
 	const [user, setUser] = useState(undefined);
 
 	useEffect(() => {
-		if (user) return;
+		if (!user) return;
 		const fetchData = async () => {
 			const docRef = doc(db, 'users', user.uid);
 			const docSnap = await getDoc(docRef);
