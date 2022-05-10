@@ -1,4 +1,5 @@
 import React from 'react';
+import Dashboard from '../Dashboard/Dashboard';
 import SearchBar from './SearchBar';
 import ToolbarIcon from './ToolbarIcon.jsx';
 
@@ -51,6 +52,10 @@ const Toolbar = ({ onFocusChange }) => {
 	const handleAdjustSize = () => {
 		window.api.send('adjustSize');
 	};
+
+	window.api.recieve('ToggleTheDashboard', () => {
+		onFocusChange(Dashboard);
+	});
 
 	const handleExtensionToggle = () => {
 		navigate('/settings/extension');

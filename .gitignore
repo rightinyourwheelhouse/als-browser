@@ -14,6 +14,8 @@ dist
 .env.development
 .env.production
 
+electron-builder.yml
+
 .idea
 .DS_Store
 

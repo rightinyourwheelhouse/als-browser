@@ -12,9 +12,10 @@ import { PlusIcon } from '@heroicons/react/outline';
 
 const ExtensionSettings = () => {
 	const { user } = useAuth();
-	const [extensionStates, setExtensionStates] = useState(false);
+	const [extensionStates, setExtensionStates] = useState({});
 
 	useEffect(() => {
+		if (!user) return;
 		const fetchData = async () => {
 			const docRef = doc(db, 'users', user.uid);
 			const docSnap = await getDoc(docRef);
@@ -26,8 +27,7 @@ const ExtensionSettings = () => {
 				}
 			}
 		};
-
-		if (user) fetchData();
+		fetchData();
 	}, [user]);
 
 	const incrementScrollSpeed = async () => {
@@ -59,7 +59,7 @@ const ExtensionSettings = () => {
 		try {
 			setExtensionStates({ ...extensionStates, [name]: state });
 			await sendToDatabase(name, state);
-			window.api.send('getExtensionStates');
+			window.api.send('extensionStates', { ...extensionStates, [name]: state });
 		} catch (error) {
 			setExtensionStates(previousState);
 		}
@@ -105,7 +105,7 @@ const ExtensionSettings = () => {
 							/>
 							<input
 								className="border-1 mx-4 w-12 border-dark-blue bg-white pl-3"
-								value={extensionStates.scrollSpeed}
+								value={extensionStates.scrollSpeed || 2}
 								onChange={(e) => (e.target.value = extensionStates.scrollSpeed)}
 								min="1"
 								max="5"

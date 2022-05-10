@@ -24,17 +24,19 @@ const overlay = `
 `;
 
 let interval;
-let dragged;
 
 let scrollHelpPosX;
 let scrollHelpPosY;
 
 let scrollSpeed;
 
+const menuHeight = 200;
+const menuWidth = 90;
+
 const handleOnMouseEnter = (scrollDir) => {
 	interval = setInterval(() => {
 		window.scrollBy(0, scrollDir);
-	}, 5);
+	}, 10);
 };
 
 const handleOnMouseLeave = () => {
@@ -66,37 +68,35 @@ const registerListerners = () => {
 		handleOnMouseLeave();
 	});
 
-	document.addEventListener('dragstart', (e) => (dragged = e.target));
 	document.addEventListener('dragover', (e) => e.preventDefault());
 
 	document.addEventListener('drop', (e) => {
 		e.preventDefault();
-		dragged.style.opacity = '1';
+		overlay.style.opacity = '1';
 
 		const { clientX: mouseX, clientY: mouseY } = e;
 		const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
-		const menuHeight = 200;
-		const menuWidth = 90;
 
 		if (windowWidth - mouseX < menuWidth) {
-			dragged.style.left = windowWidth - (menuWidth + 10) + 'px';
+			overlay.style.left = windowWidth - (menuWidth + 10) + 'px';
 		} else if (mouseX < menuWidth) {
-			dragged.style.left = '10px';
+			overlay.style.left = '10px';
 		} else {
-			dragged.style.left = mouseX - menuWidth / 2 + 'px';
+			overlay.style.left = mouseX - menuWidth / 2 + 'px';
 		}
 
 		if (windowHeight - mouseY < menuHeight) {
-			dragged.style.top = windowHeight - (menuHeight + 10) + 'px';
+			overlay.style.top = windowHeight - (menuHeight + 10) + 'px';
 		} else if (mouseY < menuHeight) {
-			dragged.style.top = '10px';
+			overlay.style.top = '10px';
 		} else {
-			dragged.style.top = mouseY - menuHeight / 2 + 'px';
+			overlay.style.top = mouseY - menuHeight / 2 + 'px';
 		}
 
 		// Send data to React
-		const top = dragged.style.top;
-		const left = dragged.style.left;
+		const top = overlay.style.top;
+		const left = overlay.style.left;
+
 		ipcRenderer.send('setLatestOverlayLocation', top, left);
 	});
 
@@ -117,8 +117,18 @@ ipcRenderer.on('extensionStatesReply', (event, payload) => {
 	}
 
 	if (payload.scrollHelpPosition) {
-		scrollHelpPosX = payload.scrollHelpPosition.left;
-		scrollHelpPosY = payload.scrollHelpPosition.top;
+		const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
+		const left = payload.scrollHelpPosition.left.replace('px', '');
+		const top = payload.scrollHelpPosition.top.replace('px', '');
+
+		if (windowWidth <= parseInt(left, 10) + menuWidth) {
+			scrollHelpPosX = windowWidth - menuWidth + 'px';
+		} else if (windowHeight <= parseInt(top, 10) + menuHeight) {
+			scrollHelpPosY = windowHeight - menuHeight + 'px';
+		} else {
+			scrollHelpPosX = payload.scrollHelpPosition.left;
+			scrollHelpPosY = payload.scrollHelpPosition.top;
+		}
 	}
 
 	if (payload.scrollSpeed) scrollSpeed = payload.scrollSpeed;
@@ -129,11 +139,11 @@ const createOverlay = () => {
 		const container = document.createElement('div');
 		container.id = 'scrollhelp-overlay';
 		container.innerHTML = overlay;
-		// This needs some delay to prevent error
-		setTimeout(() => {
+		// Wait for dom to be ready for injection
+		window.addEventListener('DOMContentLoaded', () => {
 			document.body.appendChild(container);
 			registerListerners();
-		}, 500);
+		});
 	}
 };
 

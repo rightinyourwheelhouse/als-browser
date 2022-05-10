@@ -171,6 +171,7 @@ ipcMain.on('searchURL', (event, url) => {
 	} else {
 		url = 'https://www.google.com/search?q=' + url;
 	}
+
 	view.webContents.loadURL(url);
 
 	// When dashboard is loaded, set the browserView back
@@ -214,28 +215,13 @@ ipcMain.on('toggleExtension', () => {
 	}
 });
 
-ipcMain.on('changeURL', (event, url) => {
-	const exp =
-		// eslint-disable-next-line no-useless-escape
-		/((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}\.)+(?:(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])|(?:biz|b[abdefghijmnorstvwyz])|(?:cat|com|coop|c[acdfghiklmnoruvxyz])|d[ejkmoz]|(?:edu|e[cegrstu])|f[ijkmor]|(?:gov|g[abdefghilmnpqrstuwy])|h[kmnrtu]|(?:info|int|i[delmnoqrst])|(?:jobs|j[emop])|k[eghimnrwyz]|l[abcikrstuvy]|(?:mil|mobi|museum|m[acdghklmnopqrstuvwxyz])|(?:name|net|n[acefgilopruz])|(?:org|om)|(?:pro|p[aefghklmnrstwy])|qa|r[eouw]|s[abcdeghijklmnortuvyz]|(?:tel|travel|t[cdfghjklmnoprtvwz])|u[agkmsyz]|v[aceginu]|w[fs]|y[etu]|z[amw]))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/gi;
-	const regex = new RegExp(exp);
+ipcMain.on('focusSearchBarRadialUi', (event, arg) => {
+	mainWindow.webContents.focus();
+	mainWindow.webContents.send('focusSearchBarRadialUiReply', arg);
+});
 
-	if (regex.test(url)) {
-		if (!url.includes('www')) {
-			url = 'www.' + url;
-		}
-		if (!url.includes('http://')) {
-			url = 'http://' + url;
-		}
-	} else {
-		url = 'http://www.google.com/search?q=' + url;
-	}
-	view.webContents.loadURL(url);
-
-	// event.reply('loadURLResponse', url);
-
-	if (view.getBounds().width === 0 && view.getBounds().height === 0)
-		view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
+ipcMain.on('toggleExtensionRadial', (event, arg) => {
+	mainWindow.webContents.send('toggleExtensionRadialReply', arg);
 });
 
 ipcMain.on('searchBarFocus', (event, bool) => {
@@ -245,6 +231,10 @@ ipcMain.on('searchBarFocus', (event, bool) => {
 });
 
 ipcMain.on('extensionStates', (event, payload) => {
+	view.webContents.send('extensionStatesReply', payload);
+});
+
+ipcMain.on('setExtensionState', (event, payload) => {
 	view.webContents.send('extensionStatesReply', payload);
 });
 
@@ -258,4 +248,12 @@ ipcMain.on('getLatestOverlayLocation', () => {
 
 ipcMain.on('setLatestOverlayLocation', (event, ...payload) => {
 	mainWindow.webContents.send('setLatestOverlayLocationReply', ...payload);
+});
+
+ipcMain.on('bookmark', (event, arg) => {
+	mainWindow.webContents.send('bookmarkReply', arg);
+});
+
+ipcMain.on('alert-message-bookmark', (event, arg) => {
+	view.webContents.send('alert-message-bookmarkReply', arg);
 });
