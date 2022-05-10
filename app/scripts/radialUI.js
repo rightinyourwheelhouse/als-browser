@@ -276,8 +276,11 @@ const bookmark = () => {
 		const url = window.location.href;
 		const title = document.title.replaceAll('/', '-');
 
-		const rootUrl = window.location.origin;
-		const favicon = rootUrl + '/favicon.ico';
+		const favicon =
+			document.querySelector('link[rel="icon"]')?.href ||
+			document.querySelector('link[rel="shortcut icon"]')?.href ||
+			document.querySelector('link[rel="apple-touch-icon"]')?.href ||
+			'';
 
 		const bookmark = {
 			url,

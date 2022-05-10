@@ -133,14 +133,20 @@ const Dashboard = () => {
 				<div className="m-center mt-16 mb-16 w-3/4">
 					<div className="mb-10 flex items-center justify-between">
 						<Title>Bladwijzers</Title>
-						<button onClick={() => setDeleteBookmark(!deleteBookmark)}>Verwijder</button>
+						<button
+							onClick={() => setDeleteBookmark(!deleteBookmark)}
+							className={`h-10 rounded-lg  px-4 text-white ${deleteBookmark ? 'bg-slate-500' : 'bg-red-500'}`}
+						>
+							{deleteBookmark ? 'Annuleer' : 'Verwijder'}
+						</button>
 					</div>
 					<div className="flex cursor-pointer flex-row flex-wrap justify-center ">
+						{console.log(bookmarks)}
 						{bookmarks.map((bookmark) => (
 							<SmallTile
 								key={bookmark.title}
 								title={bookmark.title}
-								img={bookmark.favicon}
+								img={bookmark?.favicon}
 								url={bookmark.url}
 								deleteBookmark={deleteBookmark}
 								setBookmarksUpdated={setBookmarksUpdated}
