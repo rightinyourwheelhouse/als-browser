@@ -57,6 +57,7 @@ const App = () => {
 				<Route path="settings/*" element={<Settings />}></Route>
 			</Routes>
 		</div>
+
 	);
 };
 

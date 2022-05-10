@@ -1,16 +1,70 @@
 // electron/electron.js
 const path = require('path');
 const { app, BrowserWindow, BrowserView, ipcMain, nativeTheme } = require('electron');
+const { autoUpdater } = require('electron-updater');
 
 const isDev = require('electron-is-dev');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) app.quit();
 
+let loadingScreen;
 let mainWindow;
 let view;
 
-function createWindow() {
+function sendLoadingStatusToWindow(text) {
+	loadingScreen.webContents.send('message', text);
+}
+
+const createLoadingScreen = () => {
+	loadingScreen = new BrowserWindow({
+		width: 300,
+		height: 350,
+		frame: false,
+		webPreferences: {
+			preload: path.join(__dirname, 'preload.js'),
+		},
+	});
+	loadingScreen.setResizable(false);
+	loadingScreen.loadURL('file://' + __dirname + '/loading/loading.html');
+	loadingScreen.on('closed', () => (loadingScreen = null));
+
+	loadingScreen.once('ready-to-show', () => {
+		autoUpdater.checkForUpdatesAndNotify();
+	});
+
+	autoUpdater.on('checking-for-update', () => {
+		sendLoadingStatusToWindow('Controleren op update...');
+	});
+
+	autoUpdater.on('update-available', () => {
+		sendLoadingStatusToWindow('Update gevonden, bezig met downloaden...');
+	});
+
+	autoUpdater.on('update-not-available', () => {
+		sendLoadingStatusToWindow('Applicatie starten...');
+		loadingScreen.close();
+		if (!mainWindow) createWindow();
+	});
+
+	autoUpdater.on('error', () => {
+		sendLoadingStatusToWindow('Er is iets fout gelopen...');
+		loadingScreen.close();
+		if (!mainWindow) createWindow();
+	});
+
+	autoUpdater.on('download-progress', (progressObj) => {
+		const message = progressObj.percent.toFixed(2) + '% gedownload';
+		sendLoadingStatusToWindow(message);
+	});
+
+	autoUpdater.on('update-downloaded', () => {
+		sendLoadingStatusToWindow('Update gedownload, herstarten...');
+		autoUpdater.quitAndInstall();
+	});
+};
+
+const createWindow = () => {
 	// Always set the theme to light
 	nativeTheme.themeSource = 'light';
 
@@ -36,7 +90,6 @@ function createWindow() {
 		mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
 	}
 
-	// Events
 	mainWindow.on('resize', function () {
 		const size = mainWindow.getSize();
 		if (view.getBounds().width === 0 && view.getBounds().height === 0) {
@@ -45,7 +98,7 @@ function createWindow() {
 			if (view) view.setBounds({ x: 0, y: 80, width: size[0], height: size[1] - 80 });
 		}
 	});
-}
+};
 
 function createBrowserView() {
 	view = new BrowserView({
@@ -70,12 +123,17 @@ function createBrowserView() {
 }
 
 app.whenReady().then(() => {
-	createWindow();
 	app.on('activate', function () {
 		// On macOS it's common to re-create a window in the app when the
 		// dock icon is clicked and there are no other windows open.
 		if (BrowserWindow.getAllWindows().length === 0) createWindow();
 	});
+
+	if (isDev) {
+		createWindow();
+	} else {
+		createLoadingScreen();
+	}
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -86,6 +144,10 @@ app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
 		app.quit();
 	}
+});
+
+ipcMain.on('app_version', (event) => {
+	event.sender.send('app_version', { version: app.getVersion() });
 });
 
 ipcMain.on('goBack', () => {
