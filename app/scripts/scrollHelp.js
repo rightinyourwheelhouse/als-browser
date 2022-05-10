@@ -3,7 +3,7 @@ const { ipcRenderer } = require('electron');
 ipcRenderer.send('getExtensionStates');
 
 const overlay = `
-<div class="wh-overlay" draggable="true" style="opacity: .7;cursor: pointer; position: fixed; right: 2rem; bottom: 2rem; z-index: 999; background-color: white; border: solid #205493 2px; display: flex; flex-direction: column; gap: 1rem; justify-content: center; align-items:center; padding: .8rem; border-radius: .5rem; width:90px; height:200px">
+<div class="wh-overlay" draggable="true" style="opacity: .7;cursor: pointer; position: fixed;  z-index: 999; background-color: white; border: solid #205493 2px; display: flex; flex-direction: column; gap: 1rem; justify-content: center; align-items:center; padding: .8rem; border-radius: .5rem; width:90px; height:200px">
    <div class="wh-up" style="background-color: white; filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.1));  width: 50px; height: 50px; display: flex; justify-content: center; align-items:center; border-radius: 999px">
       <div>
          <svg width="37" height="22" viewBox="0 0 37 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -24,11 +24,8 @@ const overlay = `
 `;
 
 let interval;
-
-let scrollHelpPosX;
-let scrollHelpPosY;
-
 let scrollSpeed;
+let container;
 
 const menuHeight = 200;
 const menuWidth = 90;
@@ -43,15 +40,14 @@ const handleOnMouseLeave = () => {
 	clearInterval(interval);
 };
 
+const calculatePercentage = (mousePos, menuSize, windowSize) => {
+	return `${(((mousePos - menuSize / 2) / windowSize) * 100).toFixed(0)}%`;
+};
+
 const registerListerners = () => {
 	const up = document.querySelector('.wh-up');
 	const overlay = document.querySelector('.wh-overlay');
 	const down = document.querySelector('.wh-down');
-
-	if (scrollHelpPosX && scrollHelpPosY) {
-		overlay.style.top = scrollHelpPosY;
-		overlay.style.left = scrollHelpPosX;
-	}
 
 	overlay.addEventListener('mouseenter', () => {
 		overlay.style.opacity = '1';
@@ -78,22 +74,22 @@ const registerListerners = () => {
 		const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
 
 		if (windowWidth - mouseX < menuWidth) {
-			overlay.style.left = windowWidth - (menuWidth + 10) + 'px';
+			overlay.style.left = '90%';
 		} else if (mouseX < menuWidth) {
-			overlay.style.left = '10px';
+			overlay.style.left = '2%';
 		} else {
-			overlay.style.left = mouseX - menuWidth / 2 + 'px';
+			overlay.style.left = calculatePercentage(mouseX, menuWidth, windowWidth);
 		}
 
 		if (windowHeight - mouseY < menuHeight) {
-			overlay.style.top = windowHeight - (menuHeight + 10) + 'px';
+			overlay.style.top = '68%';
 		} else if (mouseY < menuHeight) {
-			overlay.style.top = '10px';
+			overlay.style.top = '2%';
 		} else {
-			overlay.style.top = mouseY - menuHeight / 2 + 'px';
+			overlay.style.top = calculatePercentage(mouseY, menuHeight, windowHeight);
 		}
 
-		// Send data to React
+		// // Send data to React
 		const top = overlay.style.top;
 		const left = overlay.style.left;
 
@@ -117,18 +113,8 @@ ipcRenderer.on('extensionStatesReply', (event, payload) => {
 	}
 
 	if (payload.scrollHelpPosition) {
-		const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
-		const left = payload.scrollHelpPosition.left.replace('px', '');
-		const top = payload.scrollHelpPosition.top.replace('px', '');
-
-		if (windowWidth <= parseInt(left, 10) + menuWidth) {
-			scrollHelpPosX = windowWidth - menuWidth + 'px';
-		} else if (windowHeight <= parseInt(top, 10) + menuHeight) {
-			scrollHelpPosY = windowHeight - menuHeight + 'px';
-		} else {
-			scrollHelpPosX = payload.scrollHelpPosition.left;
-			scrollHelpPosY = payload.scrollHelpPosition.top;
-		}
+		container.style.left = payload.scrollHelpPosition.left;
+		container.style.top = payload.scrollHelpPosition.top;
 	}
 
 	if (payload.scrollSpeed) scrollSpeed = payload.scrollSpeed;
@@ -136,14 +122,21 @@ ipcRenderer.on('extensionStatesReply', (event, payload) => {
 
 const createOverlay = () => {
 	if (!document.getElementById('scrollhelp-overlay')) {
-		const container = document.createElement('div');
+		container = document.createElement('div');
 		container.id = 'scrollhelp-overlay';
+		container.style.position = 'absolute';
 		container.innerHTML = overlay;
-		// Wait for dom to be ready for injection
-		window.addEventListener('DOMContentLoaded', () => {
+
+		if (document.readyState === 'complete') {
 			document.body.appendChild(container);
 			registerListerners();
-		});
+		} else {
+			// Wait for dom to be ready for injection
+			window.addEventListener('DOMContentLoaded', () => {
+				document.body.appendChild(container);
+				registerListerners();
+			});
+		}
 	}
 };
 
