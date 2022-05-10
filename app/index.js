@@ -1,16 +1,70 @@
 // electron/electron.js
 const path = require('path');
 const { app, BrowserWindow, BrowserView, ipcMain, nativeTheme } = require('electron');
+const { autoUpdater } = require('electron-updater');
 
 const isDev = require('electron-is-dev');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) app.quit();
 
+let loadingScreen;
 let mainWindow;
 let view;
 
-function createWindow() {
+function sendLoadingStatusToWindow(text) {
+	loadingScreen.webContents.send('message', text);
+}
+
+const createLoadingScreen = () => {
+	loadingScreen = new BrowserWindow({
+		width: 300,
+		height: 350,
+		frame: false,
+		webPreferences: {
+			preload: path.join(__dirname, 'preload.js'),
+		},
+	});
+	loadingScreen.setResizable(false);
+	loadingScreen.loadURL('file://' + __dirname + '/loading/loading.html');
+	loadingScreen.on('closed', () => (loadingScreen = null));
+
+	loadingScreen.once('ready-to-show', () => {
+		autoUpdater.checkForUpdatesAndNotify();
+	});
+
+	autoUpdater.on('checking-for-update', () => {
+		sendLoadingStatusToWindow('Controleren op update...');
+	});
+
+	autoUpdater.on('update-available', () => {
+		sendLoadingStatusToWindow('Update gevonden, bezig met downloaden...');
+	});
+
+	autoUpdater.on('update-not-available', () => {
+		sendLoadingStatusToWindow('Applicatie starten...');
+		loadingScreen.close();
+		if (!mainWindow) createWindow();
+	});
+
+	autoUpdater.on('error', () => {
+		sendLoadingStatusToWindow('Er is iets fout gelopen...');
+		loadingScreen.close();
+		if (!mainWindow) createWindow();
+	});
+
+	autoUpdater.on('download-progress', (progressObj) => {
+		const message = progressObj.percent.toFixed(2) + '% gedownload';
+		sendLoadingStatusToWindow(message);
+	});
+
+	autoUpdater.on('update-downloaded', () => {
+		sendLoadingStatusToWindow('Update gedownload, herstarten...');
+		autoUpdater.quitAndInstall();
+	});
+};
+
+const createWindow = () => {
 	// Always set the theme to light
 	nativeTheme.themeSource = 'light';
 
@@ -36,7 +90,6 @@ function createWindow() {
 		mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
 	}
 
-	// Events
 	mainWindow.on('resize', function () {
 		const size = mainWindow.getSize();
 		if (view.getBounds().width === 0 && view.getBounds().height === 0) {
@@ -45,12 +98,11 @@ function createWindow() {
 			if (view) view.setBounds({ x: 0, y: 80, width: size[0], height: size[1] - 80 });
 		}
 	});
-}
+};
 
 function createBrowserView() {
 	view = new BrowserView({
 		nodeIntegration: true,
-		enableRemoteModule: true,
 		webPreferences: {
 			preload: path.join(__dirname, 'scripts/preload.js'),
 		},
@@ -71,12 +123,17 @@ function createBrowserView() {
 }
 
 app.whenReady().then(() => {
-	createWindow();
 	app.on('activate', function () {
 		// On macOS it's common to re-create a window in the app when the
 		// dock icon is clicked and there are no other windows open.
 		if (BrowserWindow.getAllWindows().length === 0) createWindow();
 	});
+
+	if (isDev) {
+		createWindow();
+	} else {
+		createLoadingScreen();
+	}
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -87,6 +144,10 @@ app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
 		app.quit();
 	}
+});
+
+ipcMain.on('app_version', (event) => {
+	event.sender.send('app_version', { version: app.getVersion() });
 });
 
 ipcMain.on('goBack', () => {
@@ -110,6 +171,8 @@ ipcMain.on('searchURL', (event, url) => {
 	} else {
 		url = 'https://www.google.com/search?q=' + url;
 	}
+
+	view.webContents.loadURL(url);
 
 	// When dashboard is loaded, set the browserView back
 	if (view.getBounds().width === 0 && view.getBounds().height === 0)
@@ -161,34 +224,30 @@ ipcMain.on('toggleExtensionRadial', (event, arg) => {
 	mainWindow.webContents.send('toggleExtensionRadialReply', arg);
 });
 
-ipcMain.on('changeURL', (event, url) => {
-	const exp =
-		// eslint-disable-next-line no-useless-escape
-		/((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,64}(?:\:(?:[a-zA-Z0-9\$\-\_\.\+\!\*\'\(\)\,\;\?\&\=]|(?:\%[a-fA-F0-9]{2})){1,25})?\@)?)?((?:(?:[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}\.)+(?:(?:aero|arpa|asia|a[cdefgilmnoqrstuwxz])|(?:biz|b[abdefghijmnorstvwyz])|(?:cat|com|coop|c[acdfghiklmnoruvxyz])|d[ejkmoz]|(?:edu|e[cegrstu])|f[ijkmor]|(?:gov|g[abdefghilmnpqrstuwy])|h[kmnrtu]|(?:info|int|i[delmnoqrst])|(?:jobs|j[emop])|k[eghimnrwyz]|l[abcikrstuvy]|(?:mil|mobi|museum|m[acdghklmnopqrstuvwxyz])|(?:name|net|n[acefgilopruz])|(?:org|om)|(?:pro|p[aefghklmnrstwy])|qa|r[eouw]|s[abcdeghijklmnortuvyz]|(?:tel|travel|t[cdfghjklmnoprtvwz])|u[agkmsyz]|v[aceginu]|w[fs]|y[etu]|z[amw]))|(?:(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])))(?:\:\d{1,5})?)(\/(?:(?:[a-zA-Z0-9\;\/\?\:\@\&\=\#\~\-\.\+\!\*\'\(\)\,\_])|(?:\%[a-fA-F0-9]{2}))*)?(?:\b|$)/gi;
-	const regex = new RegExp(exp);
-
-	if (regex.test(url)) {
-		if (!url.includes('www')) {
-			url = 'www.' + url;
-		}
-		if (!url.includes('http://')) {
-			url = 'http://' + url;
-		}
-	} else {
-		url = 'http://www.google.com/search?q=' + url;
-	}
-	view.webContents.loadURL(url);
-
-	// event.reply('loadURLResponse', url);
-
-	if (view.getBounds().width === 0 && view.getBounds().height === 0)
-		view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
-});
-
 ipcMain.on('searchBarFocus', (event, bool) => {
 	bool
 		? view.setBounds({ x: 0, y: 0, width: 0, height: 0 })
 		: view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
+});
+
+ipcMain.on('extensionStates', (event, payload) => {
+	view.webContents.send('extensionStatesReply', payload);
+});
+
+ipcMain.on('setExtensionState', (event, payload) => {
+	view.webContents.send('extensionStatesReply', payload);
+});
+
+ipcMain.on('getExtensionStates', () => {
+	mainWindow.webContents.send('getExtensionStatesReply');
+});
+
+ipcMain.on('getLatestOverlayLocation', () => {
+	mainWindow.webContents.send('getLatestOverlayLocationReply');
+});
+
+ipcMain.on('setLatestOverlayLocation', (event, ...payload) => {
+	mainWindow.webContents.send('setLatestOverlayLocationReply', ...payload);
 });
 
 ipcMain.on('bookmark', (event, arg) => {

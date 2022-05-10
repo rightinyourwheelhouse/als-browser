@@ -12,9 +12,10 @@ import { PlusIcon } from '@heroicons/react/outline';
 
 const ExtensionSettings = () => {
 	const { user } = useAuth();
-	const [extensionStates, setExtensionStates] = useState(false);
+	const [extensionStates, setExtensionStates] = useState({});
 
 	useEffect(() => {
+		if (!user) return;
 		const fetchData = async () => {
 			const docRef = doc(db, 'users', user.uid);
 			const docSnap = await getDoc(docRef);
@@ -26,8 +27,7 @@ const ExtensionSettings = () => {
 				}
 			}
 		};
-
-		if (user) fetchData();
+		fetchData();
 	}, [user]);
 
 	const incrementScrollSpeed = async () => {
@@ -59,6 +59,7 @@ const ExtensionSettings = () => {
 		try {
 			setExtensionStates({ ...extensionStates, [name]: state });
 			await sendToDatabase(name, state);
+			window.api.send('extensionStates', { ...extensionStates, [name]: state });
 		} catch (error) {
 			setExtensionStates(previousState);
 		}
@@ -75,14 +76,14 @@ const ExtensionSettings = () => {
 		<div className="mx-10 ">
 			<Title className="mt-8">Extensie</Title>
 
-			<SettingTile infoText="Schakel alle functies aan of uit.">
+			{/* <SettingTile infoText="Schakel alle functies aan of uit.">
 				<CustomSwitch
 					title="Volledige extensie"
 					name="extension"
 					state={extensionStates.extension}
 					handleOnChange={handleOnChange}
 				/>
-			</SettingTile>
+			</SettingTile> */}
 
 			<SettingTile infoText="Deze tool helpt je om te scrollen doorheen webpagina’s. Stel de snelheid in van het scrollen of kies waar de scrollhulp gepositioneerd staat op je webpagina.">
 				<div className="flex w-full flex-col">
@@ -104,7 +105,7 @@ const ExtensionSettings = () => {
 							/>
 							<input
 								className="border-1 mx-4 w-12 border-dark-blue bg-white pl-3"
-								value={extensionStates.scrollSpeed}
+								value={extensionStates.scrollSpeed || 2}
 								onChange={(e) => (e.target.value = extensionStates.scrollSpeed)}
 								min="1"
 								max="5"
@@ -116,7 +117,7 @@ const ExtensionSettings = () => {
 							/>
 						</div>
 					</div>
-					<div className="my-2 mt-4 flex w-full items-center justify-between">
+					{/* <div className="my-2 mt-4 flex w-full items-center justify-between">
 						<p className="text-lg font-bold">Uitlijning</p>
 						<div className="grid grid-cols-2 grid-rows-2 gap-2">
 							<div className="rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover">
@@ -160,7 +161,7 @@ const ExtensionSettings = () => {
 								</svg>
 							</div>
 						</div>
-					</div>
+					</div> */}
 				</div>
 			</SettingTile>
 
@@ -169,6 +170,15 @@ const ExtensionSettings = () => {
 					title="Muis traceren"
 					name="mouseTracking"
 					state={extensionStates.mouseTracking}
+					handleOnChange={handleOnChange}
+				/>
+			</SettingTile>
+
+			<SettingTile infoText="Schakel muis predictie aan of uit.">
+				<CustomSwitch
+					title="Muis predictie"
+					name="mousePrediction"
+					state={extensionStates.mousePrediction}
 					handleOnChange={handleOnChange}
 				/>
 			</SettingTile>
