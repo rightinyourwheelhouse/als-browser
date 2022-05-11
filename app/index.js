@@ -198,3 +198,11 @@ ipcMain.on('bookmark', (event, arg) => {
 ipcMain.on('alert-message-bookmark', (event, arg) => {
 	view.webContents.send('alert-message-bookmarkReply', arg);
 });
+
+ipcMain.on('history', (event, historyItem) => {
+  mainWindow.webContents.send('historyReply', historyItem);
+});
+
+ipcMain.on('alert-message-history', (event, arg) => {
+  view.webContents.send('alert-message-historyReply', arg);
+});

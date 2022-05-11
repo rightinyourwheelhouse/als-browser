@@ -9,10 +9,14 @@ import { useAuth } from './contexts/AuthContextProvider';
 import { db } from './utils/FirebaseConfig';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
+import { useHistory } from './utils/useHistory';
+
 const App = () => {
 	const { user } = useAuth();
 
 	let navigate = useNavigate();
+
+  useHistory();
 
 	useEffect(() => {
 		window.api.recieve('toggleExtensionRadialReply', () => {
