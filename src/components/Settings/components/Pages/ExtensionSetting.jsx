@@ -165,6 +165,15 @@ const ExtensionSettings = () => {
 				</div>
 			</SettingTile>
 
+			<SettingTile infoText="Schakel radial ui aan of uit.">
+				<CustomSwitch
+					title="Radial UI"
+					name="radialUI"
+					state={extensionStates.radialUI}
+					handleOnChange={handleOnChange}
+				/>
+			</SettingTile>
+
 			<SettingTile infoText="Schakel muis traceren aan of uit.">
 				<CustomSwitch
 					title="Muis traceren"
