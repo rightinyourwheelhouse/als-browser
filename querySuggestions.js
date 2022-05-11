@@ -15,58 +15,23 @@ function init() {
     getElements();
 }
 function getElements(){
-    document.getElementsByClassName('gsc-input');
-    inputBar = document.getElementById('gsc-i-id1');
-    testSearchBar = document.getElementById('inputTest');
-    htmlElements = document.getElementsByClassName('gsc-completion-container');
     searchButton = document.getElementById('searchButton');
-    searchButton.addEventListener('click',searchbarSearch)
-    //testTable = document.getElementsByClassName('gstl_50 gssb_c')[0];
-    testTable = document.getElementsByClassName('gssb_e')[0];
-    testTable.style.width = '0px';
-    inputBar.addEventListener('input', googlesearchBarInput);
+    testSearchBar = document.getElementById("inputTest")
+    searchButton.addEventListener('click',searchbarSearch);
     testSearchBar.addEventListener('input',searchbarInput);
 }
 
 function searchbarSearch(){
     location.href = `https://cse.google.com/cse?cx=6b7a9f71ab86fe6ab&q=${testSearchBar.value}&oq=${testSearchBar.value}`;
 }
-function googlesearchBarInput(){
-    testSearchBar.value = inputBar.value
-    getSuggestions()
-}  
 function searchbarInput(){
-    inputBar.focus()
-    inputBar.value = testSearchBar.value
+   getSuggestions();
 }
 async function getSuggestions(){
     suggestionTable = document.getElementById('suggestionTable')
     clearTable(suggestionTable)
     suggestionTableBody = suggestionTable.tBodies[0]
-    suggestionContainer = document.getElementsByClassName('gsc-completion-container')[0]
-    
-    let wordSuggestionCounter = 0;
     let siteSuggestionCounter = 0;
-    await new Promise(r => setTimeout(r, 750));
-    if(suggestionContainer != undefined){
-        suggestions_gsq_a = suggestionContainer.getElementsByClassName('gsq_a')
-        suggestionArray = []
-        clearTable(suggestionTable)
-        
-        suggestionTable.style.zIndex = 200
-        for(let row of suggestions_gsq_a){
-            if(wordSuggestionCounter < 5){
-                suggestionArray.push(row.innerText)
-                var newRow = suggestionTableBody.insertRow();
-                var newCell = newRow.insertCell();
-                newCell.style.border =  '1px solid black';
-                var newText = document.createTextNode(row.innerText);
-                newCell.addEventListener('click',clicked_cell)
-                newCell.appendChild(newText);
-            }
-            wordSuggestionCounter++
-        }
-    } 
     let searchResults = searchFuzzyHistory()
     for(let suggestion of searchResults){
         if (siteSuggestionCounter < 10){
