@@ -10,9 +10,15 @@ const SettingTile = ({ children, infoText, disabled }) => {
 			>
 				<div className="m-center flex w-11/12 items-center justify-between">{children}</div>
 			</div>
-			<p className="max-w-[22rem] text-base font-light">
-				{disabled ? 'Log in om deze functie te gebruiken' : infoText}
-			</p>
+			<div className="max-w-[22rem] text-base font-light">
+				{disabled ? (
+					<p>
+						<span className="font-bold text-dark-blue">Log in</span> om deze functie te gebruiken
+					</p>
+				) : (
+					infoText
+				)}
+			</div>
 		</div>
 	);
 };

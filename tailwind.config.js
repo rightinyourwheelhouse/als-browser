@@ -17,7 +17,7 @@ module.exports = {
 				hover: '0px 0px 15px rgba(0, 0, 0, 0.25)',
 			},
 			blur: {
-				xs: '2px',
+				xs: '1px',
 			},
 		},
 	},
