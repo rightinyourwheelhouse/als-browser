@@ -7,7 +7,7 @@ var historyItem = {
   hostname: url.hostname,
   pathname: url.pathname,
   search: url.search,
-  now: Date.now()/1000,
+  visitTime: new Date().getTime(),
 }
 
 ipcRenderer.send('history', (historyItem));
