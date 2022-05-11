@@ -55,8 +55,14 @@ const data = [
 ];
 
 ipcRenderer.on('extensionStatesReply', (event, payload) => {
-	payload.radialUI ? contextListener(true) : contextListener(false);
+	if (payload.radialUI) {
+		contextListener();
+	} else {
+		window.removeEventListener('contextmenu', contextMenuHandler);
+	}
 });
+
+const font = document.createElement('link');
 
 const createRadialUiHtml = (e) => {
 	const menuSize = 300;
@@ -70,7 +76,6 @@ const createRadialUiHtml = (e) => {
 	const { clientX: mouseX, clientY: mouseY } = e;
 	const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
 
-	const font = document.createElement('link');
 	font.setAttribute('rel', 'stylesheet');
 	font.setAttribute('type', 'text/css');
 	font.setAttribute('href', 'https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;700&display=swap');
@@ -242,23 +247,22 @@ const createRadialUiHtml = (e) => {
 
 const removeRadialUiHtml = () => {
 	const container = document.getElementById('radial-ui');
-	container.remove();
+	if (font) font.remove();
+	if (container) container.remove();
 };
 
-const contextListener = (state) => {
-	if (state) {
-		window.addEventListener('contextmenu', (e) => {
-			e.preventDefault();
+const contextListener = () => {
+	window.addEventListener('contextmenu', contextMenuHandler);
+};
 
-			const menu = document.getElementById('radial-ui');
-			if (!menu) {
-				createRadialUiHtml(e);
-			} else {
-				removeRadialUiHtml();
-			}
-		});
+const contextMenuHandler = (e) => {
+	e.preventDefault();
+
+	const menu = document.getElementById('radial-ui');
+	if (!menu) {
+		createRadialUiHtml(e);
 	} else {
-		window.removeEventListener('contextmenu', window);
+		removeRadialUiHtml();
 	}
 };
 
@@ -356,9 +360,3 @@ const resizeListener = () => {
 		}
 	});
 };
-
-// const init = () => {
-// 	contextListener();
-// };
-
-// init();
