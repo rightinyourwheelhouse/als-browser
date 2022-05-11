@@ -55,11 +55,7 @@ const data = [
 ];
 
 ipcRenderer.on('extensionStatesReply', (event, payload) => {
-	if (payload.radialUI) {
-		contextListener();
-	} else {
-		window.removeEventListener('contextmenu', contextListener());
-	}
+	payload.radialUI ? contextListener(true) : contextListener(false);
 });
 
 const createRadialUiHtml = (e) => {
@@ -249,17 +245,21 @@ const removeRadialUiHtml = () => {
 	container.remove();
 };
 
-const contextListener = () => {
-	window.addEventListener('contextmenu', (e) => {
-		e.preventDefault();
+const contextListener = (state) => {
+	if (state) {
+		window.addEventListener('contextmenu', (e) => {
+			e.preventDefault();
 
-		const menu = document.getElementById('radial-ui');
-		if (!menu) {
-			createRadialUiHtml(e);
-		} else {
-			removeRadialUiHtml();
-		}
-	});
+			const menu = document.getElementById('radial-ui');
+			if (!menu) {
+				createRadialUiHtml(e);
+			} else {
+				removeRadialUiHtml();
+			}
+		});
+	} else {
+		window.removeEventListener('contextmenu', window);
+	}
 };
 
 const goBack = () => {
