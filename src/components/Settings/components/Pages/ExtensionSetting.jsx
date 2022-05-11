@@ -174,11 +174,12 @@ const ExtensionSettings = () => {
 				/>
 			</SettingTile>
 
-			<SettingTile infoText="Schakel muis traceren aan of uit.">
+			<SettingTile disabled={user ? false : true} infoText="Schakel muis traceren aan of uit.">
 				<CustomSwitch
+					disabled={user ? false : true}
 					title="Muis traceren"
 					name="mouseTracking"
-					state={extensionStates.mouseTracking}
+					state={user ? extensionStates.mouseTracking : false}
 					handleOnChange={handleOnChange}
 				/>
 			</SettingTile>
@@ -192,14 +193,14 @@ const ExtensionSettings = () => {
 				/>
 			</SettingTile>
 
-			<SettingTile infoText="Schakel achtervolgende knoppen aan of uit.">
+			{/* <SettingTile infoText="Schakel achtervolgende knoppen aan of uit.">
 				<CustomSwitch
 					title="Achtervolgende knoppen"
 					name="snappingButtons"
 					state={extensionStates.snappingButtons}
 					handleOnChange={handleOnChange}
 				/>
-			</SettingTile>
+			</SettingTile> */}
 		</div>
 	);
 };

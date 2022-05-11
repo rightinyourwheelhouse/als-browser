@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch } from '@headlessui/react';
 
-const CustomSwitch = ({ title, name, state, handleOnChange }) => {
+const CustomSwitch = ({ title, name, state, handleOnChange, disabled }) => {
 	const handleChange = async (checked) => {
 		handleOnChange(name, checked);
 	};
@@ -13,7 +13,8 @@ const CustomSwitch = ({ title, name, state, handleOnChange }) => {
 			<Switch
 				checked={state}
 				onChange={handleChange}
-				className={`${state ? 'bg-dark-blue' : 'bg-dark-blue opacity-20'}
+				disabled={disabled}
+				className={`${state ? 'bg-dark-blue' : 'bg-dark-blue opacity-20'} ${disabled ? 'opacity-4 cursor-default' : ''}
           relative inline-flex h-[38px] w-[74px] flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
 			>
 				<span
