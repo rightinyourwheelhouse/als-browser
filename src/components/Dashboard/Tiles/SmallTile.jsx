@@ -5,7 +5,7 @@ import { useAuth } from '../../../contexts/AuthContextProvider';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../../utils/FirebaseConfig';
 
-const SmallTile = ({ title, img, url, deleteBookmark, setBookmarksUpdated }) => {
+const SmallTile = ({ title, img, url, deleteBookmark }) => {
 	const [fallback, setFallback] = useState(false);
 	const { user } = useAuth();
 	const handleChangeUrl = () => {
@@ -14,8 +14,6 @@ const SmallTile = ({ title, img, url, deleteBookmark, setBookmarksUpdated }) => 
 
 	const handleDeleteBookmark = () => {
 		deleteDoc(doc(db, `users/${user.uid}/bookmarks/${title}`));
-
-		setBookmarksUpdated(true);
 	};
 
 	return (

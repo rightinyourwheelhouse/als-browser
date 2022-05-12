@@ -21,7 +21,7 @@ const Dashboard = () => {
 	const location = useLocation();
 	const { user } = useAuth();
 	const [bookmarks, setBookmarks] = useState([]);
-	const [bookmarksUpdated, setBookmarksUpdated] = useState(false);
+
 	const bookmarkCountRef = useRef();
 
 	let params = new URLSearchParams(location.search);
@@ -31,31 +31,29 @@ const Dashboard = () => {
 	};
 
 	useEffect(() => {
-		setBookmarksUpdated(false);
+		if (!user) return;
 
-		const fetchData = async () => {
+		const queryRef = query(collection(db, 'users', `${user.uid}/bookmarks`), limit(10), orderBy('createdAt', 'desc'));
+
+		const unsubscribe = onSnapshot(queryRef, (snapshot) => {
 			let bookmarksArray = [];
-
-			const queryRef = query(collection(db, 'users', `${user.uid}/bookmarks`), limit(10), orderBy('createdAt', 'desc'));
-
-			const querySnapshot = await getDocs(queryRef);
-			querySnapshot.forEach((doc) => {
-				const data = doc.data();
-
-				const pushed = {
+			snapshot.forEach((doc) => {
+				const bookmarkData = {
 					id: doc.id,
-					url: data.url,
-					title: data.title,
-					favicon: data.favicon,
+					url: doc.data().url,
+					title: doc.data().title,
+					favicon: doc.data().favicon,
 				};
-				bookmarksArray.push(pushed);
+
+				bookmarksArray.push(bookmarkData);
 			});
-
 			setBookmarks(bookmarksArray);
-		};
+		});
 
-		if (user) fetchData();
-	}, [user, bookmarksUpdated]);
+		return () => {
+			unsubscribe();
+		};
+	}, [user]);
 
 	useEffect(() => {
 		if (!user) return;
@@ -94,8 +92,6 @@ const Dashboard = () => {
 									type: 'success',
 								});
 							});
-
-							setBookmarksUpdated(true);
 						}
 					}
 				} else {
@@ -108,9 +104,7 @@ const Dashboard = () => {
 
 	return !params.get('search') ? (
 		<>
-			{addBookmark && (
-				<AddBookmark setAddBookmark={setAddBookmark} user={user} setBookmarksUpdated={setBookmarksUpdated} />
-			)}
+			{addBookmark && <AddBookmark setAddBookmark={setAddBookmark} user={user} />}
 			<div className="select-none overflow-y-auto">
 				<Clock />
 				<button
@@ -148,7 +142,6 @@ const Dashboard = () => {
 								img={bookmark?.favicon}
 								url={bookmark.url}
 								deleteBookmark={deleteBookmark}
-								setBookmarksUpdated={setBookmarksUpdated}
 							/>
 						))}
 

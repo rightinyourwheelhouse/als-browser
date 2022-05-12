@@ -6,7 +6,7 @@ import TextInputGroup from '../TextInputGroup';
 import { getDoc, setDoc, doc } from 'firebase/firestore';
 import { db } from '../../utils/FirebaseConfig';
 
-const AddBookmark = ({ setAddBookmark, user, setBookmarksUpdated }) => {
+const AddBookmark = ({ setAddBookmark, user }) => {
 	const handleSubmit = async (values, { setSubmitting }) => {
 		try {
 			setSubmitting(true);
@@ -32,7 +32,6 @@ const AddBookmark = ({ setAddBookmark, user, setBookmarksUpdated }) => {
 						});
 					});
 
-					setBookmarksUpdated(true);
 					setAddBookmark(false);
 				}
 			});
