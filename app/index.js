@@ -230,7 +230,6 @@ ipcMain.on('searchBarFocus', (event, bool) => {
 		: view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
 });
 
-
 ipcMain.on('cursorData', (event, arg) => {
 	mainWindow.webContents.send('cursorDataReply', arg);
 });
@@ -241,6 +240,7 @@ ipcMain.on('webPageData', (event, arg) => {
 
 ipcMain.on('beforeunload', () => {
 	mainWindow.webContents.send('beforeunloadReply');
+});
 
 ipcMain.on('extensionStates', (event, payload) => {
 	view.webContents.send('extensionStatesReply', payload);
@@ -268,5 +268,4 @@ ipcMain.on('bookmark', (event, arg) => {
 
 ipcMain.on('alert-message-bookmark', (event, arg) => {
 	view.webContents.send('alert-message-bookmarkReply', arg);
-
 });
