@@ -36,9 +36,13 @@
     "electron:build:all": "npm run build && electron-builder -mw"
   },
   "dependencies": {
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
     "@firebase/auth": "^0.19.12",
     "@headlessui/react": "^1.6.0",
     "@heroicons/react": "^1.0.6",
+    "@mui/material": "^5.7.0",
+    "@mui/x-data-grid": "^5.10.0",
     "classnames": "^2.3.1",
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.0",
