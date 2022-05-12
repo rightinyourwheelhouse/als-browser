@@ -19,6 +19,7 @@ const ExtensionStatesContextProvider = ({ children }) => {
 		radialUI: true,
 		mousePrediction: true,
 		scrollHelp: true,
+		mouseTracking: true,
 		scrollHelpPosition: { top: '68%', left: '90%' },
 	});
 
