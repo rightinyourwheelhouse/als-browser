@@ -9,12 +9,16 @@ import { useAuth } from './contexts/AuthContextProvider';
 import { db } from './utils/FirebaseConfig';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
+import { useMouseTracking } from './utils/useMouseTracking';
+
 const App = () => {
+  
 	const { user } = useAuth();
+	useMouseTracking();
 
 	let navigate = useNavigate();
 
-	useEffect(() => {
+	useEffect(() => { // TODO: CLEAN UP 
 		window.api.recieve('toggleExtensionRadialReply', () => {
 			navigate('/settings/extension');
 			window.api.send('toggleExtension');
@@ -57,7 +61,6 @@ const App = () => {
 				<Route path="settings/*" element={<Settings />}></Route>
 			</Routes>
 		</div>
-
 	);
 };
 
