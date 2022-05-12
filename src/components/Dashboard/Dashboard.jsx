@@ -8,6 +8,7 @@ import Clock from '../Clock';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { PlusIcon } from '@heroicons/react/outline';
+import { CogIcon } from '@heroicons/react/outline';
 
 import { useAuth } from '../../contexts/AuthContextProvider';
 import { query, collection, limit, doc, getDoc, setDoc, onSnapshot, orderBy } from 'firebase/firestore';
@@ -111,7 +112,8 @@ const Dashboard = () => {
 					onClick={handleSettings}
 					className="absolute right-8 top-28 flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
 				>
-					<img className="h-14 w-14 rounded-full" src="https://i.imgur.com/jcuurYi.png" alt="" />
+					<CogIcon className="h-12 w-12 rounded-full" />
+
 					<h2 className="font-light">Instellingen</h2>
 				</button>
 				<div className="m-center mt-8 w-3/4">
