@@ -47,8 +47,6 @@ const Login = ({ setLoginActive }) => {
 		} catch (error) {
 			const errorHandling = ErrorHandling(error);
 			setError(errorHandling);
-		} finally {
-			setSubmitting(false);
 		}
 	};
 
@@ -78,7 +76,11 @@ const Login = ({ setLoginActive }) => {
 								/>
 							</div>
 
-							<button className="mt-8 h-10 w-full rounded-lg bg-dark-blue text-white" disabled={isSubmitting}>
+							<button
+								type="submit"
+								className="mt-8 h-10 w-full rounded-lg bg-dark-blue text-white"
+								disabled={isSubmitting}
+							>
 								Aanmelden
 							</button>
 						</form>
