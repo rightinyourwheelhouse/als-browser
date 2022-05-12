@@ -46,6 +46,17 @@ const AddBookmark = ({ setAddBookmark, user, setBookmarksUpdated }) => {
 	return (
 		<div className="absolute z-50 flex h-full w-full items-center justify-center bg-slate-800/25 backdrop-blur-sm">
 			<div className="w-96 rounded-md bg-slate-600 p-4">
+				<div className="mb-8 flex items-center justify-between">
+					<h1 className="text-xl font-bold text-white">Bladwijzer toevoegen</h1>
+					<button
+						className="rounded-md border-2 border-white py-1 px-3 text-white "
+						onClick={() => {
+							setAddBookmark(false);
+						}}
+					>
+						Sluiten
+					</button>
+				</div>
 				<Formik
 					initialValues={{
 						name: '',
@@ -55,7 +66,6 @@ const AddBookmark = ({ setAddBookmark, user, setBookmarksUpdated }) => {
 				>
 					{({ handleSubmit, isSubmitting }) => (
 						<form onSubmit={handleSubmit} className="">
-							<h1 className="mb-8 text-xl font-bold text-white">Bladwijzer toevoegen</h1>
 							<div className="mb-4">
 								<Field
 									textColor="text-white"
@@ -78,17 +88,8 @@ const AddBookmark = ({ setAddBookmark, user, setBookmarksUpdated }) => {
 
 							<div className="mt-6 flex items-center justify-end">
 								<button
-									className="mr-4 rounded-md border-2 border-white py-1 px-4 text-white "
-									onClick={() => {
-										setAddBookmark(false);
-									}}
-								>
-									Annuleer
-								</button>
-
-								<button
 									type="submit"
-									className="rounded-md border-2 border-white bg-white py-1 px-4 text-blue-800"
+									className="rounded-md border-2 border-white bg-white py-1 px-4 text-slate-800"
 									disabled={isSubmitting}
 								>
 									Bewaar

@@ -141,7 +141,6 @@ const Dashboard = () => {
 						</button>
 					</div>
 					<div className="flex cursor-pointer flex-row flex-wrap justify-center ">
-						{console.log(bookmarks)}
 						{bookmarks.map((bookmark) => (
 							<SmallTile
 								key={bookmark.title}
