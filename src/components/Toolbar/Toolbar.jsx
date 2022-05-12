@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Dashboard from '../Dashboard/Dashboard';
 import SearchBar from './SearchBar';
 import ToolbarIcon from './ToolbarIcon.jsx';
@@ -53,8 +53,14 @@ const Toolbar = ({ onFocusChange }) => {
 		window.api.send('adjustSize');
 	};
 
-	window.api.recieve('ToggleTheDashboard', () => {
-		onFocusChange(Dashboard);
+	useEffect(() => {
+		window.api.recieve('ToggleTheDashboard', () => {
+			onFocusChange(Dashboard);
+		});
+
+		return () => {
+			window.api.removeAllListeners('ToggleTheDashboard');
+		};
 	});
 
 	const handleExtensionToggle = () => {

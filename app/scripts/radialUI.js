@@ -1,6 +1,6 @@
 const { ipcRenderer } = require('electron');
 
-ipcRenderer.send('getExtensionStates');
+// ipcRenderer.send('getExtensionStates');
 
 const data = [
 	{

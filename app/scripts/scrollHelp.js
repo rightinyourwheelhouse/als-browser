@@ -1,7 +1,5 @@
 const { ipcRenderer } = require('electron');
 
-ipcRenderer.send('getExtensionStates');
-
 ipcRenderer.on('extensionStatesReply', (event, payload) => {
 	console.log(payload);
 	if (payload.scrollHelp) {
@@ -61,6 +59,7 @@ const handleOnMouseLeave = () => {
 const calculatePercentage = (mousePos, menuSize, windowSize) => {
 	return `${(((mousePos - menuSize / 2) / windowSize) * 100).toFixed(0)}%`;
 };
+
 let bool;
 const registerListerners = () => {
 	if (bool) return;
@@ -125,16 +124,14 @@ const createOverlay = () => {
 		container.style.opacity = '.8';
 		container.style.zIndex = '999';
 
+		document.body.appendChild(container);
+		registerListerners();
+
 		// if (document.readyState === 'complete') {
 		// 	document.body.appendChild(container);
 		// 	registerListerners();
 		// }
 
-		window.addEventListener('DOMContentLoaded', () => {
-			console.log('loaded');
-			document.body.appendChild(container);
-			registerListerners();
-		});
 		//  else {
 		// 	// Wait for dom to be ready for injection
 		// 	window.addEventListener('DOMContentLoaded', () => {
@@ -153,3 +150,7 @@ const deleteOverlay = () => {
 		overlay.remove();
 	}
 };
+
+window.addEventListener('DOMContentLoaded', () => {
+	console.log('loaded');
+});
