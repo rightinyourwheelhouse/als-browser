@@ -10,7 +10,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { PlusIcon } from '@heroicons/react/outline';
 
 import { useAuth } from '../../contexts/AuthContextProvider';
-import { query, collection, limit, doc, getDoc, setDoc, onSnapshot, getDocs, orderBy } from 'firebase/firestore';
+import { query, collection, limit, doc, getDoc, setDoc, onSnapshot, orderBy } from 'firebase/firestore';
 import { db } from '../../utils/FirebaseConfig';
 import AddBookmark from './AddBookmark';
 
