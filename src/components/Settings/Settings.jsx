@@ -124,19 +124,14 @@ const Settings = () => {
 					</NavLink>
 				))}
 
-				{user ? (
-					<div className="flex h-full flex-col justify-end px-4 pb-8">
-						<button className="mt-10 h-10 w-full rounded-lg bg-red-500 text-white" onClick={logout}>
-							Uitloggen
-						</button>
-					</div>
-				) : (
-					<div className="flex h-full flex-col justify-end px-4 pb-8">
-						<button className="mt-10 h-10 w-full rounded-lg bg-slate-500 text-white" onClick={login}>
-							Inloggen
-						</button>
-					</div>
-				)}
+				<div className="flex h-full flex-col justify-end px-4 pb-8">
+					<button
+						className={`${user ? 'bg-red-500' : 'bg-dark-blue'} mt-10 h-10 w-full rounded-lg text-white`}
+						onClick={user ? logout : login}
+					>
+						{user ? 'Uitloggen' : 'Inloggen'}
+					</button>
+				</div>
 			</div>
 			<div className="">
 				<Routes>
