@@ -34,10 +34,8 @@ const SearchBar = () => {
 			}
 		});
 
-		return () => {
-			window.api.removeAllListeners('focusSearchBarRadialUiReply');
-		};
-	});
+		return () => window.api.removeAllListeners('focusSearchBarRadialUiReply');
+	}, []);
 
 	return (
 		<form onSubmit={handleSubmit}>

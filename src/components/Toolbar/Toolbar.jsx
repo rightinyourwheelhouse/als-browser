@@ -58,10 +58,8 @@ const Toolbar = ({ onFocusChange }) => {
 			onFocusChange(Dashboard);
 		});
 
-		return () => {
-			window.api.removeAllListeners('ToggleTheDashboard');
-		};
-	});
+		return () => window.api.removeAllListeners('ToggleTheDashboard');
+	}, [onFocusChange]);
 
 	const handleExtensionToggle = () => {
 		navigate('/settings/extension');
