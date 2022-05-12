@@ -1,6 +1,9 @@
-const overlay = `
+const { ipcRenderer } = require('electron');
 
-<div style="position: fixed; right: 2rem; bottom: 2rem; z-index: 999; background-color: white; border: solid #205493 2px; display: flex; flex-direction: column; gap: 1rem; justify-content: center; align-items:center; padding: .8rem; border-radius: .5rem;">
+ipcRenderer.send('getExtensionStates');
+
+const overlay = `
+<div class="wh-overlay" draggable="true" style="opacity: .7;cursor: pointer; position: fixed;  z-index: 999; background-color: white; border: solid #205493 2px; display: flex; flex-direction: column; gap: 1rem; justify-content: center; align-items:center; padding: .8rem; border-radius: .5rem; width:90px; height:200px">
    <div class="wh-up" style="background-color: white; filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.1));  width: 50px; height: 50px; display: flex; justify-content: center; align-items:center; border-radius: 999px">
       <div>
          <svg width="37" height="22" viewBox="0 0 37 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -8,7 +11,8 @@ const overlay = `
          </svg>
       </div>
    </div>
-   <div class="wh-down" style="background-color: white; filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.1));  width: 50px; height: 50px; display: flex; justify-content: center; align-items:center; border-radius: 999px">
+   <div style="width:15px; height:15px;" ><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6.5 8a.5.5 0 00-.5-.5H1.5a.5.5 0 000 1H6a.5.5 0 00.5-.5z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M3.854 5.646a.5.5 0 00-.708 0l-2 2a.5.5 0 000 .708l2 2a.5.5 0 00.708-.708L2.207 8l1.647-1.646a.5.5 0 000-.708zM9.5 8a.5.5 0 01.5-.5h4.5a.5.5 0 010 1H10a.5.5 0 01-.5-.5z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M12.146 5.646a.5.5 0 01.708 0l2 2a.5.5 0 010 .708l-2 2a.5.5 0 01-.708-.708L13.793 8l-1.647-1.646a.5.5 0 010-.708zM8 9.5a.5.5 0 00-.5.5v4.5a.5.5 0 001 0V10a.5.5 0 00-.5-.5z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M5.646 12.146a.5.5 0 000 .708l2 2a.5.5 0 00.708 0l2-2a.5.5 0 00-.708-.708L8 13.793l-1.646-1.647a.5.5 0 00-.708 0zM8 6.5a.5.5 0 01-.5-.5V1.5a.5.5 0 011 0V6a.5.5 0 01-.5.5z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M5.646 3.854a.5.5 0 010-.708l2-2a.5.5 0 01.708 0l2 2a.5.5 0 01-.708.708L8 2.207 6.354 3.854a.5.5 0 01-.708 0z" clip-rule="evenodd"></path></svg></div>
+   <div class="wh-down" style="cursor: pointer; background-color: white; filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.1));  width: 50px; height: 50px; display: flex; justify-content: center; align-items:center; border-radius: 999px">
       <div
          style="display: flex; align-items: center;">
          <svg width="37" height="22" viewBox="0 0 37 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -20,8 +24,13 @@ const overlay = `
 `;
 
 let interval;
+let scrollSpeed;
+let container;
 
-const handleSetInterval = (scrollDir) => {
+const menuHeight = 200;
+const menuWidth = 90;
+
+const handleOnMouseEnter = (scrollDir) => {
 	interval = setInterval(() => {
 		window.scrollBy(0, scrollDir);
 	}, 10);
@@ -31,20 +40,64 @@ const handleOnMouseLeave = () => {
 	clearInterval(interval);
 };
 
+const calculatePercentage = (mousePos, menuSize, windowSize) => {
+	return `${(((mousePos - menuSize / 2) / windowSize) * 100).toFixed(0)}%`;
+};
+
 const registerListerners = () => {
 	const up = document.querySelector('.wh-up');
+	const overlay = document.querySelector('.wh-overlay');
 	const down = document.querySelector('.wh-down');
 
+	overlay.addEventListener('mouseenter', () => {
+		overlay.style.opacity = '1';
+	});
+	overlay.addEventListener('mouseleave', () => {
+		overlay.style.opacity = '.7';
+	});
+
 	up.addEventListener('mouseenter', () => {
-		handleSetInterval(-10);
+		handleOnMouseEnter(-scrollSpeed);
 	});
 
 	up.addEventListener('mouseleave', () => {
 		handleOnMouseLeave();
 	});
 
+	document.addEventListener('dragover', (e) => e.preventDefault());
+
+	document.addEventListener('drop', (e) => {
+		e.preventDefault();
+		overlay.style.opacity = '1';
+
+		const { clientX: mouseX, clientY: mouseY } = e;
+		const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
+
+		if (windowWidth - mouseX < menuWidth) {
+			overlay.style.left = '90%';
+		} else if (mouseX < menuWidth) {
+			overlay.style.left = '2%';
+		} else {
+			overlay.style.left = calculatePercentage(mouseX, menuWidth, windowWidth);
+		}
+
+		if (windowHeight - mouseY < menuHeight) {
+			overlay.style.top = '68%';
+		} else if (mouseY < menuHeight) {
+			overlay.style.top = '2%';
+		} else {
+			overlay.style.top = calculatePercentage(mouseY, menuHeight, windowHeight);
+		}
+
+		// // Send data to React
+		const top = overlay.style.top;
+		const left = overlay.style.left;
+
+		ipcRenderer.send('setLatestOverlayLocation', top, left);
+	});
+
 	down.addEventListener('mouseenter', () => {
-		handleSetInterval(10);
+		handleOnMouseEnter(scrollSpeed);
 	});
 
 	down.addEventListener('mouseleave', () => {
@@ -52,11 +105,46 @@ const registerListerners = () => {
 	});
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-	const container = document.createElement('div');
-	container.id = 'scrollhelp-overlay';
-	container.innerHTML = overlay;
-	document.body.appendChild(container);
+ipcRenderer.on('extensionStatesReply', (event, payload) => {
+	if (payload.scrollHelp) {
+		createOverlay();
+	} else {
+		deleteOverlay();
+	}
 
-	registerListerners();
+	if (payload.scrollHelpPosition) {
+		container.style.left = payload.scrollHelpPosition.left;
+		container.style.top = payload.scrollHelpPosition.top;
+	}
+
+	if (payload.scrollSpeed) scrollSpeed = payload.scrollSpeed;
 });
+
+const createOverlay = () => {
+	if (!document.getElementById('scrollhelp-overlay')) {
+		container = document.createElement('div');
+		container.id = 'scrollhelp-overlay';
+		container.style.position = 'absolute';
+		container.innerHTML = overlay;
+
+		if (document.readyState === 'complete') {
+			document.body.appendChild(container);
+			registerListerners();
+		} else {
+			// Wait for dom to be ready for injection
+			window.addEventListener('DOMContentLoaded', () => {
+				document.body.appendChild(container);
+				registerListerners();
+			});
+		}
+	}
+};
+
+const deleteOverlay = () => {
+	const overlay = document.getElementById('scrollhelp-overlay');
+	if (overlay) {
+		document.removeEventListener('mouseenter', registerListerners());
+		document.removeEventListener('mouseleave', registerListerners());
+		overlay.remove();
+	}
+};
