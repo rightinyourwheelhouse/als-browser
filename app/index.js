@@ -234,10 +234,6 @@ ipcMain.on('extensionStates', (event, payload) => {
 	view.webContents.send('extensionStatesReply', payload);
 });
 
-ipcMain.on('setExtensionState', (event, payload) => {
-	view.webContents.send('extensionStatesReply', payload);
-});
-
 ipcMain.on('getExtensionStates', () => {
 	mainWindow.webContents.send('getExtensionStatesReply');
 });

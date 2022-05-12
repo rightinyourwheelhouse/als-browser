@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Title from '../../../Typography/Title';
 import CustomSwitch from '../CustomSwitch';
 import SettingTile from '../SettingTile';
@@ -9,13 +9,38 @@ import { useAuth } from '../../../../contexts/AuthContextProvider';
 
 import { MinusIcon } from '@heroicons/react/outline';
 import { PlusIcon } from '@heroicons/react/outline';
+import useLocalStorageState from '../../../../hooks/useLocalStorageState';
 
-const ExtensionSettings = () => {
+const ExtensionSetting = () => {
 	const { user } = useAuth();
-	const [extensionStates, setExtensionStates] = useState({});
+	// const [extensionStates, setExtensionStates] = useState({});
+	const [extensionStates, setExtensionStates] = useLocalStorageState('extensionStates', {});
+
+	window.api.recieve('getExtensionStatesReply', () => {
+		window.api.send('extensionStates', extensionStates);
+	});
+
+	window.api.recieve('setLatestOverlayLocationReply', (...payload) => {
+		setExtensionStates((prevExtensionStates) => ({
+			...prevExtensionStates,
+			scrollHelpPosition: { top: payload[0][0], left: payload[0][1] },
+		}));
+	});
 
 	useEffect(() => {
-		if (!user) return;
+		if (!user) {
+			if (!localStorage.getItem('extensionStates')) {
+				setExtensionStates({
+					scrollSpeed: 3,
+					radialUI: true,
+					mousePrediction: true,
+					scrollHelp: true,
+					scrollHelpPosition: { top: '68%', left: '90%' },
+				});
+			}
+			return;
+		}
+
 		const fetchData = async () => {
 			const docRef = doc(db, 'users', user.uid);
 			const docSnap = await getDoc(docRef);
@@ -104,8 +129,9 @@ const ExtensionSettings = () => {
 								className="h-10 w-10 rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover"
 							/>
 							<input
-								className="border-1 mx-4 w-12 border-dark-blue bg-white pl-3"
-								value={extensionStates.scrollSpeed || 2}
+								disabled={true}
+								className="border-1 mx-4 w-12 cursor-default select-none border-dark-blue bg-white pl-3"
+								value={extensionStates.scrollSpeed || 0}
 								onChange={(e) => (e.target.value = extensionStates.scrollSpeed)}
 								min="1"
 								max="5"
@@ -205,4 +231,4 @@ const ExtensionSettings = () => {
 	);
 };
 
-export default ExtensionSettings;
+export default ExtensionSetting;

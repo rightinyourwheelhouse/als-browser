@@ -14,7 +14,7 @@ const CustomSwitch = ({ title, name, state, handleOnChange, disabled }) => {
 				checked={state}
 				onChange={handleChange}
 				disabled={disabled}
-				className={`${state ? 'bg-dark-blue' : 'bg-dark-blue opacity-20'} ${disabled ? 'opacity-4 cursor-default' : ''}
+				className={`${state ? 'bg-dark-blue' : 'bg-dark-blue opacity-20'} ${disabled ? 'cursor-default' : ''}
           relative inline-flex h-[38px] w-[74px] flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
 			>
 				<span
