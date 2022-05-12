@@ -13,8 +13,13 @@ import useLocalStorageState from '../../../../hooks/useLocalStorageState';
 
 const ExtensionSetting = () => {
 	const { user } = useAuth();
-	// const [extensionStates, setExtensionStates] = useState({});
-	const [extensionStates, setExtensionStates] = useLocalStorageState('extensionStates', {});
+	const [extensionStates, setExtensionStates] = useLocalStorageState('extensionStates', {
+		scrollSpeed: 3,
+		radialUI: true,
+		mousePrediction: true,
+		scrollHelp: true,
+		scrollHelpPosition: { top: '68%', left: '90%' },
+	});
 
 	window.api.recieve('getExtensionStatesReply', () => {
 		window.api.send('extensionStates', extensionStates);
@@ -28,18 +33,7 @@ const ExtensionSetting = () => {
 	});
 
 	useEffect(() => {
-		if (!user) {
-			if (!localStorage.getItem('extensionStates')) {
-				setExtensionStates({
-					scrollSpeed: 3,
-					radialUI: true,
-					mousePrediction: true,
-					scrollHelp: true,
-					scrollHelpPosition: { top: '68%', left: '90%' },
-				});
-			}
-			return;
-		}
+		if (!user) return;
 
 		const fetchData = async () => {
 			const docRef = doc(db, 'users', user.uid);
@@ -53,7 +47,7 @@ const ExtensionSetting = () => {
 			}
 		};
 		fetchData();
-	}, [user]);
+	}, [user, setExtensionStates]);
 
 	const incrementScrollSpeed = async () => {
 		if (extensionStates.scrollSpeed >= 10) return;
