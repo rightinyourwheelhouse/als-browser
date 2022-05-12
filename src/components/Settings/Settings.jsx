@@ -110,9 +110,9 @@ const Settings = () => {
 				{tabs.map((tab, index) => (
 					<NavLink
 						className={({ isActive }) => {
-							const classes =
-								'text-dark-grey w-full rounded-br-full rounded-tr-full p-2 text-left text-lg font-light hover:bg-white';
-							return isActive ? `bg-white font-bold outline-none drop-shadow-light ${classes}` : classes;
+							return `${
+								isActive && 'bg-white font-bold outline-none drop-shadow-light'
+							} text-dark-grey w-full rounded-br-full rounded-tr-full p-2 text-left text-lg font-light hover:bg-white`;
 						}}
 						to={`/settings/${tab.link}`}
 						key={index}
