@@ -62,7 +62,7 @@ const ExtensionSetting = () => {
 
 	return (
 		<div className="mx-10 ">
-			<Title className="mt-8">Extensie</Title>
+			<Title className="mt-8">Toegankelijkheid</Title>
 
 			{/* <SettingTile infoText="Schakel alle functies aan of uit.">
 				<CustomSwitch

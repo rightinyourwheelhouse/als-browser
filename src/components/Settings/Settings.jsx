@@ -70,7 +70,7 @@ const Settings = () => {
 		},
 
 		{
-			tabName: 'Extensie',
+			tabName: 'Toegankelijkheid',
 			link: 'extension',
 			component: ExtensionSetting,
 			icon: PuzzleIcon,
