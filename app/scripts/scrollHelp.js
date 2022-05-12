@@ -1,7 +1,6 @@
 const { ipcRenderer } = require('electron');
 
 ipcRenderer.on('extensionStatesReply', (event, payload) => {
-	console.log(payload);
 	if (payload.scrollHelp) {
 		createOverlay();
 	} else {
@@ -11,6 +10,8 @@ ipcRenderer.on('extensionStatesReply', (event, payload) => {
 	if (payload.scrollHelpPosition && container) {
 		container.style.left = payload.scrollHelpPosition.left;
 		container.style.top = payload.scrollHelpPosition.top;
+	} else {
+		ipcRenderer.send('setLatestOverlayLocation', { top: "68%", left: "90%" });
 	}
 
 	if (payload.scrollSpeed) scrollSpeed = payload.scrollSpeed;
@@ -45,14 +46,12 @@ const menuHeight = 200;
 const menuWidth = 90;
 
 const handleOnMouseEnter = (scrollDir) => {
-	console.log('enter');
 	interval = setInterval(() => {
 		window.scrollBy(0, scrollDir);
 	}, 10);
 };
 
 const handleOnMouseLeave = () => {
-	console.log('leave');
 	clearInterval(interval);
 };
 
@@ -60,10 +59,8 @@ const calculatePercentage = (mousePos, menuSize, windowSize) => {
 	return `${(((mousePos - menuSize / 2) / windowSize) * 100).toFixed(0)}%`;
 };
 
-let bool;
+// This prevents preload scripts to attach multiple listeners
 const registerListerners = () => {
-	if (bool) return;
-	bool = true;
 	const up = document.querySelector('.wh-up');
 	const down = document.querySelector('.wh-down');
 
@@ -107,7 +104,7 @@ const registerListerners = () => {
 		const top = container.style.top;
 		const left = container.style.left;
 
-		ipcRenderer.send('setLatestOverlayLocation', top, left);
+		ipcRenderer.send('setLatestOverlayLocation', { top: top, left: left });
 	});
 
 	down.addEventListener('mouseenter', () => handleOnMouseEnter(scrollSpeed));
@@ -126,31 +123,10 @@ const createOverlay = () => {
 
 		document.body.appendChild(container);
 		registerListerners();
-
-		// if (document.readyState === 'complete') {
-		// 	document.body.appendChild(container);
-		// 	registerListerners();
-		// }
-
-		//  else {
-		// 	// Wait for dom to be ready for injection
-		// 	window.addEventListener('DOMContentLoaded', () => {
-		// 		document.body.appendChild(container);
-		// 		registerListerners();
-		// 	});
-		// }
 	}
 };
 
 const deleteOverlay = () => {
 	const overlay = document.getElementById('scrollhelp-overlay');
-	if (overlay) {
-		// document.removeEventListener('mouseenter', registerListerners());
-		// document.removeEventListener('mouseleave', registerListerners());
-		overlay.remove();
-	}
+	if (overlay) overlay.remove();
 };
-
-window.addEventListener('DOMContentLoaded', () => {
-	console.log('loaded');
-});

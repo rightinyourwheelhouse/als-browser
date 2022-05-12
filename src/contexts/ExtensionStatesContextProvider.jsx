@@ -24,24 +24,24 @@ const ExtensionStatesContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		window.api.recieve('getExtensionStatesReply', () => {
-			if (!user) {
-				window.api.send('extensionStates', extensionStates);
-			} else {
-				fetchData();
-			}
+			window.api.send('extensionStates', extensionStates);
 		});
 
-		window.api.recieve('setLatestOverlayLocationReply', (...payload) => {
-			if (!user) {
-				setExtensionStates((prevExtensionStates) => ({
-					...prevExtensionStates,
-					scrollHelpPosition: { top: payload[0][0], left: payload[0][1] },
-				}));
-			} else {
+		return () => window.api.removeAllListeners('getExtensionStatesReply');
+	}, [extensionStates]);
+
+	useEffect(() => {
+		window.api.recieve('setLatestOverlayLocationReply', (payload) => {
+			setExtensionStates((previousState) => ({
+				...previousState,
+				scrollHelpPosition: { top: payload[0].top, left: payload[0].left },
+			}));
+
+			if (user) {
 				const docRef = doc(db, 'users', user.uid);
 				setDoc(
 					docRef,
-					{ extensionStates: { scrollHelpPosition: { top: payload[0][0], left: payload[0][1] } } },
+					{ extensionStates: { scrollHelpPosition: { top: payload[0].top, left: payload[0].left } } },
 					{ merge: true },
 				);
 			}
@@ -56,7 +56,6 @@ const ExtensionStatesContextProvider = ({ children }) => {
 			if (docSnap.exists()) {
 				const data = docSnap.data();
 				if (data.extensionStates) {
-					// Get the init state for webview
 					setExtensionStates(data.extensionStates);
 					window.api.send('extensionStates', data.extensionStates);
 				}
@@ -65,11 +64,8 @@ const ExtensionStatesContextProvider = ({ children }) => {
 
 		fetchData();
 
-		return () => {
-			window.api.removeAllListeners('getExtensionStatesReply');
-			window.api.removeAllListeners('setLatestOverlayLocationReply');
-		};
-	}, [user]);
+		return () => window.api.removeAllListeners('setLatestOverlayLocationReply');
+	}, [user, setExtensionStates]);
 
 	return (
 		<extensionStatesContext.Provider
