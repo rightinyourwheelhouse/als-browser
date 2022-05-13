@@ -22,6 +22,7 @@ const Dashboard = () => {
 	const location = useLocation();
 	const { user } = useAuth();
 	const [bookmarks, setBookmarks] = useState([]);
+	const localBookmarks = localStorage.getItem('bookmarks');
 
 	const bookmarkCountRef = useRef();
 
@@ -32,7 +33,14 @@ const Dashboard = () => {
 	};
 
 	useEffect(() => {
-		if (!user) return;
+		if (!user) {
+			// setBookmarks to local storage
+
+			if (localBookmarks) {
+				setBookmarks(JSON.parse(localBookmarks));
+			}
+			return;
+		}
 
 		const queryRef = query(collection(db, 'users', `${user.uid}/bookmarks`), limit(10), orderBy('createdAt', 'desc'));
 
@@ -54,13 +62,41 @@ const Dashboard = () => {
 		return () => {
 			unsubscribe();
 		};
-	}, [user]);
+	}, [localBookmarks, user]);
 
 	useEffect(() => {
-		if (!user) return;
-
 		// recieve bookmark from radial
 		window.api.recieve('bookmarkReply', ([bookmarkData]) => {
+			if (!user) {
+				//save bookmark to local storage
+				const localBookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+
+				// if bookmarks is not empty then push bookmark to bookmarks array
+				if (localBookmarks) {
+					// check if bookmark array is less than 10
+					if (localBookmarks.length >= 10) {
+						window.api.send('alert-message-bookmark', {
+							message: 'U hebt het maximum aantal bladwijzers bereikt',
+							type: 'warning',
+						});
+					} else {
+						// bookmark does not exist
+						localBookmarks.push(bookmarkData);
+						localStorage.setItem('bookmarks', JSON.stringify(localBookmarks));
+						window.api.send('alert-message-bookmark', {
+							message: 'Bladwijzer toegevoegd',
+							type: 'success',
+						});
+					}
+				} else {
+					// if bookmarks is empty then create new array and push bookmark to it
+					const newBookmarks = [bookmarkData];
+					localStorage.setItem('bookmarks', JSON.stringify(newBookmarks));
+				}
+
+				return;
+			}
+
 			const queryRefLength = query(collection(db, 'users', `${user.uid}/bookmarks`));
 			onSnapshot(queryRefLength, (snapshot) => {
 				bookmarkCountRef.current = snapshot.size;
