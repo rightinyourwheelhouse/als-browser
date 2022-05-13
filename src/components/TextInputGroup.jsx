@@ -2,7 +2,16 @@ import { useField } from 'formik';
 import React, { useState } from 'react';
 import ErrorMessage from './Auth/ErrorMessage';
 
-const TextInputGroup = ({ label, name, value = '', placeholder, type, onChange, onBlur }) => {
+const TextInputGroup = ({
+	label,
+	name,
+	value = '',
+	placeholder,
+	type,
+	onChange,
+	onBlur,
+	textColor = 'text-slate-800',
+}) => {
 	const [currentValue, setCurrentValue] = useState(value);
 	const [field, meta] = useField({
 		type,
@@ -15,7 +24,7 @@ const TextInputGroup = ({ label, name, value = '', placeholder, type, onChange, 
 	const errorText = meta.error && meta.touched ? meta.error : '';
 	return (
 		<div className="mb-4">
-			<label htmlFor={name} className="mb-2 block text-base font-bold">
+			<label htmlFor={name} className={`mb-2 block text-base font-bold ${textColor}`}>
 				{label}
 			</label>
 

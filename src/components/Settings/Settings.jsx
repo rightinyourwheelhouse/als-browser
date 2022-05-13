@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, NavLink } from 'react-router-dom';
+import { Routes, Route, NavLink, useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 
@@ -27,6 +27,8 @@ const Settings = () => {
 	const [device, setDevice] = useState('');
 	const [deviceSpecification, setDeviceSpecification] = useState('');
 	const [hasDeviceSpecification, setHasDeviceSpecification] = useState(false);
+
+	let navigate = useNavigate();
 
 	useEffect(() => {
 		const getUserDevice = async () => {
@@ -68,7 +70,7 @@ const Settings = () => {
 		},
 
 		{
-			tabName: 'Extensie',
+			tabName: 'Toegankelijkheid',
 			link: 'extension',
 			component: ExtensionSetting,
 			icon: PuzzleIcon,
@@ -89,6 +91,9 @@ const Settings = () => {
 		},
 	];
 
+	const login = () => {
+		navigate('/settings/account');
+	};
 
 	const logout = async () => {
 		try {
@@ -105,9 +110,9 @@ const Settings = () => {
 				{tabs.map((tab, index) => (
 					<NavLink
 						className={({ isActive }) => {
-							const classes =
-								'text-dark-grey w-full rounded-br-full rounded-tr-full p-2 text-left text-lg font-light hover:bg-white';
-							return isActive ? `bg-white font-bold outline-none drop-shadow-light ${classes}` : classes;
+							return `${
+								isActive && 'bg-white font-bold outline-none drop-shadow-light'
+							} text-dark-grey w-full rounded-br-full rounded-tr-full p-2 text-left text-lg font-light hover:bg-white`;
 						}}
 						to={`/settings/${tab.link}`}
 						key={index}
@@ -119,15 +124,21 @@ const Settings = () => {
 					</NavLink>
 				))}
 
-				{user && (
+				{user ? (
 					<div className="flex h-full flex-col justify-end px-4 pb-8">
-						<button className="mt-10 h-10 w-full rounded-lg bg-slate-500 text-white" onClick={logout}>
+						<button className="mt-10 h-10 w-full rounded-lg bg-red-500 text-white" onClick={logout}>
 							Uitloggen
+						</button>
+					</div>
+				) : (
+					<div className="flex h-full flex-col justify-end px-4 pb-8">
+						<button className="mt-10 h-10 w-full rounded-lg bg-slate-500 text-white" onClick={login}>
+							Inloggen
 						</button>
 					</div>
 				)}
 			</div>
-			<div className="">
+			<div>
 				<Routes>
 					<Route path="feedback" element={<FeedbackSetting />} />
 					<Route

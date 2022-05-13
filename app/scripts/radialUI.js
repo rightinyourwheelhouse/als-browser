@@ -107,6 +107,8 @@ const createRadialUiHtml = (e) => {
   overflow: hidden;
   box-sizing: border-box;
   font-family: Mulish;
+  margin: 0;
+  padding: 0;
   display: none;`;
 
 	const defaultStyleButton = `fill: white;
@@ -170,6 +172,8 @@ const createRadialUiHtml = (e) => {
 	});
 
 	const defaultStyleClose = `"${defaultStyleMask} width: 100px;
+  margin: 0;
+  padding: 0;
   font-family: Mulish;
   border: 3px solid white;
   color: white;
@@ -272,13 +276,17 @@ const bookmark = () => {
 		const url = window.location.href;
 		const title = document.title.replaceAll('/', '-');
 
-		const rootUrl = window.location.origin;
-		const favicon = rootUrl + '/favicon.ico';
+		const favicon =
+			document.querySelector('link[rel="icon"]')?.href ||
+			document.querySelector('link[rel="shortcut icon"]')?.href ||
+			document.querySelector('link[rel="apple-touch-icon"]')?.href ||
+			'';
 
 		const bookmark = {
 			url,
 			title,
 			favicon,
+			createdAt: new Date().toLocaleString(),
 		};
 
 		ipcRenderer.send('bookmark', bookmark);
