@@ -1,13 +1,21 @@
 const { ipcRenderer } = require('electron');
 
-let url = window.location;
+const url = window.location;
 
-let historyItem = {
-  url: url.href,
-  hostname: url.hostname,
-  pathname: url.pathname,
-  search: url.search,
-  visitTime: new Date().getTime(),
-}
+const favicon =
+	document.querySelector('link[rel="icon"]')?.href ||
+	document.querySelector('link[rel="shortcut icon"]')?.href ||
+	document.querySelector('link[rel="apple-touch-icon"]')?.href ||
+	'';
 
-ipcRenderer.send('history', (historyItem));
+const historyItem = {
+	url: url.href,
+	hostname: url.hostname,
+	pathname: url.pathname,
+	search: url.search,
+	favicon: favicon,
+	title: document.title,
+	visitTime: new Date().getTime(),
+};
+
+ipcRenderer.send('history', historyItem);
