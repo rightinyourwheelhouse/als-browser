@@ -8,3 +8,18 @@ html,
 	@apply m-0 h-full p-0 font-mulish;
 	@apply font-mulish;
 }
+
+@layer base {
+	:root {
+		--color-accent: #0070f3;
+		--color-text-base: #1e293b;
+		--color-white: #ffffff;
+		--color-light: #e2e8f0;
+		--color-medium: #cbd5e1;
+		--color-dark: #475569;
+		--color-darker: #0f172a;
+		--color-error: #ff4081;
+		--color-success-light: #dcfce7;
+		--color-success-dark: #159dae;
+	}
+}
