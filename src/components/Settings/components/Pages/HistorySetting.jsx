@@ -81,7 +81,7 @@ const HistorySetting = () => {
 				''
 			) : (
 				<div className="mt-2">
-					<Button onClick={handleDelete} >
+					<Button onClick={handleDelete} type="delete" >
 						{selectionModel.length === historyItems.length ? 'Verwijder alle data' : 'Verwijder geselecteerde data'}
 					</Button>
 				</div>
