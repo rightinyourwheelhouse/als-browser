@@ -33,7 +33,6 @@ const ExtensionStatesContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		window.api.recieve('setLatestOverlayLocationReply', (payload) => {
-			console.log(payload);
 			setExtensionStates((previousState) => ({
 				...previousState,
 				scrollHelpPosition: { top: payload[0].top, left: payload[0].left },
