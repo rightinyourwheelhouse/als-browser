@@ -1,34 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Title from '../../../Typography/Title';
 import CustomSwitch from '../CustomSwitch';
 import SettingTile from '../SettingTile';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../../../utils/FirebaseConfig';
 
 import { useAuth } from '../../../../contexts/AuthContextProvider';
 
 import { MinusIcon } from '@heroicons/react/outline';
 import { PlusIcon } from '@heroicons/react/outline';
+import { useExtensionStates } from '../../../../contexts/ExtensionStatesContextProvider';
 
-const ExtensionSettings = () => {
+const ExtensionSetting = () => {
 	const { user } = useAuth();
-	const [extensionStates, setExtensionStates] = useState({});
+	const [extensionStates, setExtensionStates] = useExtensionStates();
 
 	useEffect(() => {
 		if (!user) return;
-		const fetchData = async () => {
-			const docRef = doc(db, 'users', user.uid);
-			const docSnap = await getDoc(docRef);
-
-			if (docSnap.exists()) {
-				const data = docSnap.data();
-				if (data.extensionStates) {
-					setExtensionStates(data.extensionStates);
-				}
-			}
-		};
-		fetchData();
-	}, [user]);
+	}, [user, extensionStates]);
 
 	const incrementScrollSpeed = async () => {
 		if (extensionStates.scrollSpeed >= 10) return;
@@ -74,7 +63,7 @@ const ExtensionSettings = () => {
 
 	return (
 		<div className="mx-10 ">
-			<Title className="mt-8">Extensie</Title>
+			<Title className="mt-8">Toegankelijkheid</Title>
 
 			{/* <SettingTile infoText="Schakel alle functies aan of uit.">
 				<CustomSwitch
@@ -104,8 +93,9 @@ const ExtensionSettings = () => {
 								className="h-10 w-10 rounded-full bg-white p-2 drop-shadow-light transition duration-300 ease-in-out hover:drop-shadow-hover"
 							/>
 							<input
-								className="border-1 mx-4 w-12 border-dark-blue bg-white pl-3"
-								value={extensionStates.scrollSpeed || 2}
+								disabled={true}
+								className="border-1 mx-4 w-12 cursor-default select-none border-dark-blue bg-white pl-3"
+								value={extensionStates.scrollSpeed || 0}
 								onChange={(e) => (e.target.value = extensionStates.scrollSpeed)}
 								min="1"
 								max="5"
@@ -165,11 +155,21 @@ const ExtensionSettings = () => {
 				</div>
 			</SettingTile>
 
-			<SettingTile infoText="Schakel muis traceren aan of uit.">
+			<SettingTile infoText="Schakel radial ui aan of uit.">
 				<CustomSwitch
+					title="Radial UI"
+					name="radialUI"
+					state={extensionStates.radialUI}
+					handleOnChange={handleOnChange}
+				/>
+			</SettingTile>
+
+			<SettingTile disabled={user ? false : true} infoText="Schakel muis traceren aan of uit.">
+				<CustomSwitch
+					disabled={user ? false : true}
 					title="Muis traceren"
 					name="mouseTracking"
-					state={extensionStates.mouseTracking}
+					state={user ? extensionStates.mouseTracking : false}
 					handleOnChange={handleOnChange}
 				/>
 			</SettingTile>
@@ -183,16 +183,16 @@ const ExtensionSettings = () => {
 				/>
 			</SettingTile>
 
-			<SettingTile infoText="Schakel achtervolgende knoppen aan of uit.">
+			{/* <SettingTile infoText="Schakel achtervolgende knoppen aan of uit.">
 				<CustomSwitch
 					title="Achtervolgende knoppen"
 					name="snappingButtons"
 					state={extensionStates.snappingButtons}
 					handleOnChange={handleOnChange}
 				/>
-			</SettingTile>
+			</SettingTile> */}
 		</div>
 	);
 };
 
-export default ExtensionSettings;
+export default ExtensionSetting;

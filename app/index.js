@@ -246,10 +246,6 @@ ipcMain.on('extensionStates', (event, payload) => {
 	view.webContents.send('extensionStatesReply', payload);
 });
 
-ipcMain.on('setExtensionState', (event, payload) => {
-	view.webContents.send('extensionStatesReply', payload);
-});
-
 ipcMain.on('getExtensionStates', () => {
 	mainWindow.webContents.send('getExtensionStatesReply');
 });
@@ -258,8 +254,8 @@ ipcMain.on('getLatestOverlayLocation', () => {
 	mainWindow.webContents.send('getLatestOverlayLocationReply');
 });
 
-ipcMain.on('setLatestOverlayLocation', (event, ...payload) => {
-	mainWindow.webContents.send('setLatestOverlayLocationReply', ...payload);
+ipcMain.on('setLatestOverlayLocation', (event, payload) => {
+	mainWindow.webContents.send('setLatestOverlayLocationReply', payload);
 });
 
 ipcMain.on('bookmark', (event, arg) => {
