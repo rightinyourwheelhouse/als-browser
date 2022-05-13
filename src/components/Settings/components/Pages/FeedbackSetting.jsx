@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
-import { HiOutlineSelector, HiCheck } from 'react-icons/hi';
+// import { HiOutlineSelector, HiCheck } from 'react-icons/hi';
 import Button from '../Button';
 
 const feedbackOptions = [
@@ -17,13 +17,13 @@ const FeedbackSetting = () => {
 			<h1 className="mt-8 mb-[2.65rem] font-mulish text-3xl font-bold">Feedback geven</h1>
 			<label htmlFor="typeSelector">Selecteer type feedback:</label>
 			<br />
-			<div className='relative'>
-				<div className='absolute'>
+			<div className="relative">
+				<div className="absolute">
 					<Listbox value={selectedOption} onChange={setSelectedOption}>
 						<Listbox.Button className="my-3 flex min-w-[25ch] cursor-default justify-between rounded-lg bg-gray-200 py-2 pl-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
 							<span className="block truncate">{selectedOption.type}</span>
 							<span className="pointer-events-none flex items-center pr-2">
-								<HiOutlineSelector className="h-5 w-5 text-gray-600" aria-hidden="true" />
+								{/* <HiOutlineSelector className="h-5 w-5 text-gray-600" aria-hidden="true" /> */}
 							</span>
 						</Listbox.Button>
 						<Transition
@@ -50,7 +50,7 @@ const FeedbackSetting = () => {
 												</span>
 												{selected ? (
 													<span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#475569]">
-														<HiCheck className="h-5 w-5" aria-hidden="true" />
+														{/* <HiCheck className="h-5 w-5" aria-hidden="true" /> */}
 													</span>
 												) : null}
 											</>

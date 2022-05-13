@@ -67,7 +67,7 @@ const Toolbar = ({ onFocusChange }) => {
 	};
 
 	return (
-		<div className="drop-shadow-browser draggable w-full">
+		<div className="drop-shadow-browser draggable fixed w-full">
 			<div className="flex h-20 items-center justify-between bg-slate-100 pl-4 pr-4">
 				<div className="flex cursor-pointer flex-row gap-4">
 					<ToolbarIcon onClick={handleGoBack}>

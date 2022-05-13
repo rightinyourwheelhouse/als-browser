@@ -4,36 +4,28 @@ import Dashboard from './components/Dashboard/Dashboard';
 
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Settings from './components/Settings/Settings';
-
-
-import { useAuth } from './contexts/AuthContextProvider';
-import { db } from './utils/FirebaseConfig';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-
-
 import { useHistory } from './utils/useHistory';
 import { useMouseTracking } from './utils/useMouseTracking';
 
 const App = () => {
-  
-	const { user } = useAuth();
-
 	useMouseTracking();
-  
-	let navigate = useNavigate();
 	useHistory();
 
-	useEffect(() => { // TODO: CLEAN UP 
+	let navigate = useNavigate();
+
+	useEffect(() => {
 		window.api.recieve('toggleExtensionRadialReply', () => {
 			navigate('/settings/extension');
 			window.api.send('toggleExtension');
 		});
+
+		return () => window.removeAllListeners('toggleExtensionRadialReply');
 	}, [navigate]);
 
 	return (
 		<div className="grid h-full grid-rows-[max-content,1fr]">
 			<Toolbar />
-			<Routes>
+			<Routes cmas>
 				<Route path="/" element={<Dashboard />} />
 				<Route path="settings/*" element={<Settings />}></Route>
 			</Routes>
