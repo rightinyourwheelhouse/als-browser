@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import {  HashRouter } from 'react-router-dom';
+
+import { HashRouter } from 'react-router-dom';
+
 import AuthContextProvider from './contexts/AuthContextProvider';
 
 import './css/index.css';
@@ -12,7 +14,7 @@ ReactDOM.render(
 			<AuthContextProvider>
 				<App />
 			</AuthContextProvider>
-	  </HashRouter>
+		</HashRouter>
 	</React.StrictMode>,
 	document.getElementById('root'),
 );

@@ -23,6 +23,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "electron:start": "electron .",
     "electron:dev": "concurrently \"cross-env BROWSER=none npm run dev\" \"wait-on -c waitOnConfig.json http-get://localhost:3000/ && electron .\"",
     "electron:build-mac": "npm run build && electron-builder --mac",
     "electron:build-win": "npm run build && electron-builder --win",
