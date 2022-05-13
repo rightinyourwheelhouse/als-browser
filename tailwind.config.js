@@ -25,6 +25,7 @@ module.exports = {
 			backgroundColor: {
 				skin: {
 					medium: 'var(--color-medium)',
+          dark: 'var(--color-dark)',
 					error: 'var(--color-error)',
 				},
 			},
