@@ -13,7 +13,8 @@ import { useExtensionStates } from '../../../../contexts/ExtensionStatesContextP
 
 const ExtensionSetting = () => {
 	const { user } = useAuth();
-	const { extensionStates, setExtensionStates } = useExtensionStates();
+	const [extensionStates, setExtensionStates] = useExtensionStates();
+
 	useEffect(() => {
 		if (!user) return;
 	}, [user, extensionStates]);

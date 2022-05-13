@@ -69,9 +69,7 @@ const ExtensionStatesContextProvider = ({ children }) => {
 	}, [user, setExtensionStates]);
 
 	return (
-		<extensionStatesContext.Provider
-			value={{ extensionStates: extensionStates, setExtensionStates: setExtensionStates }}
-		>
+		<extensionStatesContext.Provider value={[extensionStates, setExtensionStates]}>
 			{children}
 		</extensionStatesContext.Provider>
 	);
