@@ -5,12 +5,6 @@ ipcRenderer.on('alert-message-bookmarkReply', (event, arg) => {
 });
 
 const creatHTMLAlertMessage = (arg) => {
-	const font = document.createElement('link');
-	font.setAttribute('rel', 'stylesheet');
-	font.setAttribute('type', 'text/css');
-	font.setAttribute('href', 'https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;700&display=swap');
-	document.head.appendChild(font);
-
 	const alertMessage = document.createElement('div');
 
 	const defaultStyleAlertMessage = `position: fixed !important;
