@@ -8,7 +8,7 @@ const options = {
 	minute: 'numeric',
 };
 
-const Clock = () => {
+const Clock = ({ className }) => {
 	const [time, setTime] = useState(new Date().toLocaleDateString('nl-BE', options));
 
 	useEffect(() => {
@@ -17,7 +17,7 @@ const Clock = () => {
 		return () => clearInterval(interval);
 	}, []);
 
-	return <div className="mt-4 h-10 text-center">{time}</div>;
+	return <div className={className}>{time}</div>;
 };
 
 export default Clock;
