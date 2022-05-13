@@ -1,8 +1,8 @@
 const { ipcRenderer } = require('electron');
 
-var url = window.location;
+let url = window.location;
 
-var historyItem = {
+let historyItem = {
   url: url.href,
   hostname: url.hostname,
   pathname: url.pathname,

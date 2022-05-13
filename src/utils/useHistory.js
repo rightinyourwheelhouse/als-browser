@@ -13,5 +13,6 @@ export const useHistory = () => {
 			var historyRef = collection(db, `users/${user.uid}/history/`);
 			await addDoc(historyRef, historyItem[0]);
 		});
+		return () => window.api.removeAllListeners('historyReply');
 	}, [user]);
 };

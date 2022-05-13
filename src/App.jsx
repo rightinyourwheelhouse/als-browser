@@ -13,10 +13,8 @@ import { useHistory } from './utils/useHistory';
 
 const App = () => {
 	const { user } = useAuth();
-
 	let navigate = useNavigate();
-
-  useHistory();
+	useHistory();
 
 	useEffect(() => {
 		window.api.recieve('toggleExtensionRadialReply', () => {

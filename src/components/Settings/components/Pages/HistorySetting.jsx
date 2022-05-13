@@ -51,8 +51,8 @@ const HistorySetting = () => {
 	}, [user]);
 
 	return (
-		<>
-			<div className='h-[55.7rem] mx-3 mt-3'>
+		<div className='mx-3'>
+			<div className='h-[55.7rem] mt-3'>
         <DataGrid
           localeText={nlNL.components.MuiDataGrid.defaultProps.localeText}
           columns={columns}
@@ -81,12 +81,12 @@ const HistorySetting = () => {
 				''
 			) : (
 				<div className="mt-2">
-					<Button onClick={handleDelete} className='p-2 bg-red-600 rounded-md' >
+					<Button onClick={handleDelete} >
 						{selectionModel.length === historyItems.length ? 'Verwijder alle data' : 'Verwijder geselecteerde data'}
 					</Button>
 				</div>
 			)}
-		</>
+		</div>
 	);
 };
 
