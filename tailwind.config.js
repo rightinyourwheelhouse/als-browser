@@ -16,7 +16,7 @@ module.exports = {
 				light: '0px 0px 5px rgba(0, 0, 0, 0.1)',
 				hover: '0px 0px 15px rgba(0, 0, 0, 0.25)',
 			},
-      textColor: {
+			textColor: {
 				skin: {
 					white: 'var(--color-white)',
 					error: 'var(--color-error)',
@@ -25,11 +25,12 @@ module.exports = {
 			backgroundColor: {
 				skin: {
 					medium: 'var(--color-medium)',
-          dark: 'var(--color-dark)',
+					dark: 'var(--color-dark)',
 					error: 'var(--color-error)',
 				},
-			blur: {
-				xs: '1px',
+				blur: {
+					xs: '1px',
+				},
 			},
 		},
 	},
