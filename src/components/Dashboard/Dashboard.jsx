@@ -57,7 +57,7 @@ const Dashboard = () => {
 			</div>
 		</div>
 	) : (
-		<OnType />
+		<OnType params={params} />
 	);
 };
 
