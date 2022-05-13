@@ -13,10 +13,10 @@ const BigTile = ({ title, img, description, url }) => {
 			<div className="flex flex-row gap-8">
 				<div className="flex items-center justify-start gap-4">
 					<div>
-						<img className="h-7 w-7" src={img} alt="" />
+						<img className="h-7 w-7" src={img} alt={`${title}'s favicon`} />
 					</div>
 					<div className="text-left">
-						<a className="text-sm font-light underline underline-offset-1">www.vrt.be</a>
+						<a className="text-sm font-light underline underline-offset-1">{url}</a>
 						<h2 className="text-lg font-semibold">{title}</h2>
 					</div>
 				</div>

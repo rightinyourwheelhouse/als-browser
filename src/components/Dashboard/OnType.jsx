@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import BigTile from './Tiles/BigTile';
-import MediumTile from './Tiles/MediumTile';
 import Title from '../Typography/Title';
 import Clock from '../Clock';
 import Fuse from 'fuse.js';
+import { useAuth } from '../../contexts/AuthContextProvider';
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 let websiteList = [
 	{
@@ -28,7 +29,7 @@ let websiteList = [
 		},
 	},
 	{
-		websiteName: 'facebook',
+		websiteName: 'Facebook',
 		website: {
 			shortUrl: ' Facebook.com',
 			url: 'https://www.facebook.com',
@@ -217,7 +218,7 @@ let websiteList = [
 		},
 	},
 	{
-		websiteName: 'Netlix',
+		websiteName: 'Netflix',
 		website: {
 			shortUrl: 'netflix.com',
 			url: 'https://www.netflix.com/',
@@ -309,38 +310,42 @@ let websiteList = [
 	},
 ];
 
+const options = {
+	isCaseSensitive: false,
+	// includeScore: true,
+	shouldSort: true,
+	// includeMatches: false,
+	findAllMatches: true,
+	minMatchCharLength: 2,
+	// location: 0,
+	threshold: 0.49,
+	// distance: 100,
+	// useExtendedSearch: false,
+	// ignoreLocation: false,
+	// ignoreFieldNorm: false,
+	// fieldNormWeight: 1,
+	keys: ['websiteName', 'website.shortUrl'],
+};
+
 const OnType = ({ params }) => {
+	const { user } = useAuth();
 	const [suggestions, setSuggestions] = useState([]);
+
+	const fuseSearch = (list, input) => {
+		const fuse = new Fuse(list, options);
+		const result = fuse.search(input);
+		console.log(result);
+		setSuggestions(result);
+	};
 
 	useEffect(() => {
 		const searchInput = params.get('search');
 
-		const searchResults = searchFuzzyHistory(searchInput);
-		setSuggestions(searchResults);
+		// Get user data
+
+
+		fuseSearch(websiteList, searchInput);
 	}, [params]);
-
-	function searchFuzzyHistory(searchTerm) {
-		const options = {
-			isCaseSensitive: false,
-			// includeScore: true,
-			shouldSort: true,
-			// includeMatches: false,
-			findAllMatches: true,
-			minMatchCharLength: 2,
-			// location: 0,
-			threshold: 0.49,
-			// distance: 100,
-			// useExtendedSearch: false,
-			// ignoreLocation: false,
-			// ignoreFieldNorm: false,
-			// fieldNormWeight: 1,
-			keys: ['websiteName', 'website.shortUrl'],
-		};
-
-		const fuse = new Fuse(websiteList, options);
-
-		return fuse.search(searchTerm);
-	}
 
 	return (
 		<div>
@@ -356,7 +361,7 @@ const OnType = ({ params }) => {
 							img="https://i.imgur.com/bPfHmNc.png"
 							description="Schrijf u hier in op onze VRT Nieuwsbrief op maat, zo wordt u maandelijks op de hoogte gehouden van het
 				belangrijkste nieuws over de VRT. Deze nieuwsbrief is ..."
-							url={suggestion.item.shortUrl}
+							url={suggestion.item.website.shortUrl}
 						/>
 					);
 				})}

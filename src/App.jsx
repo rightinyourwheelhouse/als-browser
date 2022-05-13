@@ -10,14 +10,18 @@ import { useAuth } from './contexts/AuthContextProvider';
 import { db } from './utils/FirebaseConfig';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
+
+import { useHistory } from './utils/useHistory';
 import { useMouseTracking } from './utils/useMouseTracking';
 
 const App = () => {
   
 	const { user } = useAuth();
-	useMouseTracking();
 
+	useMouseTracking();
+  
 	let navigate = useNavigate();
+	useHistory();
 
 	useEffect(() => { // TODO: CLEAN UP 
 		window.api.recieve('toggleExtensionRadialReply', () => {
