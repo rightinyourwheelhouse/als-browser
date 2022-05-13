@@ -107,9 +107,8 @@ const Dashboard = () => {
 		<>
 			{addBookmark && <AddBookmark setAddBookmark={setAddBookmark} user={user} />}
 			<div className="select-none overflow-y-auto">
-				<div className="mt-8 h-10 text-center">
-					<Clock />
-				</div>
+				<Clock className="mt-8 h-10 text-center" />
+
 				<button
 					onClick={handleSettings}
 					className="absolute right-8 top-28 flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
