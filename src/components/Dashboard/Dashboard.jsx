@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import SmallTile from './Tiles/SmallTile';
+import BookmarkTile from './Tiles/BookmarkTile ';
 import MediumTile from './Tiles/MediumTile';
 import Title from '../Typography/Title';
 import OnType from './OnType';
@@ -140,7 +140,7 @@ const Dashboard = () => {
 					</div>
 					<div className="flex cursor-pointer flex-row flex-wrap justify-center ">
 						{bookmarks.map((bookmark) => (
-							<SmallTile
+							<BookmarkTile
 								key={bookmark.title}
 								title={bookmark.title}
 								img={bookmark?.favicon}
