@@ -1,7 +1,5 @@
 const { ipcRenderer } = require('electron');
 
-// ipcRenderer.send('getExtensionStates');
-
 const data = [
 	{
 		id: 1,

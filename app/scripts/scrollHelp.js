@@ -11,7 +11,7 @@ ipcRenderer.on('extensionStatesReply', (event, payload) => {
 		container.style.left = payload.scrollHelpPosition.left;
 		container.style.top = payload.scrollHelpPosition.top;
 	} else {
-		ipcRenderer.send('setLatestOverlayLocation', { top: "68%", left: "90%" });
+		ipcRenderer.send('setLatestOverlayLocation', { top: '68%', left: '90%' });
 	}
 
 	if (payload.scrollSpeed) scrollSpeed = payload.scrollSpeed;
@@ -104,7 +104,7 @@ const registerListerners = () => {
 		const top = container.style.top;
 		const left = container.style.left;
 
-		ipcRenderer.send('setLatestOverlayLocation', { top: top, left: left });
+		ipcRenderer.send('setLatestOverlayLocation', { top, left });
 	});
 
 	down.addEventListener('mouseenter', () => handleOnMouseEnter(scrollSpeed));
