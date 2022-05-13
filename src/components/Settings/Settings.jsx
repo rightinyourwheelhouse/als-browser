@@ -132,8 +132,9 @@ const Settings = () => {
 						{user ? 'Uitloggen' : 'Inloggen'}
 					</button>
 				</div>
+
 			</div>
-			<div className="">
+			<div>
 				<Routes>
 					<Route path="feedback" element={<FeedbackSetting />} />
 					<Route

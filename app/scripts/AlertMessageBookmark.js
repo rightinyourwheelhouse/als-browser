@@ -5,12 +5,6 @@ ipcRenderer.on('alert-message-bookmarkReply', (event, arg) => {
 });
 
 const creatHTMLAlertMessage = (arg) => {
-	const font = document.createElement('link');
-	font.setAttribute('rel', 'stylesheet');
-	font.setAttribute('type', 'text/css');
-	font.setAttribute('href', 'https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;700&display=swap');
-	document.head.appendChild(font);
-
 	const alertMessage = document.createElement('div');
 
 	const defaultStyleAlertMessage = `position: fixed !important;
@@ -28,18 +22,21 @@ const creatHTMLAlertMessage = (arg) => {
 
 	alertMessage.style.cssText = defaultStyleAlertMessage;
 
-	if (arg == true) {
+	if (arg.type === 'warning') {
 		alertMessage.style.backgroundColor = '#ff4081';
-	} else if (arg == false) {
+	} else if (arg.type === 'success') {
 		alertMessage.style.backgroundColor = '#59ff92';
 	}
 
 	const alertMessageText = document.createElement('p');
-	if (arg == true) {
-		alertMessageText.innerHTML = 'Bladwijzer bestaat al';
+	alertMessageText.style.margin = '0';
+	alertMessageText.style.padding = '0';
+	alertMessageText.style.fontFamily = 'Mulish';
+	alertMessageText.style.fontSize = '16px';
+	alertMessageText.innerHTML = arg.message;
+	if (arg.type === 'warning') {
 		alertMessageText.style.color = '#fff';
-	} else if (arg == false) {
-		alertMessageText.innerHTML = 'Bladwijzer is toegevoegd';
+	} else if (arg.type === 'success') {
 		alertMessageText.style.color = '#000';
 	}
 

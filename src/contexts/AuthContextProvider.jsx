@@ -16,12 +16,16 @@ const AuthContextProvider = ({ children }) => {
 	onAuthStateChanged(auth, (user) => {
 		if (user) {
 			setUser(user);
+
+			window.api.send('sendAuthToBrowserView', user.uid);
 		} else {
 			setUser(undefined);
+
+			window.api.send('sendAuthToBrowserView', null);
 		}
 	});
 
-	return <authContext.Provider value={{ user: user, auth: auth }}>{children}</authContext.Provider>;
+	return <authContext.Provider value={{ user, auth }}>{children}</authContext.Provider>;
 };
 
 export default AuthContextProvider;
