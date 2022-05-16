@@ -3,7 +3,7 @@ import BigTile from './Tiles/BigTile';
 import Title from '../Typography/Title';
 import Clock from '../Clock';
 import Fuse from 'fuse.js';
-// import { useAuth } from '../../contexts/AuthContextProvider';
+import { useAuth } from '../../contexts/AuthContextProvider';
 import { collection, query, getDocs } from 'firebase/firestore';
 import { db } from '../../utils/FirebaseConfig';
 
@@ -25,36 +25,38 @@ const options = {
 };
 
 const OnType = ({ params }) => {
-	// const { user } = useAuth();
+	const { user } = useAuth();
 	const [suggestions, setSuggestions] = useState([]);
 	const [userHistory, setUserHistory] = useState([]);
 
 	const fuseSearch = (list, input) => {
 		const fuse = new Fuse(list, options);
 		const result = fuse.search(input);
-		console.log(result);
 		setSuggestions(result);
 	};
 
 	useEffect(() => {
+		if (!user) return;
 		// Get user data
 		const fetchData = async () => {
-			const q = query(collection(db, 'users/Q8N6GXSnGsaZ6L662qnEBZUjkFb2/history'));
+			const q = query(collection(db, `users/${user.uid}`, 'history'));
 			const querySnapshot = await getDocs(q);
 
 			const data = [];
 			querySnapshot.forEach((doc) => {
-				data.push(doc.data());
+				// Check if the hostname is already in the list
+				const hostname = doc.data().hostname;
+				const isInList = data.some((item) => item.hostname === hostname);
+				if (!isInList) data.push(doc.data());
 			});
 			setUserHistory(data);
 		};
 
 		fetchData();
-	}, []);
+	}, [user]);
 
 	useEffect(() => {
 		const searchInput = params.get('search');
-
 		fuseSearch(userHistory, searchInput);
 	}, [params, userHistory]);
 
@@ -68,10 +70,9 @@ const OnType = ({ params }) => {
 					return (
 						<BigTile
 							key={index}
-							title={suggestion.item.hostname}
-							img="https://i.imgur.com/bPfHmNc.png"
-							description="Schrijf u hier in op onze VRT Nieuwsbrief op maat, zo wordt u maandelijks op de hoogte gehouden van het
-				belangrijkste nieuws over de VRT. Deze nieuwsbrief is ..."
+							title={suggestion.item.title}
+							img={suggestion.item.favicon}
+							description={suggestion.item.description}
 							url={suggestion.item.hostname}
 						/>
 					);

@@ -13,13 +13,14 @@ const App = () => {
 
 	let navigate = useNavigate();
 
-	useEffect(() => {
+
+	useEffect(() => { 
 		window.api.recieve('toggleExtensionRadialReply', () => {
 			navigate('/settings/extension');
 			window.api.send('toggleExtension');
 		});
 
-		return () => window.removeAllListeners('toggleExtensionRadialReply');
+		return () => window.api.removeAllListeners("toggleExtensionRadialReply")
 	}, [navigate]);
 
 	return (

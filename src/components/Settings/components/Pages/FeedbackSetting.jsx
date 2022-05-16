@@ -1,6 +1,5 @@
 import React, { useState, Fragment } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
-// import { HiOutlineSelector, HiCheck } from 'react-icons/hi';
 import Button from '../Button';
 
 const feedbackOptions = [
