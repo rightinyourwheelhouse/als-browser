@@ -19,3 +19,4 @@ dist
 
 out/
 app/build
+.vscode/settings.json
