@@ -1,6 +1,6 @@
 const { ipcRenderer } = require('electron');
 
-ipcRenderer.on('alert-message-bookmarkReply', (event, arg) => {
+ipcRenderer.on('alert-message-feedbackReply', (event, arg) => {
 	createHTMLAlertMessage(arg);
 });
 

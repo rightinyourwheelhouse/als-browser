@@ -15,10 +15,22 @@ const FeedbackSetting = () => {
 
 	return (
 		<div>
+			<div id="alertMessage" className="absolute top-24 right-4 rounded border-2 border-green-700 bg-[#59ff92] p-2 invisible">
+				<p>Uw feedback is succesvol verzonden</p>
+			</div>
 			<h1 className="mt-8 mb-[2.65rem] font-mulish text-3xl font-bold">Feedback geven</h1>
 			<label htmlFor="typeSelector">Selecteer type feedback:</label>
 			<br />
-			<form action="">
+			<form
+				action=""
+				onSubmit={(e) => {
+					e.preventDefault();
+					document.getElementById('alertMessage').classList.remove('invisible');
+					setTimeout(() => {
+						document.getElementById('alertMessage').classList.add('invisible');
+					}, 5000);
+				}}
+			>
 				<div className="absolute">
 					<div className="relative">
 						<Listbox value={selectedOption} onChange={setSelectedOption}>
