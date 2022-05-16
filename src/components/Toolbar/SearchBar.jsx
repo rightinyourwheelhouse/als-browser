@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SearchBar = () => {
@@ -27,19 +27,15 @@ const SearchBar = () => {
 		}
 	};
 
-	window.api.recieve('focusSearchBarRadialUiReply', () => {
-		if (inputRef.current) {
-			inputRef.current.focus();
-		}
-	});
+	useEffect(() => {
+		window.api.recieve('focusSearchBarRadialUiReply', () => {
+			if (inputRef.current) {
+				inputRef.current.focus();
+			}
+		});
 
-	// window.api.recieve('loadURLResponse', (url) => {
-	// 	if (url.length <= 0) {
-	// 		setCurrentURL('Typ een website om te zoeken');
-	// 	} else {
-	// 		setCurrentURL(url[0]);
-	// 	}
-	// });
+		return () => window.api.removeAllListeners('focusSearchBarRadialUiReply');
+	}, []);
 
 	return (
 		<form onSubmit={handleSubmit}>

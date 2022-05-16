@@ -1,0 +1,38 @@
+[
+	{
+		"id": 1,
+		"value": "",
+		"label": "Selecteer een apparaat",
+		"hidden": true
+	},
+	{
+		"id": 2,
+		"value": "headmouse",
+		"label": "Headmouse",
+		"hidden": false
+	},
+	{
+		"id": 3,
+		"value": "eye_tracker",
+		"label": "Eye tracker",
+		"hidden": false
+	},
+	{
+		"id": 4,
+		"value": "keyboard_with_laser_pointer",
+		"label": "Toetsenbord met laseraanwijzer",
+		"hidden": false
+	},
+	{
+		"id": 5,
+		"value": "computer_mouse",
+		"label": "Computer muis",
+		"hidden": false
+	},
+	{
+		"id": 6,
+		"value": "trackpad",
+		"label": "Trackpad",
+		"hidden": false
+	}
+]

@@ -28,6 +28,9 @@ module.exports = {
 					dark: 'var(--color-dark)',
 					error: 'var(--color-error)',
 				},
+				blur: {
+					xs: '1px',
+				},
 			},
 		},
 	},

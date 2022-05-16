@@ -52,6 +52,16 @@ const data = [
 	},
 ];
 
+ipcRenderer.on('extensionStatesReply', (event, payload) => {
+	if (payload.radialUI) {
+		contextListener();
+	} else {
+		window.removeEventListener('contextmenu', contextMenuHandler);
+	}
+});
+
+const font = document.createElement('link');
+
 const createRadialUiHtml = (e) => {
 	const menuSize = 300;
 	const $items = data.length;
@@ -64,7 +74,6 @@ const createRadialUiHtml = (e) => {
 	const { clientX: mouseX, clientY: mouseY } = e;
 	const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
 
-	const font = document.createElement('link');
 	font.setAttribute('rel', 'stylesheet');
 	font.setAttribute('type', 'text/css');
 	font.setAttribute('href', 'https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;700&display=swap');
@@ -107,6 +116,8 @@ const createRadialUiHtml = (e) => {
   overflow: hidden;
   box-sizing: border-box;
   font-family: Mulish;
+  margin: 0;
+  padding: 0;
   display: none;`;
 
 	const defaultStyleButton = `fill: white;
@@ -170,6 +181,8 @@ const createRadialUiHtml = (e) => {
 	});
 
 	const defaultStyleClose = `"${defaultStyleMask} width: 100px;
+  margin: 0;
+  padding: 0;
   font-family: Mulish;
   border: 3px solid white;
   color: white;
@@ -236,20 +249,23 @@ const createRadialUiHtml = (e) => {
 
 const removeRadialUiHtml = () => {
 	const container = document.getElementById('radial-ui');
-	container.remove();
+	if (font) font.remove();
+	if (container) container.remove();
 };
 
 const contextListener = () => {
-	window.addEventListener('contextmenu', (e) => {
-		e.preventDefault();
+	window.addEventListener('contextmenu', contextMenuHandler);
+};
 
-		const menu = document.getElementById('radial-ui');
-		if (!menu) {
-			createRadialUiHtml(e);
-		} else {
-			removeRadialUiHtml();
-		}
-	});
+const contextMenuHandler = (e) => {
+	e.preventDefault();
+
+	const menu = document.getElementById('radial-ui');
+	if (!menu) {
+		createRadialUiHtml(e);
+	} else {
+		removeRadialUiHtml();
+	}
 };
 
 const goBack = () => {
@@ -272,13 +288,17 @@ const bookmark = () => {
 		const url = window.location.href;
 		const title = document.title.replaceAll('/', '-');
 
-		const rootUrl = window.location.origin;
-		const favicon = rootUrl + '/favicon.ico';
+		const favicon =
+			document.querySelector('link[rel="icon"]')?.href ||
+			document.querySelector('link[rel="shortcut icon"]')?.href ||
+			document.querySelector('link[rel="apple-touch-icon"]')?.href ||
+			'';
 
 		const bookmark = {
 			url,
 			title,
 			favicon,
+			createdAt: new Date().toLocaleString(),
 		};
 
 		ipcRenderer.send('bookmark', bookmark);
@@ -346,9 +366,3 @@ const resizeListener = () => {
 		}
 	});
 };
-
-const init = () => {
-	contextListener();
-};
-
-init();

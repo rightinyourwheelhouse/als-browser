@@ -1,4 +1,12 @@
-import React from 'react';
+import React, { useState, Fragment } from 'react';
+import { Listbox, Transition } from '@headlessui/react';
+import Button from '../Button';
+
+const feedbackOptions = [
+	{ id: 1, type: 'Algemeen' },
+	{ id: 2, type: 'Probleem rapporteren' },
+	{ id: 3, type: 'Feature-aanvraag' },
+];
 
 const FeedbackSetting = () => {
 	return (

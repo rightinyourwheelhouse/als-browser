@@ -4,57 +4,53 @@
   "version": "1.0.0",
   "description": "Browser for the ALS-liga",
   "main": "app/index.js",
-  "author": "Jamie-Lee Hart, Tommy Tytgat, Ewout Verhamme",
+  "author": "rightinyourwheelhouse",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rightinyourwheelhouse/als-browser.git"
+  },
   "license": "MIT",
   "build": {
-    "appId": "ALS-browser",
-    "dmg": {
-      "contents": [
-        {
-          "x": 110,
-          "y": 150
-        },
-        {
-          "x": 240,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    },
-    "win": {
-      "target": "nsis",
-      "icon": "build/icon.ico"
-    }
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "rightinyourwheelhouse",
+        "repo": "als-browser"
+      }
+    ]
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "electron:start": "electron .",
     "electron:dev": "concurrently \"cross-env BROWSER=none npm run dev\" \"wait-on -c waitOnConfig.json http-get://localhost:3000/ && electron .\"",
-    "electron:build": "npm run build && electron-builder --mac",
-    "electron:build:all": "npm run build && electron-builder -mw"
+    "electron:build-mac": "npm run build && electron-builder --mac",
+    "electron:build-win": "npm run build && electron-builder --win",
+    "electron:build:all": "npm run build && electron-builder -mw",
+    "electron:deploy": "npm run build && electron-builder build --win --publish always"
   },
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@firebase/auth": "^0.19.12",
-    "@headlessui/react": "^1.6.0",
+    "@headlessui/react": "^1.6.1",
     "@heroicons/react": "^1.0.6",
+    "@mui/icons-material": "^5.6.2",
     "@mui/material": "^5.7.0",
-    "@mui/x-data-grid": "^5.10.0",
+    "@mui/x-data-grid": "^5.11.0",
     "classnames": "^2.3.1",
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.0",
     "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
+    "electron-updater": "^5.0.1",
     "eslint-plugin-react-hooks": "^4.3.0",
     "firebase": "^9.6.11",
     "formik": "^2.2.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-electron-browser-window": "^0.1.2",
-    "react-icons": "^4.3.1",
     "react-router-dom": "^6.3.0",
     "yup": "^0.32.11"
   },

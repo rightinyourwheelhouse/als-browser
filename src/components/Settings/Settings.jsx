@@ -1,5 +1,7 @@
-import React from 'react';
-import { Routes, Route, NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Routes, Route, NavLink, useNavigate } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { signOut } from 'firebase/auth';
 
 import ExtensionSetting from './components/Pages/ExtensionSetting';
 import FeedbackSetting from './components/Pages/FeedbackSetting';
@@ -17,7 +19,34 @@ import { PuzzleIcon } from '@heroicons/react/outline';
 import { BookOpenIcon } from '@heroicons/react/outline';
 import { InformationCircleIcon } from '@heroicons/react/outline';
 
+import { db } from '../../utils/FirebaseConfig';
+import { useAuth } from '../../contexts/AuthContextProvider';
+
 const Settings = () => {
+	const { user, auth } = useAuth();
+	const [device, setDevice] = useState('');
+	const [deviceSpecification, setDeviceSpecification] = useState('');
+	const [hasDeviceSpecification, setHasDeviceSpecification] = useState(false);
+
+	let navigate = useNavigate();
+
+	useEffect(() => {
+		const getUserDevice = async () => {
+			if (user) {
+				const userDoc = doc(db, 'users', user.uid);
+				const userData = await getDoc(userDoc);
+				setDevice(userData.data().device);
+
+				if (userData.data().device === 'Andere') {
+					setHasDeviceSpecification(true);
+					setDeviceSpecification(userData.data().deviceSpecification);
+				}
+			}
+		};
+
+		getUserDevice();
+	}, [user]);
+
 	const tabs = [
 		{
 			tabName: 'Feedback',
@@ -41,7 +70,7 @@ const Settings = () => {
 		},
 
 		{
-			tabName: 'Extensie',
+			tabName: 'Toegankelijkheid',
 			link: 'extension',
 			component: ExtensionSetting,
 			icon: PuzzleIcon,
@@ -62,6 +91,18 @@ const Settings = () => {
 		},
 	];
 
+	const login = () => {
+		navigate('/settings/account');
+	};
+
+	const logout = async () => {
+		try {
+			await signOut(auth);
+		} catch (error) {
+			return;
+		}
+	};
+
 	return (
 		<div className="grid grid-cols-[minmax(12rem,16rem),1fr] gap-4">
 			<div className="mi z-10 flex flex-col gap-4 bg-slate-100 drop-shadow-2xl">
@@ -69,9 +110,9 @@ const Settings = () => {
 				{tabs.map((tab, index) => (
 					<NavLink
 						className={({ isActive }) => {
-							const classes =
-								'text-dark-grey w-full rounded-br-full rounded-tr-full p-2 text-left text-lg font-light hover:bg-white';
-							return isActive ? `bg-white font-bold outline-none drop-shadow-light ${classes}` : classes;
+							return `${
+								isActive && 'bg-white font-bold outline-none drop-shadow-light'
+							} text-dark-grey w-full rounded-br-full rounded-tr-full p-2 text-left text-lg font-light hover:bg-white`;
 						}}
 						to={`/settings/${tab.link}`}
 						key={index}
@@ -82,12 +123,31 @@ const Settings = () => {
 						</div>
 					</NavLink>
 				))}
-			</div>
 
-			<div className="">
+				<div className="flex h-full flex-col justify-end px-4 pb-8">
+					<button
+						className={`${user ? 'bg-red-500' : 'bg-dark-blue'} mt-10 h-10 w-full rounded-lg text-white`}
+						onClick={user ? logout : login}
+					>
+						{user ? 'Uitloggen' : 'Inloggen'}
+					</button>
+				</div>
+
+			</div>
+			<div>
 				<Routes>
 					<Route path="feedback" element={<FeedbackSetting />} />
-					<Route path="account" element={<AccountSetting />} />
+					<Route
+						path="account"
+						element={
+							<AccountSetting
+								device={device}
+								deviceSpecification={deviceSpecification}
+								hasDeviceSpecification={hasDeviceSpecification}
+								setHasDeviceSpecification={setHasDeviceSpecification}
+							/>
+						}
+					/>
 					<Route path="passwords" element={<PasswordSetting />} />
 					<Route path="extension" element={<ExtensionSetting />} />
 					<Route path="history" element={<HistorySetting />} />
