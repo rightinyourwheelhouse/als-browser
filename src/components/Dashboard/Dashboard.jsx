@@ -6,6 +6,7 @@ import OnType from './OnType';
 import Clock from '../Clock';
 
 import { useNavigate, useLocation } from 'react-router-dom';
+import useLocalStorageState from '../../hooks/useLocalStorageState';
 
 import { PlusIcon } from '@heroicons/react/outline';
 import { CogIcon } from '@heroicons/react/outline';
@@ -14,15 +15,17 @@ import { useAuth } from '../../contexts/AuthContextProvider';
 import { query, collection, limit, doc, getDoc, setDoc, onSnapshot, orderBy } from 'firebase/firestore';
 import { db } from '../../utils/FirebaseConfig';
 import AddBookmark from './AddBookmark';
+import useImmutableCallback from '../../hooks/useImmutableCallback';
 
 const Dashboard = () => {
 	const [deleteBookmark, setDeleteBookmark] = useState(false);
-	const [addBookmark, setAddBookmark] = useState(false);
+	const [showAddBookmarkModal, setShowAddBookmarkModal] = useState(false);
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { user } = useAuth();
-	const [bookmarks, setBookmarks] = useState([]);
-	const localBookmarks = localStorage.getItem('bookmarks');
+	// const [bookmarks, setBookmarks] = useState([]);
+	// const localBookmarks = localStorage.getItem('bookmarks');
+	const [bookmarks, setBookmarks] = useLocalStorageState('bookmarks', []);
 
 	const bookmarkCountRef = useRef();
 
@@ -32,20 +35,28 @@ const Dashboard = () => {
 		navigate('/settings/feedback');
 	};
 
-	useEffect(() => {
-		if (!user) {
-			// setBookmarks to local storage
-
-			if (localBookmarks) {
-				setBookmarks(JSON.parse(localBookmarks));
-			}
-			return;
+	const addBookmark = useImmutableCallback((bookmark) => {
+		if (bookmarks.length >= 10) {
+			window.api.send('alert-message-bookmark', {
+				message: 'U hebt het maximum aantal bladwijzers bereikt',
+				type: 'warning',
+			});
+		} else {
+			setBookmarks([...bookmarks, bookmark]);
+			window.api.send('alert-message-bookmark', {
+				message: 'Bladwijzer toegevoegd',
+				type: 'success',
+			});
 		}
+	});
 
+	useEffect(() => {
+		setBookmarks([]);
+		if (!user) return;
 		const queryRef = query(collection(db, 'users', `${user.uid}/bookmarks`), limit(10), orderBy('createdAt', 'desc'));
 
 		const unsubscribe = onSnapshot(queryRef, (snapshot) => {
-			let bookmarksArray = [];
+			let bookmarkArr = [];
 			snapshot.forEach((doc) => {
 				const bookmarkData = {
 					id: doc.id,
@@ -53,95 +64,84 @@ const Dashboard = () => {
 					title: doc.data().title,
 					favicon: doc.data().favicon,
 				};
-
-				bookmarksArray.push(bookmarkData);
+				bookmarkArr.push(bookmarkData);
 			});
-			setBookmarks(bookmarksArray);
+			setBookmarks(bookmarkArr);
 		});
 
-		return () => {
-			unsubscribe();
-		};
-	}, [localBookmarks, user]);
+		return () => unsubscribe();
+	}, [user, addBookmark, setBookmarks]);
 
 	useEffect(() => {
-		// recieve bookmark from radial
-		window.api.recieve('bookmarkReply', ([bookmarkData]) => {
+		window.api.recieve('bookmarkReply', (bookmarkData) => {
 			if (!user) {
-				//save bookmark to local storage
-				const localBookmarks = JSON.parse(localStorage.getItem('bookmarks'));
-
-				// if bookmarks is not empty then push bookmark to bookmarks array
-				if (localBookmarks) {
-					// check if bookmark array is less than 10
-					if (localBookmarks.length >= 10) {
-						window.api.send('alert-message-bookmark', {
-							message: 'U hebt het maximum aantal bladwijzers bereikt',
-							type: 'warning',
-						});
-					} else {
-						// bookmark does not exist
-						localBookmarks.push(bookmarkData);
-						localStorage.setItem('bookmarks', JSON.stringify(localBookmarks));
-						window.api.send('alert-message-bookmark', {
-							message: 'Bladwijzer toegevoegd',
-							type: 'success',
-						});
-					}
-				} else {
-					// if bookmarks is empty then create new array and push bookmark to it
-					const newBookmarks = [bookmarkData];
-					localStorage.setItem('bookmarks', JSON.stringify(newBookmarks));
-				}
-
+				addBookmark(...bookmarkData);
 				return;
 			}
 
-			const queryRefLength = query(collection(db, 'users', `${user.uid}/bookmarks`));
-			onSnapshot(queryRefLength, (snapshot) => {
-				bookmarkCountRef.current = snapshot.size;
-			});
+			bookmarkData = bookmarkData[0];
+			const bookmarkRef = doc(db, `users/${user.uid}/bookmarks/${bookmarkData.title}`);
+
+			// Check if bookmarkData exists in bookmarks
+			if (bookmarks.find((bookmark) => bookmark.title === bookmarkData.title)) {
+				window.api.send('alert-message-bookmark', {
+					message: 'Bladwijzer bestaat al',
+					type: 'warning',
+				});
+			} else {
+				setDoc(bookmarkRef, bookmarkData);
+				addBookmark(...bookmarkData);
+			}
+
+			// const queryRefLength = query(collection(db, 'users', `${user.uid}/bookmarks`));
+			// onSnapshot(queryRefLength, (snapshot) => {
+			// 	bookmarkCountRef.current = snapshot.size;
+			// });
+
+			// console.log(bookmarkData[0]);
 
 			// add bookmark to firebase db collection
-			const bookmarkRef = doc(db, `users/${user.uid}/bookmarks/${bookmarkData.title}`);
+
 			// check if bookmark already exists
-			getDoc(bookmarkRef).then((docSnap) => {
-				if (docSnap.exists) {
-					// collection already exists
-					if (docSnap.data()) {
-						// bookmark already exists
-						window.api.send('alert-message-bookmark', {
-							message: 'Bladwijzer bestaat al',
-							type: 'warning',
-						});
-					} else {
-						if (bookmarkCountRef.current >= 10) {
-							window.api.send('alert-message-bookmark', {
-								message: 'U hebt het maximum aantal bladwijzers bereikt',
-								type: 'warning',
-							});
-						} else if (bookmarkCountRef.current < 10) {
-							// bookmark does not exist
-							// add bookmark to collection
-							setDoc(bookmarkRef, bookmarkData).then(() => {
-								window.api.send('alert-message-bookmark', {
-									message: 'Bladwijzer toegevoegd',
-									type: 'success',
-								});
-							});
-						}
-					}
-				} else {
-					// collection does not exist
-					setDoc(bookmarkRef, bookmarkData);
-				}
-			});
+			// getDoc(bookmarkRef).then((docSnap) => {
+			// 	if (docSnap.exists) {
+			// 		// collection already exists
+			// 		if (docSnap.data()) {
+			// 			// bookmark already exists
+			// 			window.api.send('alert-message-bookmark', {
+			// 				message: 'Bladwijzer bestaat al',
+			// 				type: 'warning',
+			// 			});
+			// 		} else {
+			// 			if (bookmarkCountRef.current >= 10) {
+			// 				window.api.send('alert-message-bookmark', {
+			// 					message: 'U hebt het maximum aantal bladwijzers bereikt',
+			// 					type: 'warning',
+			// 				});
+			// 			} else if (bookmarkCountRef.current < 10) {
+			// 				// bookmark does not exist
+			// 				// add bookmark to collection
+			// 				setDoc(bookmarkRef, bookmarkData).then(() => {
+			// 					window.api.send('alert-message-bookmark', {
+			// 						message: 'Bladwijzer toegevoegd',
+			// 						type: 'success',
+			// 					});
+			// 				});
+			// 			}
+			// 		}
+			// 	} else {
+			// 		// collection does not exist
+			// 		setDoc(bookmarkRef, bookmarkData);
+			// 	}
+			// });
 		});
-	}, [user]);
+
+		return () => window.api.removeAllListeners('bookmarkReply');
+	}, [user, addBookmark]);
 
 	return !params.get('search') ? (
 		<>
-			{addBookmark && <AddBookmark setAddBookmark={setAddBookmark} user={user} />}
+			{showAddBookmarkModal && <AddBookmark setAddBookmark={setShowAddBookmarkModal} user={user} />}
 			<div className="select-none overflow-y-auto">
 				<Clock className="mt-8 h-10 text-center" />
 
@@ -173,8 +173,8 @@ const Dashboard = () => {
 							{deleteBookmark ? 'Annuleer' : 'Verwijder'}
 						</button>
 					</div>
-					<div className="flex cursor-pointer flex-row flex-wrap justify-center ">
-						{bookmarks.map((bookmark) => (
+					<div className="flex cursor-pointer flex-row flex-wrap justify-start ">
+						{bookmarks?.map((bookmark) => (
 							<BookmarkTile
 								key={bookmark.title}
 								title={bookmark.title}
@@ -184,10 +184,10 @@ const Dashboard = () => {
 							/>
 						))}
 
-						{bookmarks.length < 10 && (
+						{bookmarks?.length < 10 && (
 							<button
 								onClick={() => {
-									setAddBookmark(true);
+									setShowAddBookmarkModal(true);
 								}}
 								className="mx-4 flex w-32 flex-col items-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
 							>

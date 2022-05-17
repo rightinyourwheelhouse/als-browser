@@ -267,9 +267,9 @@ ipcMain.on('alert-message-bookmark', (event, arg) => {
 });
 
 ipcMain.on('history', (event, historyItem) => {
-  mainWindow.webContents.send('historyReply', historyItem);
+	mainWindow.webContents.send('historyReply', historyItem);
 });
 
 ipcMain.on('alert-message-history', (event, arg) => {
-  view.webContents.send('alert-message-historyReply', arg);
+	view.webContents.send('alert-message-historyReply', arg);
 });
