@@ -22,7 +22,6 @@ const HistorySetting = () => {
 	];
 
 	const handleDelete = () => {
-		// TODO: BATCH this instead of using foreach
 		selectionModel.forEach(async (item) => {
 			await deleteDoc(doc(db, 'users', `${user.uid}/history`, item.toString()));
 		});
@@ -35,8 +34,14 @@ const HistorySetting = () => {
 			const history = await getDocs(collection(db, `users/${user.uid}/history/`));
 			history.forEach((doc) => {
 				const data = doc.data();
-        const hours = new Date(data.visitTime).getHours() <= 9 ? '0' + new Date(data.visitTime).getHours() : new Date(data.visitTime).getHours();
-        const minutes = new Date(data.visitTime).getMinutes() <= 9 ? '0' + new Date(data.visitTime).getMinutes() : new Date(data.visitTime).getMinutes();
+				const hours =
+					new Date(data.visitTime).getHours() <= 9
+						? '0' + new Date(data.visitTime).getHours()
+						: new Date(data.visitTime).getHours();
+				const minutes =
+					new Date(data.visitTime).getMinutes() <= 9
+						? '0' + new Date(data.visitTime).getMinutes()
+						: new Date(data.visitTime).getMinutes();
 				const pushed = {
 					id: doc.id,
 					time: hours + ':' + minutes,
@@ -51,37 +56,37 @@ const HistorySetting = () => {
 	}, [user]);
 
 	return (
-		<div className='mx-3'>
-			<div className='h-[55.7rem] mt-3'>
-        <DataGrid
-          localeText={nlNL.components.MuiDataGrid.defaultProps.localeText}
-          columns={columns}
-          rows={historyItems}
-          pageSize={15}
-          rowsPerPageOptions={[15]}
-          checkboxSelection
-          disableSelectionOnClick
-          initialState={{
-            sorting: {
-              sortModel: [{ field: 'time', sort: 'desc' }],
-            },
-          }}
-          onSelectionModelChange={(newSelectionModel) => {
-            setSelectionModel(newSelectionModel);
-          }}
-          sx={{
-            '& .MuiDataGrid-cell:hover': {
-              color: 'accent.main',
-              backgroundColor: 'light',
-            },
-          }}
-        />
-      </div>
+		<div className="mx-3">
+			<div className="mt-3 h-[55.7rem]">
+				<DataGrid
+					localeText={nlNL.components.MuiDataGrid.defaultProps.localeText}
+					columns={columns}
+					rows={historyItems}
+					pageSize={15}
+					rowsPerPageOptions={[15]}
+					checkboxSelection
+					disableSelectionOnClick
+					initialState={{
+						sorting: {
+							sortModel: [{ field: 'time', sort: 'desc' }],
+						},
+					}}
+					onSelectionModelChange={(newSelectionModel) => {
+						setSelectionModel(newSelectionModel);
+					}}
+					sx={{
+						'& .MuiDataGrid-cell:hover': {
+							color: 'accent.main',
+							backgroundColor: 'light',
+						},
+					}}
+				/>
+			</div>
 			{selectionModel.length <= 0 ? (
 				''
 			) : (
 				<div className="mt-2">
-					<Button onClick={handleDelete} type="delete" >
+					<Button onClick={handleDelete} type="delete">
 						{selectionModel.length === historyItems.length ? 'Verwijder alle data' : 'Verwijder geselecteerde data'}
 					</Button>
 				</div>

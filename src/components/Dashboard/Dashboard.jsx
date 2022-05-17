@@ -24,7 +24,7 @@ const Dashboard = () => {
 	const [bookmarks, setBookmarks] = useState([]);
 
 	const bookmarkCountRef = useRef();
-
+	// console.log(params.get('search')?.length);
 	let params = new URLSearchParams(location.search);
 
 	const handleSettings = () => {

@@ -7,21 +7,15 @@ import { useAuth } from '../../contexts/AuthContextProvider';
 import { collection, query, getDocs } from 'firebase/firestore';
 import { db } from '../../utils/FirebaseConfig';
 
+import websiteList from '../../data/WebsiteList.json';
+
 const options = {
 	isCaseSensitive: false,
-	// includeScore: true,
-	shouldSort: true,
-	// includeMatches: false,
 	findAllMatches: true,
-	minMatchCharLength: 2,
-	// location: 0,
+	shouldSort: true,
+	minMatchCharLength: 1,
 	threshold: 0.49,
-	// distance: 100,
-	// useExtendedSearch: false,
-	// ignoreLocation: false,
-	// ignoreFieldNorm: false,
-	// fieldNormWeight: 1,
-	keys: ['websiteName', 'hostname'],
+	keys: ['hostname', 'title'],
 };
 
 const OnType = ({ params }) => {
@@ -36,20 +30,29 @@ const OnType = ({ params }) => {
 	};
 
 	useEffect(() => {
+		setUserHistory(websiteList);
 		if (!user) return;
-		// Get user data
+
+		
 		const fetchData = async () => {
 			const q = query(collection(db, `users/${user.uid}`, 'history'));
 			const querySnapshot = await getDocs(q);
 
-			const data = [];
+			let history = [];
 			querySnapshot.forEach((doc) => {
 				// Check if the hostname is already in the list
-				const hostname = doc.data().hostname;
-				const isInList = data.some((item) => item.hostname === hostname);
-				if (!isInList) data.push(doc.data());
+				const isInList = history.some((item) => item.hostname === doc.data().hostname);
+				if (!isInList) history.push(doc.data());
 			});
-			setUserHistory(data);
+
+			let websiteListFiltered = [];
+			websiteList.forEach((obj) => {
+				const isInList = history.some((item) => item.hostname === obj.hostname);
+				if (!isInList) websiteListFiltered.push(obj);
+			});
+
+			history = history.concat(websiteListFiltered);
+			setUserHistory(history);
 		};
 
 		fetchData();
@@ -66,7 +69,7 @@ const OnType = ({ params }) => {
 
 			<div className="m-center mt-20 flex w-3/4 flex-col">
 				<Title>Zoeken</Title>
-				{suggestions.map((suggestion, index) => {
+				{suggestions.slice(0, 3).map((suggestion, index) => {
 					return (
 						<BigTile
 							key={index}

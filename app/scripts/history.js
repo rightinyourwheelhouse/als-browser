@@ -10,7 +10,7 @@ const init = () => {
 		'';
 
 	const title = document.title;
-	const description = document.querySelector('meta[name="description"]').content;
+	const description = document.querySelector('meta[name="description"]')?.content || '';
 
 	const historyItem = {
 		url: url.href,
@@ -23,7 +23,9 @@ const init = () => {
 		visitTime: new Date().getTime(),
 	};
 
-	ipcRenderer.send('history', historyItem);
+	// Don't push google searches to history
+	const isGoogleSearch = url.hostname === 'www.google.com' && url.pathname === '/search';
+	if (!isGoogleSearch) ipcRenderer.send('history', historyItem);
 };
 
 window.addEventListener('DOMContentLoaded', init);
