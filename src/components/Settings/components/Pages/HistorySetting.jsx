@@ -17,7 +17,6 @@ const HistorySetting = () => {
 
 	const columns = [
 		{ field: 'time', headerName: 'Tijdstip', type: 'string', width: 90 },
-		{ field: 'url', headerName: 'URL', type: 'string', width: 600 },
 		{ field: 'hostname', type: 'string', width: 150 },
 	];
 
@@ -40,7 +39,6 @@ const HistorySetting = () => {
 				const pushed = {
 					id: doc.id,
 					time: hours + ':' + minutes,
-					url: data.url,
 					hostname: data.hostname,
 				};
 				urls.push(pushed);
@@ -52,7 +50,7 @@ const HistorySetting = () => {
 
 	return (
 		<div className='mx-3'>
-			<div className='h-[55.7rem] mt-3'>
+			<div className='h-[calc(100vh-6.5rem)] mt-3'>
         <DataGrid
           localeText={nlNL.components.MuiDataGrid.defaultProps.localeText}
           columns={columns}
