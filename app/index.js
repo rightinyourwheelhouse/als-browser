@@ -266,6 +266,11 @@ ipcMain.on('alert-message-bookmark', (event, arg) => {
 	view.webContents.send('alert-message-bookmarkReply', arg);
 });
 
+ipcMain.on('getHistory', () => {
+	console.log('getHistory');
+	view.webContents.send('getHistoryReply');
+});
+
 ipcMain.on('history', (event, historyItem) => {
 	mainWindow.webContents.send('historyReply', historyItem);
 });

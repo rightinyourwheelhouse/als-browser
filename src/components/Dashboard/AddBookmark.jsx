@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Formik, Field } from 'formik';
 import TextInputGroup from '../TextInputGroup';
@@ -7,6 +7,18 @@ import { getDoc, setDoc, doc } from 'firebase/firestore';
 import { db } from '../../utils/FirebaseConfig';
 
 const AddBookmark = ({ setAddBookmark, user }) => {
+	const [currentURL, setCurrentUrl] = useState({});
+	useEffect(() => {
+		window.api.send('getHistory');
+
+		window.api.recieve('historyReply', (currentURL) => {
+			setCurrentUrl(currentURL[0]);
+			console.log(currentURL[0]);
+		});
+
+		return () => window.api.removeAllListeners('getHistroyReply');
+	}, []);
+
 	const handleSubmit = async (values, { setSubmitting }) => {
 		try {
 			setSubmitting(true);
@@ -72,6 +84,7 @@ const AddBookmark = ({ setAddBookmark, user }) => {
 									as={TextInputGroup}
 									name="name"
 									placeholder="Naam"
+									value={currentURL.title}
 									label="Naam"
 								/>
 

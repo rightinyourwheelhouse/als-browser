@@ -7,7 +7,7 @@ const MediumTile = ({ title, img, url }) => {
 	return (
 		<button
 			onClick={handleChangeUrl}
-			className=" mx-4 mb-4 flex h-20 w-64 items-center justify-start gap-4 rounded-2xl bg-white drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
+			className="mb-4 flex h-20 w-64 items-center justify-start gap-4 rounded-2xl bg-white drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
 		>
 			<img className="h-20 w-20 rounded-2xl bg-gray-50" src={img} alt="" />
 			<h2 className="font-mulish text-base font-medium">{title}</h2>
