@@ -207,13 +207,30 @@ ipcMain.on('toggleDashboard', (event, arg) => {
 	}
 });
 
-ipcMain.on('toggleExtension', () => {
+ipcMain.on('toggleWebview', (event, bool) => {
 	const viewOpen = view.getBounds().width > 0 && view.getBounds().height > 0;
+	const viewClosed = view.getBounds().width === 0 && view.getBounds().height === 0;
 
 	if (viewOpen) {
 		view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
+	} else if (viewClosed && bool) {
+		view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
 	}
 });
+
+ipcMain.on('getWebviewState', () => {
+	const viewOpen = view.getBounds().width > 0 && view.getBounds().height > 0;
+
+	mainWindow.webContents.send('getWebviewStateReply', viewOpen);
+});
+
+// ipcMain.on('toggleExtension', () => {
+// 	const viewOpen = view.getBounds().width > 0 && view.getBounds().height > 0;
+
+// 	if (viewOpen) {
+// 		view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
+// 	}
+// });
 
 ipcMain.on('focusSearchBarRadialUi', (event, arg) => {
 	mainWindow.webContents.focus();
@@ -267,9 +284,9 @@ ipcMain.on('alert-message-bookmark', (event, arg) => {
 });
 
 ipcMain.on('history', (event, historyItem) => {
-  mainWindow.webContents.send('historyReply', historyItem);
+	mainWindow.webContents.send('historyReply', historyItem);
 });
 
 ipcMain.on('alert-message-history', (event, arg) => {
-  view.webContents.send('alert-message-historyReply', arg);
+	view.webContents.send('alert-message-historyReply', arg);
 });

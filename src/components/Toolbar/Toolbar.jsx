@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import Dashboard from '../Dashboard/Dashboard';
 import SearchBar from './SearchBar';
 import ToolbarIcon from './ToolbarIcon.jsx';
 
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import LogoBrainWeb from '/assets/img/logo-brainweb.png';
 import LogoBrainWebWhite from '/assets/img/logo-brainweb-white.png';
@@ -19,12 +18,26 @@ import {
 	GlobeAltIcon,
 } from '@heroicons/react/outline';
 
-const Toolbar = ({ onFocusChange }) => {
-	const [dashboard, setDashboard] = useState(true);
+const Toolbar = () => {
 	const [logo, setLogo] = useState(LogoBrainWeb);
+	const [webviewState, setWebviewState] = useState(undefined);
 
 	let navigate = useNavigate();
-	const location = useLocation();
+	let location = useLocation();
+
+	let params = new URLSearchParams(location.search);
+
+	useEffect(() => {
+		const listener = document.addEventListener('click', () => window.api.send('getWebviewState'));
+		window.api.recieve('getWebviewStateReply', (isOpen) => {
+			setWebviewState(...isOpen);
+		});
+
+		return () => {
+			window.api.removeAllListeners('getWebviewStateReply');
+			document.removeEventListener('click', listener);
+		};
+	}, []);
 
 	const handleGoBack = () => {
 		window.api.send('goBack');
@@ -47,12 +60,12 @@ const Toolbar = ({ onFocusChange }) => {
 	};
 
 	const handleDashboard = () => {
-		navigate('/');
-		setDashboard(!dashboard);
-		if (location.pathname === '/') {
-			window.api.send('toggleDashboard', true);
+		if (params.get('search')) {
+			navigate('/');
+		} else if (location.pathname === '/settings/extension') {
+			navigate('/');
 		} else {
-			window.api.send('toggleDashboard', null);
+			window.api.send('toggleWebview', true);
 		}
 	};
 
@@ -60,17 +73,13 @@ const Toolbar = ({ onFocusChange }) => {
 		window.api.send('adjustSize');
 	};
 
-	useEffect(() => {
-		window.api.recieve('ToggleTheDashboard', () => {
-			onFocusChange(Dashboard);
-		});
-
-		return () => window.api.removeAllListeners('ToggleTheDashboard');
-	}, [onFocusChange]);
-
 	const handleExtensionToggle = () => {
-		navigate('/settings/extension');
-		window.api.send('toggleExtension');
+		if (location.pathname === '/settings/extension') {
+			window.api.send('toggleWebview', true);
+		} else {
+			navigate('/settings/extension');
+			window.api.send('toggleWebview', false);
+		}
 	};
 
 	return (
@@ -91,9 +100,15 @@ const Toolbar = ({ onFocusChange }) => {
 						<RefreshIcon />
 					</ToolbarIcon>
 
-					<ToolbarIcon onClick={handleDashboard}>{dashboard ? <HomeIcon /> : <GlobeAltIcon />}</ToolbarIcon>
+					<ToolbarIcon onClick={handleDashboard}>
+						{webviewState || (!webviewState && params.get('search')) || location.pathname !== '/' ? (
+							<HomeIcon />
+						) : (
+							<GlobeAltIcon />
+						)}
+					</ToolbarIcon>
 
-					<SearchBar onFocusChange={onFocusChange} />
+					<SearchBar />
 
 					<ToolbarIcon
 						onClick={handleExtensionToggle}
