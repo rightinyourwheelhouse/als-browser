@@ -23,7 +23,7 @@ const Toolbar = () => {
 	const [webviewState, setWebviewState] = useState(undefined);
 
 	let navigate = useNavigate();
-	let location = useLocation();
+	const location = useLocation();
 
 	let params = new URLSearchParams(location.search);
 

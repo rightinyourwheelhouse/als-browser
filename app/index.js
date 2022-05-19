@@ -224,14 +224,6 @@ ipcMain.on('getWebviewState', () => {
 	mainWindow.webContents.send('getWebviewStateReply', viewOpen);
 });
 
-// ipcMain.on('toggleExtension', () => {
-// 	const viewOpen = view.getBounds().width > 0 && view.getBounds().height > 0;
-
-// 	if (viewOpen) {
-// 		view.setBounds({ x: 0, y: 0, width: 0, height: 0 });
-// 	}
-// });
-
 ipcMain.on('focusSearchBarRadialUi', (event, arg) => {
 	mainWindow.webContents.focus();
 	mainWindow.webContents.send('focusSearchBarRadialUiReply', arg);
