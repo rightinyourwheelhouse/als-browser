@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import BookmarkTile from './Tiles/BookmarkTile ';
 import MediumTile from './Tiles/MediumTile';
 import Title from '../Typography/Title';
@@ -14,16 +14,18 @@ import { CogIcon } from '@heroicons/react/outline';
 import { useAuth } from '../../contexts/AuthContextProvider';
 import { query, collection, limit, doc, setDoc, onSnapshot, orderBy, deleteDoc } from 'firebase/firestore';
 import { db } from '../../utils/FirebaseConfig';
-import AddBookmark from './AddBookmark';
+import AddBookmarkModal from './AddBookmarkModal';
 import useImmutableCallback from '../../hooks/useImmutableCallback';
 
 const Dashboard = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { user } = useAuth();
+	const ref = useRef(null);
 
 	const [showDeleteBookmark, setShowDeleteBookmark] = useState(false);
 	const [showAddBookmarkModal, setShowAddBookmarkModal] = useState(false);
+	const [currentBookmark, setCurrentBookmark] = useState({});
 	const [bookmarks, setBookmarks] = useLocalStorageState('bookmarks', []);
 
 	let params = new URLSearchParams(location.search);
@@ -32,35 +34,47 @@ const Dashboard = () => {
 		navigate('/settings/feedback');
 	};
 
+	const addBookmark = useImmutableCallback((bookmark) => {
+		const existingBookmark = bookmarks.find((b) => b.title === bookmark.title);
+
+		if (bookmarks.length >= 10) {
+			return {
+				message: 'U hebt het maximum aantal bladwijzers bereikt',
+				type: 'warning',
+			};
+		} else if (existingBookmark) {
+			return {
+				message: 'Deze bladwijzer bestaat al',
+				type: 'warning',
+			};
+		} else {
+			setBookmarks([bookmark, ...bookmarks]);
+
+			if (user) {
+				const bookmarkRef = doc(db, `users/${user.uid}/bookmarks/${bookmark.title}`);
+				setDoc(bookmarkRef, bookmark);
+			}
+			return {
+				message: 'Bladwijzer toegevoegd',
+				type: 'success',
+			};
+		}
+	});
+
 	const deleteBookmark = (title) => {
 		const newBookmarks = bookmarks.filter((bookmark) => bookmark.title !== title);
 		setBookmarks(newBookmarks);
+		if (newBookmarks.length === 0) setShowDeleteBookmark(false);
 		if (!user) return;
 
 		deleteDoc(doc(db, `users/${user.uid}/bookmarks/${title}`));
 	};
 
-	const addBookmark = useImmutableCallback((bookmark) => {
-		const existingBookmark = bookmarks.find((b) => b.title === bookmark.title);
-
-		if (bookmarks.length >= 10) {
-			window.api.send('alert-message-bookmark', {
-				message: 'U hebt het maximum aantal bladwijzers bereikt',
-				type: 'warning',
-			});
-		} else if (existingBookmark) {
-			window.api.send('alert-message-bookmark', {
-				message: 'Deze bladwijzer is al toegevoegd',
-				type: 'warning',
-			});
-		} else {
-			setBookmarks([bookmark, ...bookmarks]);
-			window.api.send('alert-message-bookmark', {
-				message: 'Bladwijzer toegevoegd',
-				type: 'success',
-			});
+	const handleClickOutside = (e) => {
+		if (ref.current && !ref.current.contains(e.target) && e.target.id !== 'delete') {
+			setShowDeleteBookmark(false);
 		}
-	});
+	};
 
 	useEffect(() => {
 		if (!user) return;
@@ -81,27 +95,39 @@ const Dashboard = () => {
 		});
 
 		return () => unsubscribe();
-	}, [user, addBookmark, setBookmarks]);
+	}, [user, setBookmarks]);
 
 	useEffect(() => {
-		window.api.recieve('bookmarkReply', (bookmarkData) => {
-			bookmarkData = bookmarkData[0];
-			addBookmark(bookmarkData);
+		document.addEventListener('click', handleClickOutside);
+		window.api.send('getCurrentBookmark');
 
-			if (!user) return;
-
-			const bookmarkRef = doc(db, `users/${user.uid}/bookmarks/${bookmarkData.title}`);
-			setDoc(bookmarkRef, bookmarkData);
+		window.api.recieve('setCurrentBookmarkReply', (bookmarkData) => {
+			setCurrentBookmark(bookmarkData[0]);
 		});
 
 		return () => {
-			window.api.removeAllListeners('bookmarkReply');
+			window.api.removeAllListeners('setCurrentBookmarkReply');
+			document.removeEventListener('click', handleClickOutside);
 		};
+	}, [showAddBookmarkModal]);
+
+	useEffect(() => {
+		window.api.recieve('bookmarkReply', (bookmarkData) => {
+			window.api.send('alert-message-bookmark', addBookmark(...bookmarkData));
+		});
+
+		return () => window.api.removeAllListeners('bookmarkReply');
 	}, [user, addBookmark]);
 
 	return !params.get('search') ? (
 		<>
-			{showAddBookmarkModal && <AddBookmark setAddBookmark={setShowAddBookmarkModal} />}
+			{showAddBookmarkModal && (
+				<AddBookmarkModal
+					handleAddBookmark={(bookmark) => addBookmark(bookmark)}
+					currentBookmark={currentBookmark}
+					setAddBookmark={setShowAddBookmarkModal}
+				/>
+			)}
 			<div className="select-none overflow-y-auto">
 				<Clock className="mt-8 h-10 text-center" />
 
@@ -128,6 +154,7 @@ const Dashboard = () => {
 						<Title>Bladwijzers</Title>
 						{bookmarks.length > 0 && (
 							<button
+								id="delete"
 								onClick={() => setShowDeleteBookmark(!showDeleteBookmark)}
 								className={`h-10 rounded-lg  px-4 text-white ${showDeleteBookmark ? 'bg-slate-500' : 'bg-red-500'}`}
 							>
@@ -135,13 +162,14 @@ const Dashboard = () => {
 							</button>
 						)}
 					</div>
-					<div className="flex cursor-pointer flex-row flex-wrap justify-start ">
-						{bookmarks.map((bookmark, index) => (
+					<div className="grid grid-cols-5 gap-4">
+						{bookmarks.map(({ title, favicon, url }, index) => (
 							<BookmarkTile
+								ref={ref}
 								key={index}
-								title={bookmark.title}
-								img={bookmark?.favicon}
-								url={bookmark.url}
+								title={title}
+								img={favicon}
+								url={url}
 								setShowDeleteBookmark={showDeleteBookmark}
 								handleDeleteBookmark={deleteBookmark}
 							/>
@@ -149,10 +177,8 @@ const Dashboard = () => {
 
 						{bookmarks.length < 10 && (
 							<button
-								onClick={() => {
-									setShowAddBookmarkModal(true);
-								}}
-								className="flex flex-col items-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
+								onClick={() => setShowAddBookmarkModal(true)}
+								className="flex w-32 flex-col items-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
 							>
 								<div className="drop-shadow-browser flex h-20 w-20  items-center justify-center rounded-2xl bg-white">
 									<PlusIcon className="h-10 w-10" />

@@ -1,7 +1,6 @@
 const { ipcRenderer } = require('electron');
 
 let url = window.location;
-console.log(document.title);
 
 let historyItem = {
 	title: document.title,
@@ -15,6 +14,5 @@ let historyItem = {
 ipcRenderer.send('history', historyItem);
 
 ipcRenderer.on('getHistoryReply', () => {
-	console.log('GethistoryReply');
 	ipcRenderer.send('history', historyItem);
 });

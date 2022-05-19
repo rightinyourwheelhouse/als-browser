@@ -258,17 +258,20 @@ ipcMain.on('setLatestOverlayLocation', (event, payload) => {
 	mainWindow.webContents.send('setLatestOverlayLocationReply', payload);
 });
 
+ipcMain.on('getCurrentBookmark', () => {
+	view.webContents.send('getCurrentBookmarkReply');
+});
+
+ipcMain.on('setCurrentBookmark', (event, arg) => {
+	mainWindow.webContents.send('setCurrentBookmarkReply', arg);
+});
+
 ipcMain.on('bookmark', (event, arg) => {
 	mainWindow.webContents.send('bookmarkReply', arg);
 });
 
 ipcMain.on('alert-message-bookmark', (event, arg) => {
 	view.webContents.send('alert-message-bookmarkReply', arg);
-});
-
-ipcMain.on('getHistory', () => {
-	console.log('getHistory');
-	view.webContents.send('getHistoryReply');
 });
 
 ipcMain.on('history', (event, historyItem) => {
