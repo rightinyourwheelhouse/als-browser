@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Dashboard from '../Dashboard/Dashboard';
 import SearchBar from './SearchBar';
 import ToolbarIcon from './ToolbarIcon.jsx';
@@ -6,16 +6,23 @@ import ToolbarIcon from './ToolbarIcon.jsx';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import LogoBrainWeb from '/assets/img/logo-brainweb.png';
+import LogoBrainWebWhite from '/assets/img/logo-brainweb-white.png';
 
-import { ArrowLeftIcon } from '@heroicons/react/outline';
-import { ArrowRightIcon } from '@heroicons/react/outline';
-import { RefreshIcon } from '@heroicons/react/outline';
-import { HomeIcon } from '@heroicons/react/outline';
-import { MinusSmIcon } from '@heroicons/react/outline';
-import { ArrowsExpandIcon } from '@heroicons/react/outline';
-import { XIcon } from '@heroicons/react/outline';
+import {
+	ArrowLeftIcon,
+	ArrowRightIcon,
+	RefreshIcon,
+	HomeIcon,
+	MinusSmIcon,
+	ArrowsExpandIcon,
+	XIcon,
+	GlobeAltIcon,
+} from '@heroicons/react/outline';
 
 const Toolbar = ({ onFocusChange }) => {
+	const [dashboard, setDashboard] = useState(true);
+	const [logo, setLogo] = useState(LogoBrainWeb);
+
 	let navigate = useNavigate();
 	const location = useLocation();
 
@@ -41,7 +48,7 @@ const Toolbar = ({ onFocusChange }) => {
 
 	const handleDashboard = () => {
 		navigate('/');
-
+		setDashboard(!dashboard);
 		if (location.pathname === '/') {
 			window.api.send('toggleDashboard', true);
 		} else {
@@ -84,14 +91,16 @@ const Toolbar = ({ onFocusChange }) => {
 						<RefreshIcon />
 					</ToolbarIcon>
 
-					<ToolbarIcon onClick={handleDashboard}>
-						<HomeIcon />
-					</ToolbarIcon>
+					<ToolbarIcon onClick={handleDashboard}>{dashboard ? <HomeIcon /> : <GlobeAltIcon />}</ToolbarIcon>
 
 					<SearchBar onFocusChange={onFocusChange} />
 
-					<ToolbarIcon onClick={handleExtensionToggle}>
-						<img src={LogoBrainWeb} alt="" />
+					<ToolbarIcon
+						onClick={handleExtensionToggle}
+						onMouseEnter={() => setLogo(LogoBrainWebWhite)}
+						onMouseLeave={() => setLogo(LogoBrainWeb)}
+					>
+						<img src={logo} alt="" />
 					</ToolbarIcon>
 				</div>
 
