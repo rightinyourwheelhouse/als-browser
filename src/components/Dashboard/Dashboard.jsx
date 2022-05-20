@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import BookmarkTile from './Tiles/BookmarkTile ';
+import BookmarkTile from './Tiles/BookmarkTile';
 import MediumTile from './Tiles/MediumTile';
 import Title from '../Typography/Title';
 import OnType from './OnType';
@@ -29,8 +29,6 @@ const Dashboard = () => {
 	const [bookmarks, setBookmarks] = useLocalStorageState('bookmarks', []);
 
 	let params = new URLSearchParams(location.search);
-
-	console.log(ref);
 
 	const handleSettings = () => {
 		navigate('/settings/feedback');
@@ -75,14 +73,10 @@ const Dashboard = () => {
 	const handleClickOutside = (e) => {
 		const array = [];
 
-		console.log(e.target);
-
 		for (const key in ref.current) {
 			const current = ref.current[key];
 			array.push(current);
 		}
-
-		console.log(array);
 
 		if (ref.current && !array.includes(e.target) && e.target.id !== 'delete') {
 			setShowDeleteBookmark(false);
@@ -183,7 +177,7 @@ const Dashboard = () => {
 								title={title}
 								img={favicon}
 								url={url}
-								setShowDeleteBookmark={showDeleteBookmark}
+								showDeleteBookmark={showDeleteBookmark}
 								handleDeleteBookmark={deleteBookmark}
 							/>
 						))}
@@ -193,7 +187,7 @@ const Dashboard = () => {
 								onClick={() => setShowAddBookmarkModal(true)}
 								className="flex w-32 flex-col items-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
 							>
-								<div className="drop-shadow-browser flex h-20 w-20  items-center justify-center rounded-2xl bg-white">
+								<div className="drop-shadow-browser flex h-20 w-20 items-center justify-center rounded-2xl bg-white">
 									<PlusIcon className="h-10 w-10" />
 								</div>
 								<h2 className="truncate font-mulish text-base font-medium">Toevoegen</h2>
@@ -204,7 +198,7 @@ const Dashboard = () => {
 			</div>
 		</>
 	) : (
-		<OnType />
+		<OnType params={params} />
 	);
 };
 
