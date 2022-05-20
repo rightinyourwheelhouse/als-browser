@@ -18,16 +18,15 @@ const options = {
 	keys: ['hostname', 'title'],
 };
 
+const fuseSearch = (list, input) => {
+	const fuse = new Fuse(list, options);
+	return fuse.search(input);
+};
+
 const OnType = ({ params }) => {
 	const { user } = useAuth();
 	const [suggestions, setSuggestions] = useState([]);
 	const [userHistory, setUserHistory] = useState(websiteList);
-
-	const fuseSearch = (list, input) => {
-		const fuse = new Fuse(list, options);
-		const result = fuse.search(input);
-		setSuggestions(result);
-	};
 
 	useEffect(() => {
 		if (!user) return;
@@ -58,7 +57,7 @@ const OnType = ({ params }) => {
 
 	useEffect(() => {
 		const searchInput = params.get('search');
-		fuseSearch(userHistory, searchInput);
+		setSuggestions(fuseSearch(userHistory, searchInput));
 	}, [params, userHistory]);
 
 	return (
