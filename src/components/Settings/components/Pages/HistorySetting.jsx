@@ -17,7 +17,6 @@ const HistorySetting = () => {
 
 	const columns = [
 		{ field: 'time', headerName: 'Tijdstip', type: 'string', width: 90 },
-		{ field: 'url', headerName: 'URL', type: 'string', width: 600 },
 		{ field: 'hostname', type: 'string', width: 150 },
 	];
 
@@ -40,7 +39,6 @@ const HistorySetting = () => {
 				const pushed = {
 					id: doc.id,
 					time: hours + ':' + minutes,
-					url: data.url,
 					hostname: data.hostname,
 				};
 				urls.push(pushed);
@@ -51,32 +49,32 @@ const HistorySetting = () => {
 	}, [user]);
 
 	return (
-		<div className="mx-3">
-			<div className="mt-3 h-[55.7rem]">
-				<DataGrid
-					localeText={nlNL.components.MuiDataGrid.defaultProps.localeText}
-					columns={columns}
-					rows={historyItems}
-					pageSize={15}
-					rowsPerPageOptions={[15]}
-					checkboxSelection
-					disableSelectionOnClick
-					initialState={{
-						sorting: {
-							sortModel: [{ field: 'time', sort: 'desc' }],
-						},
-					}}
-					onSelectionModelChange={(newSelectionModel) => {
-						setSelectionModel(newSelectionModel);
-					}}
-					sx={{
-						'& .MuiDataGrid-cell:hover': {
-							color: 'accent.main',
-							backgroundColor: 'light',
-						},
-					}}
-				/>
-			</div>
+		<div className='mx-3'>
+			<div className='h-[calc(100vh-6.5rem)] mt-3'>
+        <DataGrid
+          localeText={nlNL.components.MuiDataGrid.defaultProps.localeText}
+          columns={columns}
+          rows={historyItems}
+          pageSize={15}
+          rowsPerPageOptions={[15]}
+          checkboxSelection
+          disableSelectionOnClick
+          initialState={{
+            sorting: {
+              sortModel: [{ field: 'time', sort: 'desc' }],
+            },
+          }}
+          onSelectionModelChange={(newSelectionModel) => {
+            setSelectionModel(newSelectionModel);
+          }}
+          sx={{
+            '& .MuiDataGrid-cell:hover': {
+              color: 'accent.main',
+              backgroundColor: 'light',
+            },
+          }}
+        />
+      </div>
 			{selectionModel.length <= 0 ? (
 				''
 			) : (
