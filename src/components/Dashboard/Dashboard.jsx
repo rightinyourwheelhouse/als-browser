@@ -21,14 +21,16 @@ const Dashboard = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { user } = useAuth();
-	const ref = useRef(null);
+	const ref = useRef({});
 
 	const [showDeleteBookmark, setShowDeleteBookmark] = useState(false);
 	const [showAddBookmarkModal, setShowAddBookmarkModal] = useState(false);
-	const [currentBookmark, setCurrentBookmark] = useState({});
+	const [currentBookmark, setCurrentBookmark] = useState([]);
 	const [bookmarks, setBookmarks] = useLocalStorageState('bookmarks', []);
 
 	let params = new URLSearchParams(location.search);
+
+	console.log(ref);
 
 	const handleSettings = () => {
 		navigate('/settings/feedback');
@@ -71,7 +73,18 @@ const Dashboard = () => {
 	};
 
 	const handleClickOutside = (e) => {
-		if (ref.current && !ref.current.contains(e.target) && e.target.id !== 'delete') {
+		const array = [];
+
+		console.log(e.target);
+
+		for (const key in ref.current) {
+			const current = ref.current[key];
+			array.push(current);
+		}
+
+		console.log(array);
+
+		if (ref.current && !array.includes(e.target) && e.target.id !== 'delete') {
 			setShowDeleteBookmark(false);
 		}
 	};
@@ -165,7 +178,7 @@ const Dashboard = () => {
 					<div className="grid grid-cols-5 gap-4">
 						{bookmarks.map(({ title, favicon, url }, index) => (
 							<BookmarkTile
-								ref={ref}
+								ref={(el) => (ref.current[index] = el)}
 								key={index}
 								title={title}
 								img={favicon}
