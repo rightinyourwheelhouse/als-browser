@@ -34,14 +34,9 @@ const HistorySetting = () => {
 			const history = await getDocs(collection(db, `users/${user.uid}/history/`));
 			history.forEach((doc) => {
 				const data = doc.data();
-				const hours =
-					new Date(data.visitTime).getHours() <= 9
-						? '0' + new Date(data.visitTime).getHours()
-						: new Date(data.visitTime).getHours();
-				const minutes =
-					new Date(data.visitTime).getMinutes() <= 9
-						? '0' + new Date(data.visitTime).getMinutes()
-						: new Date(data.visitTime).getMinutes();
+				const date = new Date(data.visitTime);
+				const hours = date.getHours() <= 9 ? '0' + date.getHours() : date.getHours();
+				const minutes = date.getMinutes() <= 9 ? '0' + date.getMinutes() : date.getMinutes();
 				const pushed = {
 					id: doc.id,
 					time: hours + ':' + minutes,
