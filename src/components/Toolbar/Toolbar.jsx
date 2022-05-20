@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import SearchBar from './SearchBar';
 import ToolbarIcon from './ToolbarIcon.jsx';
 
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useMatch } from 'react-router-dom';
 
 import LogoBrainWeb from '/assets/img/logo-brainweb.png';
 import LogoBrainWebWhite from '/assets/img/logo-brainweb-white.png';
@@ -22,10 +22,16 @@ const Toolbar = () => {
 	const [logo, setLogo] = useState(LogoBrainWeb);
 	const [webviewState, setWebviewState] = useState(undefined);
 
-	let navigate = useNavigate();
+	const navigate = useNavigate();
 	const location = useLocation();
 
-	let params = new URLSearchParams(location.search);
+	const params = new URLSearchParams(location.search);
+
+	const isWebview = webviewState;
+	const isHome = useMatch('/');
+	const isSearching = !isWebview && params.get('search');
+	const isSettings = useMatch('/settings/*');
+	const isExtension = useMatch('/settings/extension');
 
 	useEffect(() => {
 		const listener = document.addEventListener('click', () => window.api.send('getWebviewState'));
@@ -60,9 +66,9 @@ const Toolbar = () => {
 	};
 
 	const handleDashboard = () => {
-		if (params.get('search')) {
+		if (isSearching) {
 			navigate('/');
-		} else if (location.pathname === '/settings/extension') {
+		} else if (isSettings?.pathnameBase === '/settings') {
 			navigate('/');
 		} else {
 			window.api.send('toggleWebview', true);
@@ -74,7 +80,7 @@ const Toolbar = () => {
 	};
 
 	const handleExtensionToggle = () => {
-		if (location.pathname === '/settings/extension') {
+		if (isExtension) {
 			window.api.send('toggleWebview', true);
 		} else {
 			navigate('/settings/extension');
@@ -101,11 +107,7 @@ const Toolbar = () => {
 					</ToolbarIcon>
 
 					<ToolbarIcon onClick={handleDashboard}>
-						{webviewState || (!webviewState && params.get('search')) || location.pathname !== '/' ? (
-							<HomeIcon />
-						) : (
-							<GlobeAltIcon />
-						)}
+						{webviewState || !isHome || isSearching ? <HomeIcon /> : <GlobeAltIcon />}
 					</ToolbarIcon>
 
 					<SearchBar />
