@@ -1,43 +1,94 @@
 import React, { useEffect, useState, useRef } from 'react';
-import BookmarkTile from './Tiles/BookmarkTile ';
+import BookmarkTile from './Tiles/BookmarkTile';
 import MediumTile from './Tiles/MediumTile';
 import Title from '../Typography/Title';
 import OnType from './OnType';
 import Clock from '../Clock';
 
 import { useNavigate, useLocation } from 'react-router-dom';
+import useLocalStorageState from '../../hooks/useLocalStorageState';
 
 import { PlusIcon } from '@heroicons/react/outline';
 import { CogIcon } from '@heroicons/react/outline';
 
 import { useAuth } from '../../contexts/AuthContextProvider';
-import { query, collection, limit, doc, getDoc, setDoc, onSnapshot, orderBy } from 'firebase/firestore';
+import { query, collection, limit, doc, setDoc, onSnapshot, orderBy, deleteDoc } from 'firebase/firestore';
 import { db } from '../../utils/FirebaseConfig';
-import AddBookmark from './AddBookmark';
+import AddBookmarkModal from './AddBookmarkModal';
+import useImmutableCallback from '../../hooks/useImmutableCallback';
 
 const Dashboard = () => {
-	const [deleteBookmark, setDeleteBookmark] = useState(false);
-	const [addBookmark, setAddBookmark] = useState(false);
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { user } = useAuth();
-	const [bookmarks, setBookmarks] = useState([]);
+	const ref = useRef({});
 
-	const bookmarkCountRef = useRef();
-	// console.log(params.get('search')?.length);
+	const [showDeleteBookmark, setShowDeleteBookmark] = useState(false);
+	const [showAddBookmarkModal, setShowAddBookmarkModal] = useState(false);
+	const [currentBookmark, setCurrentBookmark] = useState([]);
+	const [bookmarks, setBookmarks] = useLocalStorageState('bookmarks', []);
+
 	let params = new URLSearchParams(location.search);
 
 	const handleSettings = () => {
 		navigate('/settings/feedback');
 	};
 
-	useEffect(() => {
+	const addBookmark = useImmutableCallback((bookmark) => {
+		const existingBookmark = bookmarks.find((b) => b.title === bookmark.title);
+
+		if (bookmarks.length >= 10) {
+			return {
+				message: 'U hebt het maximum aantal bladwijzers bereikt',
+				type: 'warning',
+			};
+		} else if (existingBookmark) {
+			return {
+				message: 'Deze bladwijzer bestaat al',
+				type: 'warning',
+			};
+		} else {
+			setBookmarks([bookmark, ...bookmarks]);
+
+			if (user) {
+				const bookmarkRef = doc(db, `users/${user.uid}/bookmarks/${bookmark.title}`);
+				setDoc(bookmarkRef, bookmark);
+			}
+			return {
+				message: 'Bladwijzer toegevoegd',
+				type: 'success',
+			};
+		}
+	});
+
+	const deleteBookmark = (title) => {
+		const newBookmarks = bookmarks.filter((bookmark) => bookmark.title !== title);
+		setBookmarks(newBookmarks);
+		if (newBookmarks.length === 0) setShowDeleteBookmark(false);
 		if (!user) return;
 
+		deleteDoc(doc(db, `users/${user.uid}/bookmarks/${title}`));
+	};
+
+	const handleClickOutside = (e) => {
+		const array = [];
+
+		for (const key in ref.current) {
+			const current = ref.current[key];
+			array.push(current);
+		}
+
+		if (ref.current && !array.includes(e.target) && e.target.id !== 'delete') {
+			setShowDeleteBookmark(false);
+		}
+	};
+
+	useEffect(() => {
+		if (!user) return;
 		const queryRef = query(collection(db, 'users', `${user.uid}/bookmarks`), limit(10), orderBy('createdAt', 'desc'));
 
 		const unsubscribe = onSnapshot(queryRef, (snapshot) => {
-			let bookmarksArray = [];
+			let bookmarkArray = [];
 			snapshot.forEach((doc) => {
 				const bookmarkData = {
 					id: doc.id,
@@ -45,67 +96,45 @@ const Dashboard = () => {
 					title: doc.data().title,
 					favicon: doc.data().favicon,
 				};
-
-				bookmarksArray.push(bookmarkData);
+				bookmarkArray.push(bookmarkData);
 			});
-			setBookmarks(bookmarksArray);
+			setBookmarks(bookmarkArray);
+		});
+
+		return () => unsubscribe();
+	}, [user, setBookmarks]);
+
+	useEffect(() => {
+		document.addEventListener('click', handleClickOutside);
+		window.api.send('getCurrentBookmark');
+
+		window.api.recieve('setCurrentBookmarkReply', (bookmarkData) => {
+			setCurrentBookmark(bookmarkData[0]);
 		});
 
 		return () => {
-			unsubscribe();
+			window.api.removeAllListeners('setCurrentBookmarkReply');
+			document.removeEventListener('click', handleClickOutside);
 		};
-	}, [user]);
+	}, [showAddBookmarkModal]);
 
 	useEffect(() => {
-		if (!user) return;
-
-		// recieve bookmark from radial
-		window.api.recieve('bookmarkReply', ([bookmarkData]) => {
-			const queryRefLength = query(collection(db, 'users', `${user.uid}/bookmarks`));
-			onSnapshot(queryRefLength, (snapshot) => {
-				bookmarkCountRef.current = snapshot.size;
-			});
-
-			// add bookmark to firebase db collection
-			const bookmarkRef = doc(db, `users/${user.uid}/bookmarks/${bookmarkData.title}`);
-			// check if bookmark already exists
-			getDoc(bookmarkRef).then((docSnap) => {
-				if (docSnap.exists) {
-					// collection already exists
-					if (docSnap.data()) {
-						// bookmark already exists
-						window.api.send('alert-message-bookmark', {
-							message: 'Bladwijzer bestaat al',
-							type: 'warning',
-						});
-					} else {
-						if (bookmarkCountRef.current >= 10) {
-							window.api.send('alert-message-bookmark', {
-								message: 'U hebt het maximum aantal bladwijzers bereikt',
-								type: 'warning',
-							});
-						} else if (bookmarkCountRef.current < 10) {
-							// bookmark does not exist
-							// add bookmark to collection
-							setDoc(bookmarkRef, bookmarkData).then(() => {
-								window.api.send('alert-message-bookmark', {
-									message: 'Bladwijzer toegevoegd',
-									type: 'success',
-								});
-							});
-						}
-					}
-				} else {
-					// collection does not exist
-					setDoc(bookmarkRef, bookmarkData);
-				}
-			});
+		window.api.recieve('bookmarkReply', (bookmarkData) => {
+			window.api.send('alert-message-bookmark', addBookmark(...bookmarkData));
 		});
-	}, [user]);
+
+		return () => window.api.removeAllListeners('bookmarkReply');
+	}, [user, addBookmark]);
 
 	return !params.get('search') ? (
 		<>
-			{addBookmark && <AddBookmark setAddBookmark={setAddBookmark} user={user} />}
+			{showAddBookmarkModal && (
+				<AddBookmarkModal
+					handleAddBookmark={(bookmark) => addBookmark(bookmark)}
+					currentBookmark={currentBookmark}
+					setAddBookmark={setShowAddBookmarkModal}
+				/>
+			)}
 			<div className="select-none overflow-y-auto">
 				<Clock className="mt-8 h-10 text-center" />
 
@@ -130,35 +159,38 @@ const Dashboard = () => {
 				<div className="m-center mt-16 mb-16 w-3/4">
 					<div className="mb-10 flex items-center justify-between">
 						<Title>Bladwijzers</Title>
-						<button
-							onClick={() => setDeleteBookmark(!deleteBookmark)}
-							className={`h-10 rounded-lg  px-4 text-white ${deleteBookmark ? 'bg-slate-500' : 'bg-red-500'}`}
-						>
-							{deleteBookmark ? 'Annuleer' : 'Verwijder'}
-						</button>
+						{bookmarks.length > 0 && (
+							<button
+								id="delete"
+								onClick={() => setShowDeleteBookmark(!showDeleteBookmark)}
+								className={`h-10 rounded-lg  px-4 text-white ${showDeleteBookmark ? 'bg-slate-500' : 'bg-red-500'}`}
+							>
+								{showDeleteBookmark ? 'Annuleer' : 'Verwijder'}
+							</button>
+						)}
 					</div>
-					<div className="flex cursor-pointer flex-row flex-wrap justify-center ">
-						{bookmarks.map((bookmark) => (
+					<div className="grid grid-cols-5 gap-4">
+						{bookmarks.map(({ title, favicon, url }, index) => (
 							<BookmarkTile
-								key={bookmark.title}
-								title={bookmark.title}
-								img={bookmark?.favicon}
-								url={bookmark.url}
-								deleteBookmark={deleteBookmark}
+								ref={(el) => (ref.current[index] = el)}
+								key={index}
+								title={title}
+								img={favicon}
+								url={url}
+								showDeleteBookmark={showDeleteBookmark}
+								handleDeleteBookmark={deleteBookmark}
 							/>
 						))}
 
 						{bookmarks.length < 10 && (
 							<button
-								onClick={() => {
-									setAddBookmark(true);
-								}}
-								className="mx-4 flex w-32 flex-col items-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
+								onClick={() => setShowAddBookmarkModal(true)}
+								className="flex w-32 flex-col items-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
 							>
-								<div className="drop-shadow-browser flex h-20 w-20  items-center justify-center rounded-2xl bg-white">
+								<div className="drop-shadow-browser flex h-20 w-20 items-center justify-center rounded-2xl bg-white">
 									<PlusIcon className="h-10 w-10" />
 								</div>
-								<h2 className="w-32 truncate font-mulish text-base font-medium">Toevoegen</h2>
+								<h2 className="truncate font-mulish text-base font-medium">Toevoegen</h2>
 							</button>
 						)}
 					</div>

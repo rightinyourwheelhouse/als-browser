@@ -9,7 +9,6 @@ import { DataGrid, nlNL } from '@mui/x-data-grid';
 import Button from '../Button';
 
 const HistorySetting = () => {
-	// var historyItems = document.createElement('div');
 	const { user } = useAuth();
 
 	const [historyItems, setHistoryItems] = useState([]);
