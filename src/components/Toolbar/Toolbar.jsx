@@ -1,23 +1,49 @@
-import React, { useEffect } from 'react';
-import Dashboard from '../Dashboard/Dashboard';
+import React, { useEffect, useState } from 'react';
 import SearchBar from './SearchBar';
 import ToolbarIcon from './ToolbarIcon.jsx';
 
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useMatch } from 'react-router-dom';
 
 import LogoBrainWeb from '/assets/img/logo-brainweb.png';
+import LogoBrainWebWhite from '/assets/img/logo-brainweb-white.png';
 
-import { ArrowLeftIcon } from '@heroicons/react/outline';
-import { ArrowRightIcon } from '@heroicons/react/outline';
-import { RefreshIcon } from '@heroicons/react/outline';
-import { HomeIcon } from '@heroicons/react/outline';
-import { MinusSmIcon } from '@heroicons/react/outline';
-import { ArrowsExpandIcon } from '@heroicons/react/outline';
-import { XIcon } from '@heroicons/react/outline';
+import {
+	ArrowLeftIcon,
+	ArrowRightIcon,
+	RefreshIcon,
+	HomeIcon,
+	MinusSmIcon,
+	ArrowsExpandIcon,
+	XIcon,
+	GlobeAltIcon,
+} from '@heroicons/react/outline';
 
-const Toolbar = ({ onFocusChange }) => {
-	let navigate = useNavigate();
+const Toolbar = () => {
+	const [logo, setLogo] = useState(LogoBrainWeb);
+	const [webviewState, setWebviewState] = useState(undefined);
+
+	const navigate = useNavigate();
 	const location = useLocation();
+
+	const params = new URLSearchParams(location.search);
+
+	const isWebview = webviewState;
+	const isHome = useMatch('/');
+	const isSearching = !isWebview && params.get('search');
+	const isSettings = useMatch('/settings/*');
+	const isExtension = useMatch('/settings/extension');
+
+	useEffect(() => {
+		const listener = document.addEventListener('click', () => window.api.send('getWebviewState'));
+		window.api.recieve('getWebviewStateReply', (isOpen) => {
+			setWebviewState(...isOpen);
+		});
+
+		return () => {
+			window.api.removeAllListeners('getWebviewStateReply');
+			document.removeEventListener('click', listener);
+		};
+	}, []);
 
 	const handleGoBack = () => {
 		window.api.send('goBack');
@@ -40,12 +66,12 @@ const Toolbar = ({ onFocusChange }) => {
 	};
 
 	const handleDashboard = () => {
-		navigate('/');
-
-		if (location.pathname === '/') {
-			window.api.send('toggleDashboard', true);
+		if (isSearching) {
+			navigate('/');
+		} else if (isSettings?.pathnameBase === '/settings') {
+			navigate('/');
 		} else {
-			window.api.send('toggleDashboard', null);
+			window.api.send('toggleWebview', true);
 		}
 	};
 
@@ -53,17 +79,13 @@ const Toolbar = ({ onFocusChange }) => {
 		window.api.send('adjustSize');
 	};
 
-	useEffect(() => {
-		window.api.recieve('ToggleTheDashboard', () => {
-			onFocusChange(Dashboard);
-		});
-
-		return () => window.api.removeAllListeners('ToggleTheDashboard');
-	}, [onFocusChange]);
-
 	const handleExtensionToggle = () => {
-		navigate('/settings/extension');
-		window.api.send('toggleExtension');
+		if (isExtension) {
+			window.api.send('toggleWebview', true);
+		} else {
+			navigate('/settings/extension');
+			window.api.send('toggleWebview', false);
+		}
 	};
 
 	return (
@@ -85,13 +107,17 @@ const Toolbar = ({ onFocusChange }) => {
 					</ToolbarIcon>
 
 					<ToolbarIcon onClick={handleDashboard}>
-						<HomeIcon />
+						{webviewState || !isHome || isSearching ? <HomeIcon /> : <GlobeAltIcon />}
 					</ToolbarIcon>
 
-					<SearchBar onFocusChange={onFocusChange} />
+					<SearchBar />
 
-					<ToolbarIcon onClick={handleExtensionToggle}>
-						<img src={LogoBrainWeb} alt="" />
+					<ToolbarIcon
+						onClick={handleExtensionToggle}
+						onMouseEnter={() => setLogo(LogoBrainWebWhite)}
+						onMouseLeave={() => setLogo(LogoBrainWeb)}
+					>
+						<img src={logo} alt="" />
 					</ToolbarIcon>
 				</div>
 
