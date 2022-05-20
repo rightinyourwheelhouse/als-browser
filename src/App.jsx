@@ -4,7 +4,6 @@ import Dashboard from './components/Dashboard/Dashboard';
 
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Settings from './components/Settings/Settings';
-
 import { useHistory } from './utils/useHistory';
 import { useMouseTracking } from './utils/useMouseTracking';
 
@@ -14,20 +13,19 @@ const App = () => {
 
 	let navigate = useNavigate();
 
-
-	useEffect(() => { 
+	useEffect(() => {
 		window.api.recieve('toggleExtensionRadialReply', () => {
 			navigate('/settings/extension');
 			window.api.send('toggleExtension');
 		});
 
-		return () => window.api.removeAllListeners("toggleExtensionRadialReply")
+		return () => window.api.removeAllListeners('toggleExtensionRadialReply');
 	}, [navigate]);
 
 	return (
 		<div className="grid h-full grid-rows-[max-content,1fr]">
 			<Toolbar />
-			<Routes>
+			<Routes >
 				<Route path="/" element={<Dashboard />} />
 				<Route path="settings/*" element={<Settings />}></Route>
 			</Routes>
