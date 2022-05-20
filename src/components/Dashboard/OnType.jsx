@@ -21,7 +21,7 @@ const options = {
 const OnType = ({ params }) => {
 	const { user } = useAuth();
 	const [suggestions, setSuggestions] = useState([]);
-	const [userHistory, setUserHistory] = useState([]);
+	const [userHistory, setUserHistory] = useState(websiteList);
 
 	const fuseSearch = (list, input) => {
 		const fuse = new Fuse(list, options);
@@ -30,10 +30,8 @@ const OnType = ({ params }) => {
 	};
 
 	useEffect(() => {
-		setUserHistory(websiteList);
 		if (!user) return;
 
-		
 		const fetchData = async () => {
 			const q = query(collection(db, `users/${user.uid}`, 'history'));
 			const querySnapshot = await getDocs(q);

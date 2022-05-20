@@ -13,20 +13,19 @@ const App = () => {
 
 	let navigate = useNavigate();
 
-
-	useEffect(() => { 
+	useEffect(() => {
 		window.api.recieve('toggleExtensionRadialReply', () => {
 			navigate('/settings/extension');
 			window.api.send('toggleExtension');
 		});
 
-		return () => window.api.removeAllListeners("toggleExtensionRadialReply")
+		return () => window.api.removeAllListeners('toggleExtensionRadialReply');
 	}, [navigate]);
 
 	return (
 		<div className="grid h-full grid-rows-[max-content,1fr]">
 			<Toolbar />
-			<Routes cmas>
+			<Routes >
 				<Route path="/" element={<Dashboard />} />
 				<Route path="settings/*" element={<Settings />}></Route>
 			</Routes>

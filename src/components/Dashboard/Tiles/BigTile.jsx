@@ -19,7 +19,7 @@ const BigTile = ({ title, img, description, url }) => {
 						) : (
 							<div>
 								<span className="flex h-10 w-10 items-center justify-center rounded-md bg-slate-500 text-xl font-bold text-white">
-									{title.substring(0, 1)}
+									{title?.substring(0, 1)}
 								</span>
 							</div>
 						)}
