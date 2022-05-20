@@ -6,23 +6,23 @@ import useDerivedStateFromProps from '../../hooks/useDerivedStateFromProps';
 
 const AddBookmarkModal = ({ setAddBookmark, currentBookmark, handleAddBookmark }) => {
 	const [bookmark, setBookmark] = useDerivedStateFromProps(currentBookmark);
-	const [error, setError] = useState();
+	const [result, setResult] = useState();
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
-		let error;
+		let result;
 
 		if (bookmark.url !== currentBookmark.url) {
-			error = handleAddBookmark({ ...bookmark, createdAt: new Date().toLocaleString() });
+			result = handleAddBookmark({ ...bookmark, createdAt: new Date().toLocaleString() });
 		} else {
-			error = handleAddBookmark(currentBookmark);
+			result = handleAddBookmark(currentBookmark);
 		}
 
-		if (error.type === 'success') {
+		if (result.type === 'success') {
 			setAddBookmark(false);
 		} else {
-			setError(error.message);
+			setResult(result.message);
 		}
 	};
 
@@ -62,7 +62,7 @@ const AddBookmarkModal = ({ setAddBookmark, currentBookmark, handleAddBookmark }
 									label="Website URL"
 								/>
 							</div>
-							{error && <p className="max-w-max rounded-md bg-red-600 px-3 py-2 text-white">{error}</p>}
+							{result && <p className="max-w-max rounded-md bg-red-600 px-3 py-2 text-white">{result}</p>}
 
 							<div className="mt-6 flex items-center justify-end">
 								<button type="submit" className="rounded-md border-2 border-white bg-white py-1 px-4 text-slate-800">
