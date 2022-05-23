@@ -28,4 +28,4 @@ const init = () => {
 	if (!isGoogleSearch) ipcRenderer.send('history', historyItem);
 };
 
-window.addEventListener('DOMContentLoaded', init);
+init();

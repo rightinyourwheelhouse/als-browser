@@ -6,10 +6,12 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import Settings from './components/Settings/Settings';
 import { useHistory } from './utils/useHistory';
 import { useMouseTracking } from './utils/useMouseTracking';
+import useFrecency from './hooks/useFrecency';
 
 const App = () => {
 	useMouseTracking();
 	useHistory();
+	const frecency = useFrecency();
 
 	let navigate = useNavigate();
 
@@ -25,8 +27,8 @@ const App = () => {
 	return (
 		<div className="grid h-full grid-rows-[max-content,1fr]">
 			<Toolbar />
-			<Routes >
-				<Route path="/" element={<Dashboard />} />
+			<Routes>
+				<Route path="/" element={<Dashboard frecency={frecency} />} />
 				<Route path="settings/*" element={<Settings />}></Route>
 			</Routes>
 		</div>

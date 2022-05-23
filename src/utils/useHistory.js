@@ -10,7 +10,7 @@ export const useHistory = () => {
 	useEffect(() => {
 		if (!user) return;
 		window.api.recieve('historyReply', async (historyItem) => {
-			var historyRef = collection(db, `users/${user.uid}/history/`);
+			const historyRef = collection(db, `users/${user.uid}/history/`);
 			await addDoc(historyRef, historyItem[0]);
 		});
 		return () => window.api.removeAllListeners('historyReply');

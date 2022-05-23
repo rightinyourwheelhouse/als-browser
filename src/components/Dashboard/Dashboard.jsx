@@ -17,7 +17,7 @@ import { db } from '../../utils/FirebaseConfig';
 import AddBookmarkModal from './AddBookmarkModal';
 import useImmutableCallback from '../../hooks/useImmutableCallback';
 
-const Dashboard = () => {
+const Dashboard = ({ frecency }) => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { user } = useAuth();
@@ -151,9 +151,13 @@ const Dashboard = () => {
 						<Title>Suggesties</Title>
 					</div>
 					<div className="flex cursor-pointer flex-row gap-10">
+						{frecency.map(({ title, favicon, url }, index) => (
+							<MediumTile key={index} title={title} img={favicon} url={url} />
+						))}
+
+						{/* <MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" url="www.nieuwsblad.be" />
 						<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" url="www.nieuwsblad.be" />
-						<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" url="www.nieuwsblad.be" />
-						<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" url="www.nieuwsblad.be" />
+						<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" url="www.nieuwsblad.be" /> */}
 					</div>
 				</div>
 				<div className="m-center mt-16 mb-16 w-3/4">
