@@ -1,5 +1,5 @@
 {
-  "name": "als-browser",
+  "name": "brainweb",
   "private": true,
   "version": "1.0.0",
   "description": "Browser for the ALS-liga",
@@ -11,6 +11,12 @@
   },
   "license": "MIT",
   "build": {
+    "productName": "Brainweb",
+    "appId": "com.brainweb.app",
+    "icon": "icon.png",
+    "win": {
+      "icon": "build/icon.png"
+   },
     "publish": [
       {
         "provider": "github",
