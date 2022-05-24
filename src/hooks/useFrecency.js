@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContextProvider';
 import useLocalStorageState from './useLocalStorageState';
 import { db } from '../utils/FirebaseConfig';
@@ -34,7 +34,6 @@ const getPartOfWeek = (now) => {
 export default function useFrecency() {
 	const { user } = useAuth();
 	const [history, setHistory] = useLocalStorageState('history', []);
-	const [suggestions, setSuggestions] = useState([]);
 
 	useEffect(() => {
 		if (!user) return;
@@ -56,87 +55,75 @@ export default function useFrecency() {
 			});
 			setHistory(historyArray);
 		});
-
 		return () => unsubscribe();
 	}, [user, setHistory]);
 
-	useEffect(() => {
-		let now = new Date();
-		const partOfDayNow = getPartOfDay(now);
-		const partOfWeekNow = getPartOfWeek(now);
+	let now = new Date();
+	const partOfDayNow = getPartOfDay(now);
+	const partOfWeekNow = getPartOfWeek(now);
 
-		now = now.getTime();
-		const hour = 1000 * 60 * 60;
-		const day = 24 * hour;
+	now = now.getTime();
+	const hour = 1000 * 60 * 60;
+	const day = 24 * hour;
 
-		const filteredHistory = [];
+	// This groupes all the documents by title
+	const groupedHistory = history.reduce((acc, cur) => {
+		acc[cur.title] = acc[cur.title] || [];
+		acc[cur.title].push(cur);
+		return acc;
+	}, []);
 
-		history.forEach((item) => {
-			if (
-				!item.title?.includes('Google Zoeken') ||
-				(!item.title?.includes('Google Search') && item.visitTime >= now - 30 * day)
-			) {
-				filteredHistory.push(item);
+	// This loop gives a score to each title based on visittime, visitcount, ...
+	const scoreArray = [];
+	for (let key in groupedHistory) {
+		const pageScore = groupedHistory[key].reduce((score, visitTime) => {
+			let date = new Date(visitTime);
+			let partOfDay = getPartOfDay(date);
+			let partOfWeek = getPartOfWeek(date);
+
+			switch ((date, partOfDay, partOfWeek)) {
+				case partOfDay == partOfDayNow:
+					score + 100;
+					break;
+				case partOfWeek == partOfWeekNow:
+					score + 50;
+					break;
+				case visitTime >= now - day:
+					score + 80;
+					break;
+				case visitTime >= now - 7 * day:
+					score + 60;
+					break;
+				case visitTime >= now - 14 * day:
+					score + 40;
+					break;
+				case visitTime >= now - 21 * day:
+					score + 20;
+					break;
 			}
-		});
+			return score;
+		}, 0);
+		scoreArray.push([key, pageScore]);
+	}
 
-		const sortedHistory = filteredHistory.sort(function (a, b) {
-			if (a.title < b.title) {
-				return -1;
+	const sortedScoreArray = scoreArray.sort((a, b) => {
+		return b[1] - a[1];
+	});
+
+	const scoreObject = sortedScoreArray.slice(0, 3).reduce((acc, cur) => ({ ...acc, [cur[0]]: cur[1] }), {});
+
+	const suggestionArray = [];
+
+	// There are multiple historyItems with the same title. If you use the return false, this will stop searching on this key. With the return true, the every function will continue.
+	for (let key in scoreObject) {
+		history.every((historyItem) => {
+			if (key == historyItem.title) {
+				suggestionArray.push(historyItem);
+				return false;
 			}
-			if (a.title > b.title) {
-				return 1;
-			}
-			return 0;
+			return true;
 		});
+	}
 
-		let splitHistory = sortedHistory.reduce((acc, cur) => {
-			acc[cur.title] = acc[cur.title] || [];
-			acc[cur.title].push(cur);
-			return acc;
-		}, []);
-
-		let scoreArray = [];
-		for (let key in splitHistory) {
-			scoreArray.push([
-				key,
-				splitHistory[key].reduce(function (score, visitTime) {
-					let date = new Date(visitTime);
-					let partOfDay = getPartOfDay(date);
-					let partOfWeek = getPartOfWeek(date);
-
-					if (partOfDay == partOfDayNow) return score + 100;
-					if (partOfWeek == partOfWeekNow) return score + 50;
-
-					if (visitTime >= now - day) return score + 80;
-					if (visitTime >= now - 7 * day) return score + 60;
-					if (visitTime >= now - 14 * day) return score + 40;
-					if (visitTime >= now - 21 * day) return score + 20;
-					return score;
-				}, 0),
-			]);
-		}
-
-		const sortedScoreArray = scoreArray.sort(function (a, b) {
-			return b[1] - a[1];
-		});
-
-		const numOfScores = 3;
-		const scoreObject = sortedScoreArray.slice(0, numOfScores).reduce((acc, cur) => ({ ...acc, [cur[0]]: cur[1] }), {});
-
-		const suggestionArray = [];
-
-		for (let key in scoreObject) {
-			history.find((item) => {
-				if (item.title == key && !suggestionArray.includes(key)) {
-					suggestionArray.push(item);
-					return true;
-				}
-			});
-		}
-
-		setSuggestions(suggestionArray);
-	}, [history]);
-
-	return suggestions;
+	return suggestionArray;
 }
