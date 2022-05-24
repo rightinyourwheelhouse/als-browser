@@ -1,7 +1,7 @@
 import React from 'react';
 import TileImage from './TileImage';
 
-const BigTile = ({ title, img, description, url }) => {
+const BigTile = ({ title, img, description, url, size }) => {
 	const handleChangeUrl = () => {
 		window.api.send('searchURL', url);
 	};
@@ -13,7 +13,7 @@ const BigTile = ({ title, img, description, url }) => {
 		>
 			<div className="flex flex-row gap-8">
 				<div className="flex items-center justify-start gap-4">
-					<TileImage title={title} src={img} />
+					<TileImage size={size} title={title} src={img} />
 					<div className="text-left">
 						<a className="text-sm font-light underline underline-offset-1">{url}</a>
 						<h2 className="text-lg font-semibold">{title}</h2>

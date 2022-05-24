@@ -267,6 +267,14 @@ ipcMain.on('setLatestOverlayLocation', (event, payload) => {
 	mainWindow.webContents.send('setLatestOverlayLocationReply', payload);
 });
 
+ipcMain.on('getCurrentBookmark', () => {
+	view.webContents.send('getCurrentBookmarkReply');
+});
+
+ipcMain.on('setCurrentBookmark', (event, arg) => {
+	mainWindow.webContents.send('setCurrentBookmarkReply', arg);
+});
+
 ipcMain.on('bookmark', (event, arg) => {
 	mainWindow.webContents.send('bookmarkReply', arg);
 });

@@ -70,6 +70,7 @@ const OnType = ({ params }) => {
 					return (
 						<BigTile
 							key={index}
+							size="w-7 h-7"
 							title={suggestion.item.title}
 							img={suggestion.item.favicon}
 							description={suggestion.item.description}

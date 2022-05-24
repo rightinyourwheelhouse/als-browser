@@ -1,18 +1,8 @@
 import { useField } from 'formik';
-import React, { useState } from 'react';
+import React from 'react';
 import ErrorMessage from './Auth/ErrorMessage';
 
-const TextInputGroup = ({
-	label,
-	name,
-	value = '',
-	placeholder,
-	type,
-	onChange,
-	onBlur,
-	textColor = 'text-slate-800',
-}) => {
-	const [currentValue, setCurrentValue] = useState(value);
+const TextInputGroup = ({ label, name, value, placeholder, type, onChange, onBlur, textColor = 'text-slate-800' }) => {
 	const [field, meta] = useField({
 		type,
 		name,
@@ -36,10 +26,10 @@ const TextInputGroup = ({
 				type={type}
 				name={name}
 				placeholder={placeholder}
-				value={currentValue}
+				value={value}
 				onChange={(e) => {
+					value = e.target.value;
 					if (onChange) onChange(e);
-					setCurrentValue(e.currentTarget.value);
 				}}
 				onBlur={onBlur}
 				autoComplete="off"

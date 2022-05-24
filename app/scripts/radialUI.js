@@ -1,5 +1,25 @@
 const { ipcRenderer } = require('electron');
 
+ipcRenderer.on('getCurrentBookmarkReply', () => {
+	const url = window.location.href;
+	const title = document.title.replaceAll('/', '-');
+
+	const favicon =
+		document.querySelector('link[rel="icon"]')?.href ||
+		document.querySelector('link[rel="shortcut icon"]')?.href ||
+		document.querySelector('link[rel="apple-touch-icon"]')?.href ||
+		'';
+
+	const bookmark = {
+		url,
+		title,
+		favicon,
+		createdAt: new Date().toLocaleString(),
+	};
+
+	ipcRenderer.send('setCurrentBookmark', bookmark);
+});
+
 const data = [
 	{
 		id: 1,
