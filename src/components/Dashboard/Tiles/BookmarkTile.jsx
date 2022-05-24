@@ -1,12 +1,9 @@
 import { TrashIcon } from '@heroicons/react/outline';
-import React, { forwardRef } from 'react';
+import React from 'react';
 import TileImage from './TileImage';
 import classNames from 'classnames';
 
-const BookmarkTile = forwardRef(function BookmarkTile(
-	{ title, img, url, showDeleteBookmark, handleDeleteBookmark },
-	ref,
-) {
+const BookmarkTile = ({ title, img, url, showDeleteBookmark, handleDeleteBookmark }) => {
 	const handleChangeUrl = () => {
 		window.api.send('searchURL', url);
 	};
@@ -18,7 +15,7 @@ const BookmarkTile = forwardRef(function BookmarkTile(
 
 	return (
 		<button
-			ref={ref}
+			id="bookmark"
 			onClick={showDeleteBookmark ? () => handleDeleteBookmark(title) : handleChangeUrl}
 			className="mb-8 flex w-32 flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
 		>
@@ -35,6 +32,6 @@ const BookmarkTile = forwardRef(function BookmarkTile(
 			</h2>
 		</button>
 	);
-});
+};
 
 export default BookmarkTile;

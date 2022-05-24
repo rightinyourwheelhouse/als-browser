@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import BookmarkTile from './Tiles/BookmarkTile';
 import MediumTile from './Tiles/MediumTile';
 import Title from '../Typography/Title';
@@ -21,7 +21,6 @@ const Dashboard = ({ frecency }) => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { user } = useAuth();
-	const ref = useRef({});
 
 	const [showDeleteBookmark, setShowDeleteBookmark] = useState(false);
 	const [showAddBookmarkModal, setShowAddBookmarkModal] = useState(false);
@@ -71,14 +70,9 @@ const Dashboard = ({ frecency }) => {
 	};
 
 	const handleClickOutside = (e) => {
-		const array = [];
+		const closestBookmark = e.target.closest('#bookmark');
 
-		for (const key in ref.current) {
-			const current = ref.current[key];
-			array.push(current);
-		}
-
-		if (ref.current && !array.includes(e.target) && e.target.id !== 'delete') {
+		if (!closestBookmark && e.target.id !== 'delete') {
 			setShowDeleteBookmark(false);
 		}
 	};
@@ -154,10 +148,6 @@ const Dashboard = ({ frecency }) => {
 						{frecency.map(({ title, favicon, url }, index) => (
 							<MediumTile key={index} title={title} img={favicon} url={url} />
 						))}
-
-						{/* <MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" url="www.nieuwsblad.be" />
-						<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" url="www.nieuwsblad.be" />
-						<MediumTile title="Het Nieuwsblad" img="https://i.imgur.com/a2jzYU6.png" url="www.nieuwsblad.be" /> */}
 					</div>
 				</div>
 				<div className="m-center mt-16 mb-16 w-3/4">
@@ -176,7 +166,6 @@ const Dashboard = ({ frecency }) => {
 					<div className="grid grid-cols-5 gap-4">
 						{bookmarks.map(({ title, favicon, url }, index) => (
 							<BookmarkTile
-								ref={(el) => (ref.current[index] = el)}
 								key={index}
 								title={title}
 								img={favicon}
