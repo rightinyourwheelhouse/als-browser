@@ -5,7 +5,6 @@ import { signOut } from 'firebase/auth';
 
 import ExtensionSetting from './components/Pages/ExtensionSetting';
 import FeedbackSetting from './components/Pages/FeedbackSetting';
-import PasswordSetting from './components/Pages/PasswordSetting';
 
 import AccountSetting from './components/Pages/AccountSetting';
 import HistorySetting from './components/Pages/HistorySetting';
@@ -14,7 +13,6 @@ import Title from '../Typography/Title';
 
 import { AnnotationIcon } from '@heroicons/react/outline';
 import { UserIcon } from '@heroicons/react/outline';
-import { LockClosedIcon } from '@heroicons/react/outline';
 import { PuzzleIcon } from '@heroicons/react/outline';
 import { BookOpenIcon } from '@heroicons/react/outline';
 import { InformationCircleIcon } from '@heroicons/react/outline';
@@ -60,13 +58,6 @@ const Settings = () => {
 			link: 'account',
 			component: AccountSetting,
 			icon: UserIcon,
-		},
-
-		{
-			tabName: 'Wachtwoorden',
-			component: PasswordSetting,
-			link: 'passwords',
-			icon: LockClosedIcon,
 		},
 
 		{
@@ -148,7 +139,6 @@ const Settings = () => {
 							/>
 						}
 					/>
-					<Route path="passwords" element={<PasswordSetting />} />
 					<Route path="extension" element={<ExtensionSetting />} />
 					<Route path="history" element={<HistorySetting />} />
 					<Route path="about" element={<AboutSetting />} />
