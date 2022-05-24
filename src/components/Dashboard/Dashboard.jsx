@@ -146,9 +146,15 @@ const Dashboard = ({ frecency }) => {
 					</div>
 					<div className="flex cursor-pointer flex-row gap-10">
 						{user ? (
-							frecency.map(({ title, favicon, url }, index) => (
-								<MediumTile key={index} title={title} img={favicon} url={url} />
-							))
+							frecency.length === 0 ? (
+								<p className="text-lg font-thin">
+									Begin met <strong>zoeken op het internet</strong> en je suggesties zullen hier verschijnen.
+								</p>
+							) : (
+								frecency.map(({ title, favicon, url }, index) => (
+									<MediumTile key={index} title={title} img={favicon} url={url} />
+								))
+							)
 						) : (
 							<p className="text-lg font-thin">
 								Gelieve te{' '}
