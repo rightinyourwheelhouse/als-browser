@@ -6,28 +6,21 @@ import { query, collection, onSnapshot, orderBy } from 'firebase/firestore';
 
 const getPartOfDay = (now) => {
 	const hours = now.getHours();
-	let result;
-	switch (hours) {
-		case hours >= 0 && hours <= 5:
-			result = 'night';
-			break;
-		case hours >= 6 && hours <= 11:
-			result = 'morning';
-			break;
-		case hours >= 12 && hours <= 17:
-			result = 'afternoon';
-			break;
-		case hours >= 18 && hours <= 23:
-			result = 'evening';
-			break;
-	}
 
-	return result;
+	if (hours >= 0 && hours <= 5) {
+		return 'night';
+	} else if (hours >= 6 && hours <= 11) {
+		return 'morning';
+	} else if (hours >= 12 && hours <= 17) {
+		return 'afternoon';
+	} else {
+		return 'evening';
+	}
 };
 
 const getPartOfWeek = (now) => {
 	const days = now.getDay();
-	if (days == 0 || days == 6) return 'weekend';
+	if (days === 0 || days === 6) return 'weekend';
 	return 'weekday';
 };
 
@@ -71,39 +64,35 @@ export default function useFrecency() {
 		acc[cur.title] = acc[cur.title] || [];
 		acc[cur.title].push(cur);
 		return acc;
-	}, []);
+	}, {});
 
 	// This loop gives a score to each title based on visittime, visitcount, ...
 	const scoreArray = [];
 	for (let key in groupedHistory) {
-		const pageScore = groupedHistory[key].reduce((score, visitTime) => {
+		let score = 0;
+
+		groupedHistory[key].forEach((history) => {
+			const { visitTime } = history;
 			let date = new Date(visitTime);
 			let partOfDay = getPartOfDay(date);
 			let partOfWeek = getPartOfWeek(date);
 
-			switch ((date, partOfDay, partOfWeek)) {
-				case partOfDay == partOfDayNow:
-					score + 100;
-					break;
-				case partOfWeek == partOfWeekNow:
-					score + 50;
-					break;
-				case visitTime >= now - day:
-					score + 80;
-					break;
-				case visitTime >= now - 7 * day:
-					score + 60;
-					break;
-				case visitTime >= now - 14 * day:
-					score + 40;
-					break;
-				case visitTime >= now - 21 * day:
-					score + 20;
-					break;
+			if (partOfDay === partOfDayNow) {
+				score += 100;
+			} else if (partOfWeek === partOfWeekNow) {
+				score += 50;
+			} else if (visitTime >= now - day) {
+				score += 80;
+			} else if (visitTime >= now - 7 * day) {
+				score += 60;
+			} else if (visitTime >= now - 14 * day) {
+				score += 40;
+			} else if (visitTime >= now - 21 * day) {
+				score += 20;
 			}
-			return score;
-		}, 0);
-		scoreArray.push([key, pageScore]);
+		});
+
+		scoreArray.push([key, score]);
 	}
 
 	const sortedScoreArray = scoreArray.sort((a, b) => {
@@ -117,7 +106,7 @@ export default function useFrecency() {
 	// There are multiple historyItems with the same title. If you use the return false, this will stop searching on this key. With the return true, the every function will continue.
 	for (let key in scoreObject) {
 		history.every((historyItem) => {
-			if (key == historyItem.title) {
+			if (key === historyItem.title) {
 				suggestionArray.push(historyItem);
 				return false;
 			}
