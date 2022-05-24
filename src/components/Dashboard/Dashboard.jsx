@@ -5,7 +5,7 @@ import Title from '../Typography/Title';
 import OnType from './OnType';
 import Clock from '../Clock';
 
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import useLocalStorageState from '../../hooks/useLocalStorageState';
 
 import { PlusIcon } from '@heroicons/react/outline';
@@ -145,9 +145,23 @@ const Dashboard = ({ frecency }) => {
 						<Title>Suggesties</Title>
 					</div>
 					<div className="flex cursor-pointer flex-row gap-10">
-						{frecency.map(({ title, favicon, url }, index) => (
-							<MediumTile key={index} title={title} img={favicon} url={url} />
-						))}
+						{user ? (
+							frecency.map(({ title, favicon, url }, index) => (
+								<MediumTile key={index} title={title} img={favicon} url={url} />
+							))
+						) : (
+							<p className="text-lg font-thin">
+								Gelieve te{' '}
+								<Link className="font-bold text-dark-blue" to="/settings/account">
+									registreren
+								</Link>{' '}
+								of{' '}
+								<Link className="font-bold text-dark-blue" to="/settings/account">
+									in te loggen
+								</Link>{' '}
+								om deze feature te gebruiken...
+							</p>
+						)}
 					</div>
 				</div>
 				<div className="m-center mt-16 mb-16 w-3/4">

@@ -114,5 +114,6 @@ export default function useFrecency() {
 		});
 	}
 
+
 	return suggestionArray;
 }
