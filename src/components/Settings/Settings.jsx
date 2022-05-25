@@ -11,6 +11,7 @@ import HistorySetting from './components/Pages/HistorySetting';
 import FAQSetting from './components/Pages/FAQSetting';
 import AboutSetting from './components/Pages/AboutSetting';
 import Title from '../Typography/Title';
+import Tutorial from '../Tutorial';
 
 import { AnnotationIcon } from '@heroicons/react/outline';
 import { UserIcon } from '@heroicons/react/outline';
@@ -105,6 +106,8 @@ const Settings = () => {
 
 	return (
 		<div className="grid grid-cols-[minmax(12rem,16rem),1fr] gap-4">
+      <Tutorial />
+      {/* {window.api.recieve('tutorialReply') && <Tutorial />} */}
 			<div className="mi z-10 flex flex-col gap-4 bg-slate-100 drop-shadow-2xl">
 				<Title className="my-8 text-center">Instellingen</Title>
 				{tabs.map((tab, index) => (

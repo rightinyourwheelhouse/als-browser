@@ -141,7 +141,6 @@ app.whenReady().then(() => {
 	let isFirstTime;
 	try {
 		fs.closeSync(fs.openSync(firstTimeFilePath, 'wx'));
-		console.log('First time launch');
 		isFirstTime = true;
 	} catch (err) {
 		if (err.code === 'EEXIST') {
@@ -150,6 +149,10 @@ app.whenReady().then(() => {
 			throw err;
 		}
 	}
+
+  if (isFirstTime) {
+    mainWindow.webContents.send('tutorialReply', true);
+  }
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -305,4 +308,8 @@ ipcMain.on('history', (event, historyItem) => {
 
 ipcMain.on('alert-message-history', (event, arg) => {
 	view.webContents.send('alert-message-historyReply', arg);
+});
+
+ipcMain.on('tutorial', (event, arg) => {
+  mainWindow.webContents.send('tutorialReply', arg);
 });

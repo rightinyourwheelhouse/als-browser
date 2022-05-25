@@ -11,7 +11,9 @@ const FAQSetting = () => {
 					Hier kunt u meer info vinden over hoe u de browser kan gebruiken. <br />
 					<br /> Klik op de knop hieronder om de tutorial te starten.
 				</p>
-				<button className="mt-10 h-10 rounded-lg bg-dark-blue px-5 text-white">Start gebruiksaanwijzing</button>
+				<button className="mt-10 h-10 rounded-lg bg-dark-blue px-5 text-white" onClick={() => {window.api.send('tutorial')}}>
+					Start gebruiksaanwijzing
+				</button>
 			</FAQTile>
 			<FAQTile title="Element inspecteren">
 				<p className="mb-5">
