@@ -108,7 +108,6 @@ const OnType = ({ params }) => {
 			<div className="m-center mt-10 flex w-3/4 flex-col">
 				<Title>Zoeken</Title>
 				{suggestions.slice(0, 3).map((suggestion, index) => {
-					console.log();
 					return (
 						<BigTile
 							key={index}
