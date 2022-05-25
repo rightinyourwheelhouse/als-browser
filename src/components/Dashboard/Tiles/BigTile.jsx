@@ -1,9 +1,9 @@
 import React from 'react';
 import TileImage from './TileImage';
 
-const BigTile = ({ title, img, description, url, size }) => {
+const BigTile = ({ title, img, description, url, size, hiddenUrl }) => {
 	const handleChangeUrl = () => {
-		window.api.send('searchURL', url);
+		window.api.send('searchURL', url || hiddenUrl);
 	};
 
 	return (
@@ -21,7 +21,7 @@ const BigTile = ({ title, img, description, url, size }) => {
 				</div>
 			</div>
 
-			<p className="mt-2 text-left text-base font-light">{description}</p>
+			<p className="text-left text-base font-light">{description}</p>
 		</button>
 	);
 };

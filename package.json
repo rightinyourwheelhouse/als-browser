@@ -16,7 +16,7 @@
     "icon": "icon.png",
     "win": {
       "icon": "build/icon.png"
-   },
+    },
     "publish": [
       {
         "provider": "github",
