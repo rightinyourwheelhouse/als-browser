@@ -16,7 +16,7 @@ const BigTile = ({ title, img, description, url, size, hiddenUrl }) => {
 					<TileImage size={size} title={title} src={img} />
 					<div className="text-left">
 						<a className="text-sm font-light underline underline-offset-1">{url}</a>
-						<h2 className="text-lg font-semibold capitalize">{title}</h2>
+						<h2 className="text-lg font-semibold">{title}</h2>
 					</div>
 				</div>
 			</div>
