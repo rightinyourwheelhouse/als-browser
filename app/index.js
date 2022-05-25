@@ -2,6 +2,7 @@
 const path = require('path');
 const { app, BrowserWindow, BrowserView, ipcMain, nativeTheme } = require('electron');
 const { autoUpdater } = require('electron-updater');
+const fs = require('fs');
 
 const isDev = require('electron-is-dev');
 
@@ -133,6 +134,21 @@ app.whenReady().then(() => {
 		createWindow();
 	} else {
 		createLoadingScreen();
+	}
+
+	// detect first launch
+	const firstTimeFilePath = path.resolve(app.getPath('userData'), '.first-time');
+	let isFirstTime;
+	try {
+		fs.closeSync(fs.openSync(firstTimeFilePath, 'wx'));
+		console.log('First time launch');
+		isFirstTime = true;
+	} catch (err) {
+		if (err.code === 'EEXIST') {
+			isFirstTime = false;
+		} else {
+			throw err;
+		}
 	}
 });
 
