@@ -16,11 +16,14 @@ import { query, collection, limit, doc, setDoc, onSnapshot, orderBy, deleteDoc }
 import { db } from '../../utils/FirebaseConfig';
 import AddBookmarkModal from './AddBookmarkModal';
 import useImmutableCallback from '../../hooks/useImmutableCallback';
+import useFrecency from '../../hooks/useFrecency';
 
-const Dashboard = ({ frecency }) => {
+const Dashboard = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { user } = useAuth();
+
+	const frecency = useFrecency();
 
 	const [showDeleteBookmark, setShowDeleteBookmark] = useState(false);
 	const [showAddBookmarkModal, setShowAddBookmarkModal] = useState(false);
