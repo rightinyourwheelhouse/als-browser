@@ -108,6 +108,7 @@ const OnType = ({ params }) => {
 			<div className="m-center mt-10 flex w-3/4 flex-col">
 				<Title>Zoeken</Title>
 				{suggestions.slice(0, 3).map((suggestion, index) => {
+					console.log();
 					return (
 						<BigTile
 							key={index}
@@ -116,7 +117,7 @@ const OnType = ({ params }) => {
 							img={suggestion?.item?.favicon || suggestion.favicon || 'https://www.google.com/favicon.ico'}
 							description={suggestion?.item?.description || ''}
 							url={suggestion?.item?.hostname || suggestion.url}
-							hiddenUrl={suggestion}
+							hiddenUrl={suggestion.title || suggestion.url}
 						/>
 					);
 				})}
