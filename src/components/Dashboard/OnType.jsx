@@ -61,7 +61,7 @@ const OnType = ({ params }) => {
 
 			let websiteListFiltered = [];
 			websiteList.forEach((obj) => {
-				const isInList = history.some((item) => item.hostname === obj.hostname && item.title === obj.title);
+				const isInList = history.some((item) => item.hostname === obj.hostname);
 				if (!isInList) websiteListFiltered.push(obj);
 			});
 
