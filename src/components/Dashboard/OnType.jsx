@@ -23,15 +23,33 @@ const fuseSearch = (list, input) => {
 	return fuse.search(input);
 };
 
-const googleSearch = async (searchInput) => {
-	const brainhouseProxy = `https://brainhouse-proxy.herokuapp.com/http://suggestqueries.google.com/complete/search?client=chrome&hl=be&q=${searchInput}`;
+const googleSearch = async (list, searchInput) => {
+	const brainhouseProxy = `https://brainhouse-proxy.herokuapp.com/http://suggestqueries.google.com/complete/search?client=chrome&hl=nl&gl=be&q=${searchInput}`;
 	const response = await fetch(brainhouseProxy);
 	const data = await response.json();
-	return data[1];
+
+	const googleSearchItems = [];
+	for (let i = 0; i < data.length; i++) {
+		let title = data[1][i];
+		let url = data[2][i];
+
+		// When a title and url exists, the title is the URL and the url is the title, so we need to swap them....
+		if (title.length > 0 && url.length > 0) {
+			const baseurl = title.split('/').slice(2)[0];
+			const favicon = `https://s2.googleusercontent.com/s2/favicons?sz=128&domain=${baseurl}`;
+
+			// This prevents that two hostnames with the same URL are displayed
+			const isInList = list.some((item) => item.hostname === baseurl);
+			if (!isInList) googleSearchItems.push({ url: baseurl, title: url, favicon: favicon });
+		} else {
+			googleSearchItems.push({ title, url });
+		}
+	}
+	return googleSearchItems;
 };
 const combinedSearch = async (list, searchInput) => {
 	const fuseResult = fuseSearch(list, searchInput);
-	const googleSearchResult = await googleSearch(searchInput);
+	const googleSearchResult = await googleSearch(list, searchInput);
 
 	const combinedResult = fuseResult.concat(googleSearchResult);
 
@@ -48,24 +66,19 @@ const OnType = ({ params }) => {
 
 		const fetchData = async () => {
 			const q = query(collection(db, `users/${user.uid}`, 'history'));
-			const querySnapshot = await getDocs(q);
+			const historySnapshot = await getDocs(q);
 
 			let history = [];
-			querySnapshot.forEach((doc) => {
+			historySnapshot.forEach((doc) => {
 				// Check if the hostname is already in the list
-				if (doc.data().title) {
-					const isInList = history.some((item) => item.hostname === doc.data().hostname);
-					if (!isInList) history.push(doc.data());
-				}
+				const isInList =
+					history.some((item) => item.hostname === doc.data().hostname) ||
+					websiteList.some((item) => item.hostname === doc.data().hostname);
+
+				if (!isInList) history.push(doc.data());
 			});
 
-			let websiteListFiltered = [];
-			websiteList.filter((obj) => {
-				const isInList = history.some((item) => item.hostname === obj.hostname);
-				if (!isInList) websiteListFiltered.push(obj);
-			});
-
-			history = history.concat(websiteListFiltered);
+			history = history.concat(websiteList);
 			setUserHistory(history);
 		};
 
@@ -73,14 +86,19 @@ const OnType = ({ params }) => {
 	}, [user]);
 
 	useEffect(() => {
+		let isCancelled = false;
 		const searchInput = params.get('search');
 
 		const fetchSearch = async () => {
 			const result = await combinedSearch(userHistory, searchInput);
-			setSuggestions(result);
+			if (!isCancelled) setSuggestions(result);
 		};
 
 		fetchSearch();
+
+		return () => {
+			isCancelled = true;
+		};
 	}, [params, userHistory]);
 
 	return (
@@ -94,10 +112,10 @@ const OnType = ({ params }) => {
 						<BigTile
 							key={index}
 							size="w-7 h-7"
-							title={suggestion?.item?.title || suggestion}
-							img={suggestion?.item?.favicon || 'https://www.google.com/favicon.ico'}
+							title={suggestion?.item?.title || suggestion.title}
+							img={suggestion?.item?.favicon || suggestion.favicon || 'https://www.google.com/favicon.ico'}
 							description={suggestion?.item?.description || ''}
-							url={suggestion?.item?.hostname || ''}
+							url={suggestion?.item?.hostname || suggestion.url}
 							hiddenUrl={suggestion}
 						/>
 					);
