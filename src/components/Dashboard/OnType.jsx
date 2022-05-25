@@ -23,9 +23,20 @@ const fuseSearch = (list, input) => {
 	return fuse.search(input);
 };
 
+const googleSearch = async (searchInput) => {
+	const brainhouseProxy = `https://brainhouse-proxy.herokuapp.com/http://suggestqueries.google.com/complete/search?client=chrome&hl=be&q=${searchInput}`;
+	const response = await fetch(brainhouseProxy);
+	const data = await response.json();
+	// console.log(data[1]);
+	return data[1];
+};
+
+// https://www.google.com/favicon.ico
+
 const OnType = ({ params }) => {
 	const { user } = useAuth();
 	const [suggestions, setSuggestions] = useState([]);
+	const [googleSuggestions, setGoogleSuggestions] = useState([]);
 	const [userHistory, setUserHistory] = useState(websiteList);
 
 	useEffect(() => {
@@ -58,7 +69,11 @@ const OnType = ({ params }) => {
 	useEffect(() => {
 		const searchInput = params.get('search');
 		setSuggestions(fuseSearch(userHistory, searchInput));
-	}, [params, userHistory]);
+		const fetchData = async () => {
+			await googleSearch(searchInput);
+		};
+		console.log(fetchData());
+	}, [params, userHistory, googleSuggestions]);
 
 	return (
 		<div>
@@ -78,6 +93,20 @@ const OnType = ({ params }) => {
 						/>
 					);
 				})}
+
+				{/* {googleSuggestions.map((item, index) => {
+					console.log(item);
+					return (
+						<BigTile
+							key={index}
+							size="w-7 h-7"
+							// title={suggestion.item.title}
+							img="https://www.google.com/favicon.ico"
+							// description={suggestion.item.description}
+							// url={suggestion.item.hostname}
+						/>
+					);
+				})} */}
 			</div>
 		</div>
 	);
