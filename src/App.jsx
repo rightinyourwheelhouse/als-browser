@@ -12,8 +12,7 @@ const App = () => {
 	useMouseTracking();
 	useHistory();
 	const frecency = useFrecency();
-
-	let navigate = useNavigate();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		window.api.recieve('toggleExtensionRadialReply', () => {
