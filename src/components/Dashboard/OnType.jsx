@@ -59,7 +59,7 @@ const OnType = ({ params }) => {
 				}
 			});
 
-			const websiteListFiltered = websiteList.filter((obj) => history.some((item) => item.hostname === obj.hostname));
+			const websiteListFiltered = websiteList.filter((obj) => history.filter((item) => item.hostname === obj.hostname));
 
 			history = history.concat(websiteListFiltered);
 			setUserHistory(history);
