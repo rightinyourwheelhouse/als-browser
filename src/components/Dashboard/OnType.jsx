@@ -14,7 +14,7 @@ const options = {
 	findAllMatches: true,
 	shouldSort: true,
 	minMatchCharLength: 1,
-	threshold: 0.49,
+	threshold: 0.2,
 	keys: ['hostname', 'title'],
 };
 
@@ -27,16 +27,20 @@ const googleSearch = async (searchInput) => {
 	const brainhouseProxy = `https://brainhouse-proxy.herokuapp.com/http://suggestqueries.google.com/complete/search?client=chrome&hl=be&q=${searchInput}`;
 	const response = await fetch(brainhouseProxy);
 	const data = await response.json();
-	// console.log(data[1]);
 	return data[1];
 };
+const combinedSearch = async (list, searchInput) => {
+	const fuseResult = fuseSearch(list, searchInput);
+	const googleSearchResult = await googleSearch(searchInput);
 
-// https://www.google.com/favicon.ico
+	const combinedResult = fuseResult.concat(googleSearchResult);
+
+	return combinedResult;
+};
 
 const OnType = ({ params }) => {
 	const { user } = useAuth();
 	const [suggestions, setSuggestions] = useState([]);
-	const [googleSuggestions, setGoogleSuggestions] = useState([]);
 	const [userHistory, setUserHistory] = useState(websiteList);
 
 	useEffect(() => {
@@ -68,45 +72,34 @@ const OnType = ({ params }) => {
 
 	useEffect(() => {
 		const searchInput = params.get('search');
-		setSuggestions(fuseSearch(userHistory, searchInput));
-		const fetchData = async () => {
-			await googleSearch(searchInput);
+
+		const fetchSearch = async () => {
+			const result = await combinedSearch(userHistory, searchInput);
+			setSuggestions(result);
 		};
-		console.log(fetchData());
-	}, [params, userHistory, googleSuggestions]);
+
+		fetchSearch();
+	}, [params, userHistory]);
 
 	return (
 		<div>
 			<Clock className="mt-8 h-10 text-center" />
 
-			<div className="m-center mt-20 flex w-3/4 flex-col">
+			<div className="m-center mt-10 flex w-3/4 flex-col">
 				<Title>Zoeken</Title>
 				{suggestions.slice(0, 3).map((suggestion, index) => {
 					return (
 						<BigTile
 							key={index}
 							size="w-7 h-7"
-							title={suggestion.item.title}
-							img={suggestion.item.favicon}
-							description={suggestion.item.description}
-							url={suggestion.item.hostname}
+							title={suggestion.item?.title || suggestion}
+							img={suggestion.item?.favicon || 'https://www.google.com/favicon.ico'}
+							description={suggestion.item?.description}
+							url={suggestion.item?.hostname}
+							hiddenUrl={suggestion}
 						/>
 					);
 				})}
-
-				{/* {googleSuggestions.map((item, index) => {
-					console.log(item);
-					return (
-						<BigTile
-							key={index}
-							size="w-7 h-7"
-							// title={suggestion.item.title}
-							img="https://www.google.com/favicon.ico"
-							// description={suggestion.item.description}
-							// url={suggestion.item.hostname}
-						/>
-					);
-				})} */}
 			</div>
 		</div>
 	);

@@ -1,9 +1,9 @@
 import React from 'react';
 import TileImage from './TileImage';
 
-const BigTile = ({ title, img, description, url, size }) => {
+const BigTile = ({ title, img, description, url, size, hiddenUrl }) => {
 	const handleChangeUrl = () => {
-		window.api.send('searchURL', url);
+		window.api.send('searchURL', url || hiddenUrl);
 	};
 
 	return (
