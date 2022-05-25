@@ -21,7 +21,7 @@ const BigTile = ({ title, img, description, url, size, hiddenUrl }) => {
 				</div>
 			</div>
 
-			<p className="mt-2 text-left text-base font-light">{description}</p>
+			<p className="text-left text-base font-light">{description}</p>
 		</button>
 	);
 };
