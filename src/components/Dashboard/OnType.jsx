@@ -53,13 +53,15 @@ const OnType = ({ params }) => {
 			let history = [];
 			querySnapshot.forEach((doc) => {
 				// Check if the hostname is already in the list
-				const isInList = history.some((item) => item.hostname === doc.data().hostname);
-				if (!isInList) history.push(doc.data());
+				if (doc.data().title) {
+					const isInList = history.some((item) => item.hostname === doc.data().hostname);
+					if (!isInList) history.push(doc.data());
+				}
 			});
 
 			let websiteListFiltered = [];
 			websiteList.forEach((obj) => {
-				const isInList = history.some((item) => item.hostname === obj.hostname);
+				const isInList = history.some((item) => item.hostname === obj.hostname && item.title === obj.title);
 				if (!isInList) websiteListFiltered.push(obj);
 			});
 
@@ -92,10 +94,10 @@ const OnType = ({ params }) => {
 						<BigTile
 							key={index}
 							size="w-7 h-7"
-							title={suggestion.item?.title || suggestion}
-							img={suggestion.item?.favicon || 'https://www.google.com/favicon.ico'}
-							description={suggestion.item?.description}
-							url={suggestion.item?.hostname}
+							title={suggestion?.item?.title || suggestion}
+							img={suggestion?.item?.favicon || 'https://www.google.com/favicon.ico'}
+							description={suggestion?.item?.description || ''}
+							url={suggestion?.item?.hostname || ''}
 							hiddenUrl={suggestion}
 						/>
 					);
