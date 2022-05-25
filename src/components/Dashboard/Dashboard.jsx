@@ -17,6 +17,7 @@ import { db } from '../../utils/FirebaseConfig';
 import AddBookmarkModal from './AddBookmarkModal';
 import useImmutableCallback from '../../hooks/useImmutableCallback';
 import useFrecency from '../../hooks/useFrecency';
+import useFPGrowth from '../../hooks/useFPGrowth';
 
 const Dashboard = () => {
 	const navigate = useNavigate();
@@ -24,6 +25,7 @@ const Dashboard = () => {
 	const { user } = useAuth();
 
 	const frecency = useFrecency();
+	const FPGrowth = useFPGrowth();
 
 	const [showDeleteBookmark, setShowDeleteBookmark] = useState(false);
 	const [showAddBookmarkModal, setShowAddBookmarkModal] = useState(false);
@@ -31,6 +33,8 @@ const Dashboard = () => {
 	const [bookmarks, setBookmarks] = useLocalStorageState('bookmarks', []);
 
 	let params = new URLSearchParams(location.search);
+
+	console.log(FPGrowth);
 
 	const handleSettings = () => {
 		navigate('/settings/feedback');
