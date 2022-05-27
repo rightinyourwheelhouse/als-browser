@@ -11,6 +11,7 @@ import HistorySetting from './components/Pages/HistorySetting';
 import FAQSetting from './components/Pages/FAQSetting';
 import AboutSetting from './components/Pages/AboutSetting';
 import Title from '../Typography/Title';
+import Tutorial from '../Tutorial';
 
 import { AnnotationIcon } from '@heroicons/react/outline';
 import { UserIcon } from '@heroicons/react/outline';
@@ -29,6 +30,8 @@ const Settings = () => {
 	const [hasDeviceSpecification, setHasDeviceSpecification] = useState(false);
 
 	let navigate = useNavigate();
+
+  const [tutorial, setTutorial] = useState(false);
 
 	useEffect(() => {
 		const getUserDevice = async () => {
@@ -105,6 +108,7 @@ const Settings = () => {
 
 	return (
 		<div className="grid grid-cols-[minmax(12rem,16rem),1fr] gap-4">
+      { tutorial && <Tutorial setTutorial={setTutorial} /> }
 			<div className="mi z-10 flex flex-col gap-4 bg-slate-100 drop-shadow-2xl">
 				<Title className="my-8 text-center">Instellingen</Title>
 				{tabs.map((tab, index) => (
@@ -150,7 +154,7 @@ const Settings = () => {
 					/>
 					<Route path="extension" element={<ExtensionSetting />} />
 					<Route path="history" element={<HistorySetting />} />
-					<Route path="FAQ" element={<FAQSetting />} />
+					<Route path="FAQ" element={<FAQSetting setTutorial={setTutorial} />} />
 					<Route path="about" element={<AboutSetting />} />
 				</Routes>
 			</div>

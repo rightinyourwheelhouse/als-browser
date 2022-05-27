@@ -18,6 +18,7 @@ const App = () => {
 			window.api.send('toggleWebview', true);
 		});
 
+		window.api.send('tutorial');
 		return () => window.api.removeAllListeners('toggleExtensionRadialReply');
 	}, [navigate]);
 

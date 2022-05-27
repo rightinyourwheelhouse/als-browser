@@ -2,6 +2,7 @@
 const path = require('path');
 const { app, BrowserWindow, BrowserView, ipcMain, nativeTheme } = require('electron');
 const { autoUpdater } = require('electron-updater');
+const fs = require('fs');
 
 const isDev = require('electron-is-dev');
 
@@ -289,4 +290,14 @@ ipcMain.on('history', (event, historyItem) => {
 
 ipcMain.on('alert-message-history', (event, arg) => {
 	view.webContents.send('alert-message-historyReply', arg);
+});
+
+ipcMain.on('tutorial', () => {
+  const firstTimeFilePath = path.resolve(app.getPath('userData'), '.first-time');
+  try {
+    fs.closeSync(fs.openSync(firstTimeFilePath, 'wx'));
+    mainWindow.webContents.send('renderTutorial');		
+  } catch (err) {
+    console.log(err);
+  }
 });

@@ -4,6 +4,7 @@ import MediumTile from './Tiles/MediumTile';
 import Title from '../Typography/Title';
 import OnType from './OnType';
 import Clock from '../Clock';
+import Tutorial from '../Tutorial';
 
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import useLocalStorageState from '../../hooks/useLocalStorageState';
@@ -29,6 +30,7 @@ const Dashboard = () => {
 	const [showAddBookmarkModal, setShowAddBookmarkModal] = useState(false);
 	const [currentBookmark, setCurrentBookmark] = useState([]);
 	const [bookmarks, setBookmarks] = useLocalStorageState('bookmarks', []);
+	const [tutorial, setTutorial] = useState(false);
 
 	let params = new URLSearchParams(location.search);
 
@@ -120,11 +122,20 @@ const Dashboard = () => {
 			window.api.send('alert-message-bookmark', addBookmark(...bookmarkData));
 		});
 
-		return () => window.api.removeAllListeners('bookmarkReply');
+		window.api.recieve('renderTutorial', () => {
+			setTutorial(true);
+			console.log('render tutorial');
+		});
+
+		return () => {
+			window.api.removeAllListeners('bookmarkReply');
+			window.api.removeAllListeners('renderTutorial');
+		};
 	}, [user, addBookmark]);
 
 	return !params.get('search') ? (
 		<>
+			{tutorial && <Tutorial setTutorial={setTutorial} />}
 			{showAddBookmarkModal && (
 				<AddBookmarkModal
 					handleAddBookmark={(bookmark) => addBookmark(bookmark)}

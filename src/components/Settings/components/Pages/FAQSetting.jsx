@@ -2,7 +2,7 @@ import React from 'react';
 import Title from '../../../Typography/Title';
 import FAQTile from '../FAQTile';
 
-const FAQSetting = () => {
+const FAQSetting = ({setTutorial}) => {
 	return (
 		<div className="ml-10 h-[calc(100vh-5rem)] overflow-y-scroll pr-10">
 			<Title className="my-8">Veelgestelde vragen</Title>
@@ -11,7 +11,9 @@ const FAQSetting = () => {
 					Hier kunt u meer info vinden over hoe u de browser kan gebruiken. <br />
 					<br /> Klik op de knop hieronder om de tutorial te starten.
 				</p>
-				<button className="mt-10 h-10 rounded-lg bg-dark-blue px-5 text-white">Start gebruiksaanwijzing</button>
+				<button className="mt-10 h-10 rounded-lg bg-dark-blue px-5 text-white" onClick={() => {setTutorial(true)}}>
+					Start gebruiksaanwijzing
+				</button>
 			</FAQTile>
 			<FAQTile title="Element inspecteren">
 				<p className="mb-5">
