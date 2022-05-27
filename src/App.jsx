@@ -1,25 +1,34 @@
-import React, { useState } from 'react';
-import './css/App.css';
+import React, { useEffect } from 'react';
+import Toolbar from './components/Toolbar/Toolbar';
+import Dashboard from './components/Dashboard/Dashboard';
+
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import Settings from './components/Settings/Settings';
+import { useHistory } from './utils/useHistory';
+import { useMouseTracking } from './utils/useMouseTracking';
 
 const App = () => {
-	const [input, setInput] = useState('');
+	useMouseTracking();
+	useHistory();
+	const navigate = useNavigate();
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		window.api.send('toMain', input);
-	};
+	useEffect(() => {
+		window.api.recieve('toggleExtensionRadialReply', () => {
+			navigate('/settings/extension');
+			window.api.send('toggleWebview', true);
+		});
+
+		return () => window.api.removeAllListeners('toggleExtensionRadialReply');
+	}, [navigate]);
+
 	return (
-		<>
-			<div className="h-20 bg-slate-400 flex justify-center items-center">
-				<form onSubmit={handleSubmit}>
-					<input
-						className="h-10 w-96 pl-4 rounded-xl"
-						onInput={(e) => setInput(e.target.value)}
-						placeholder="Typ een website om te zoeken"
-					></input>
-				</form>
-			</div>
-		</>
+		<div className="grid h-full grid-rows-[max-content,1fr]">
+			<Toolbar />
+			<Routes>
+				<Route path="/" element={<Dashboard />} />
+				<Route path="settings/*" element={<Settings />}></Route>
+			</Routes>
+		</div>
 	);
 };
 

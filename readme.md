@@ -1,7 +1,9 @@
 # ALS-browser
 
 Basic starter browser where you can search on Google.\
-This browser is made with Vite, Electron, React and Tailwind.CSS!
+This browser is made with Vite, Electron, React and Tailwind.CSS
+
+NOTE: Leave the electron-builder version on `^23.0.3`, updating to a newer version will break the build for Mac.
 
 ## Available Scripts
 

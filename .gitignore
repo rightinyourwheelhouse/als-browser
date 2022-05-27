@@ -10,8 +10,17 @@ lerna-debug.log*
 node_modules
 dist
 
+.env
+.env.development
+.env.production
+
+electron-builder.yml
+
 .idea
 .DS_Store
 
+electron-builder.yml
+
 out/
 app/build
+.vscode/settings.json
