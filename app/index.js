@@ -5,6 +5,7 @@ const { autoUpdater } = require('electron-updater');
 const fs = require('fs');
 
 const isDev = require('electron-is-dev');
+const { log } = require('console');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) app.quit();
@@ -135,24 +136,6 @@ app.whenReady().then(() => {
 	} else {
 		createLoadingScreen();
 	}
-
-	// detect first launch
-	const firstTimeFilePath = path.resolve(app.getPath('userData'), '.first-time');
-	let isFirstTime;
-	try {
-		fs.closeSync(fs.openSync(firstTimeFilePath, 'wx'));
-		isFirstTime = true;
-	} catch (err) {
-		if (err.code === 'EEXIST') {
-			isFirstTime = false;
-		} else {
-			throw err;
-		}
-	}
-
-  if (isFirstTime) {
-    mainWindow.webContents.send('tutorialReply', true);
-  }
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -310,6 +293,12 @@ ipcMain.on('alert-message-history', (event, arg) => {
 	view.webContents.send('alert-message-historyReply', arg);
 });
 
-ipcMain.on('tutorial', (event, arg) => {
-  mainWindow.webContents.send('tutorialReply', arg);
+ipcMain.on('tutorial', () => {
+  const firstTimeFilePath = path.resolve(app.getPath('userData'), '.first-time');
+  try {
+    fs.closeSync(fs.openSync(firstTimeFilePath, 'wx'));
+    mainWindow.webContents.send('renderTutorial');		
+  } catch (err) {
+    console.log(err);
+  }
 });

@@ -68,7 +68,7 @@ const FAQTile = ({ title, children, type }) => {
 					/>
 				)}
 			</div>
-			<p>{children}</p>
+			{children}
 		</div>
 	);
 };
