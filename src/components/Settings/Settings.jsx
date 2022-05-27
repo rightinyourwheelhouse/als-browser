@@ -8,6 +8,7 @@ import FeedbackSetting from './components/Pages/FeedbackSetting';
 
 import AccountSetting from './components/Pages/AccountSetting';
 import HistorySetting from './components/Pages/HistorySetting';
+import FAQSetting from './components/Pages/FAQSetting';
 import AboutSetting from './components/Pages/AboutSetting';
 import Title from '../Typography/Title';
 
@@ -16,6 +17,7 @@ import { UserIcon } from '@heroicons/react/outline';
 import { PuzzleIcon } from '@heroicons/react/outline';
 import { BookOpenIcon } from '@heroicons/react/outline';
 import { InformationCircleIcon } from '@heroicons/react/outline';
+import { QuestionMarkCircleIcon } from '@heroicons/react/outline';
 
 import { db } from '../../utils/FirebaseConfig';
 import { useAuth } from '../../contexts/AuthContextProvider';
@@ -73,6 +75,13 @@ const Settings = () => {
 			component: HistorySetting,
 			icon: BookOpenIcon,
 		},
+
+    {
+      tabName: 'FAQ',
+      link: 'FAQ',
+      component: FAQSetting,
+      icon: QuestionMarkCircleIcon,
+    },
 
 		{
 			tabName: 'Over Brainweb',
@@ -141,6 +150,7 @@ const Settings = () => {
 					/>
 					<Route path="extension" element={<ExtensionSetting />} />
 					<Route path="history" element={<HistorySetting />} />
+					<Route path="FAQ" element={<FAQSetting />} />
 					<Route path="about" element={<AboutSetting />} />
 				</Routes>
 			</div>
