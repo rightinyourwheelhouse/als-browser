@@ -132,10 +132,10 @@ const Tutorial = ({ setTutorial }) => {
 					<></>
 				)}
 				<div className="flex flex-grow items-center justify-center">
-					{content.map((item) => {
+					{content.map((item, index) => {
 						return (
 							// eslint-disable-next-line react/jsx-key
-							<div
+							<div key={index}
 								className={`flex h-5 w-5 cursor-pointer items-center justify-center transition duration-300 ease-in-out ${
 									item.step == step ? 'bg-skin-medium' : 'bg-black opacity-[0.22]'
 								} mx-0.5 rounded-full`}
@@ -143,7 +143,7 @@ const Tutorial = ({ setTutorial }) => {
 									setStep(item.step);
 								}}
 							>
-								<p className={`text-xs ${item.step == step ? 'text-black' : 'text-white'}`}>{item.step}</p>
+								<p key={index} className={`text-xs ${item.step == step ? 'text-black' : 'text-white'}`}>{item.step}</p>
 							</div>
 						);
 					})}

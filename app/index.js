@@ -5,7 +5,6 @@ const { autoUpdater } = require('electron-updater');
 const fs = require('fs');
 
 const isDev = require('electron-is-dev');
-const { log } = require('console');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) app.quit();
