@@ -1,7 +1,6 @@
 const path = require('path');
 const { app, BrowserWindow, BrowserView, ipcMain, nativeTheme } = require('electron');
 const { autoUpdater } = require('electron-updater');
-// const fetch = require('cross-fetch');
 const fs = require('fs');
 const { ElectronBlocker } = require('@cliqz/adblocker-electron');
 
