@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContextProvider';
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
-import { db } from '../utils/FirebaseConfig';
 import { FPGrowth } from 'node-fpgrowth';
+import useHistory from './useHistory';
 
 const segmentHistory = (history) => {
 	let sequence = [];
@@ -46,13 +45,14 @@ const filterFrequentItemSets = (frequentItemSets, history) => {
 
 export default function useFPGrowth() {
 	const { user } = useAuth();
+	const history = useHistory();
 
 	const [fpGrowthSuggestion, setFpGrowthSuggestion] = useState([]);
 
 	useEffect(() => {
 		if (!user) return;
 
-		const fpGrowthInit = async (history) => {
+		const fpGrowthInit = async () => {
 			let fpGrowth = new FPGrowth(0.1);
 			const itemSet = await fpGrowth.exec(segmentHistory(history));
 			const suggestedNodes = filterFrequentItemSets(itemSet, history);
@@ -60,24 +60,8 @@ export default function useFPGrowth() {
 			setFpGrowthSuggestion(suggestedNodes);
 		};
 
-		const queryRef = query(collection(db, 'users', `${user.uid}/history`), orderBy('visitTime', 'desc'));
-
-		const unsubscribe = onSnapshot(queryRef, (snapshot) => {
-			let historyArray = [];
-			snapshot.forEach((doc) => {
-				const data = doc.data();
-				const historyData = {
-					visitTime: data.visitTime,
-					title: data.title,
-					url: data.url,
-					favicon: data.favicon,
-				};
-				historyArray.push(historyData);
-			});
-			fpGrowthInit(historyArray);
-		});
-		return () => unsubscribe();
-	}, [user]);
+		fpGrowthInit();
+	}, [user, history]);
 
 	return fpGrowthSuggestion;
 }
