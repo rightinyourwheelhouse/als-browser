@@ -174,11 +174,19 @@ const ExtensionSetting = () => {
 				/>
 			</SettingTile>
 
-			<SettingTile infoText="Schakel muis predictie aan of uit.">
+			<SettingTile infoText="Schakel muispredictie aan of uit.">
 				<CustomSwitch
 					title="Muis predictie"
 					name="mousePrediction"
 					state={extensionStates.mousePrediction}
+					handleOnChange={handleOnChange}
+				/>
+			</SettingTile>
+			<SettingTile infoText="Schakel adblocker aan of uit.">
+				<CustomSwitch
+					title="Adblocker"
+					name="adBlocker"
+					state={extensionStates.adBlocker}
 					handleOnChange={handleOnChange}
 				/>
 			</SettingTile>

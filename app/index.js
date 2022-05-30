@@ -1,7 +1,11 @@
-// electron/electron.js
 const path = require('path');
 const { app, BrowserWindow, BrowserView, ipcMain, nativeTheme } = require('electron');
 const { autoUpdater } = require('electron-updater');
+// const fetch = require('cross-fetch');
+const fs = require('fs');
+const { ElectronBlocker } = require('@cliqz/adblocker-electron');
+
+const blocker = ElectronBlocker.parse(fs.readFileSync('easylist.txt', 'utf-8'));
 
 const isDev = require('electron-is-dev');
 
@@ -11,6 +15,7 @@ if (require('electron-squirrel-startup')) app.quit();
 let loadingScreen;
 let mainWindow;
 let view;
+let blockerBool;
 
 function sendLoadingStatusToWindow(text) {
 	loadingScreen.webContents.send('message', text);
@@ -102,7 +107,9 @@ const createWindow = () => {
 
 function createBrowserView() {
 	view = new BrowserView({
-		nodeIntegration: true,
+		nodeIntegration: false,
+		contextIsolation: false,
+		nodeIntegrationInSubFrames: true,
 		webPreferences: {
 			preload: path.join(__dirname, 'scripts/preload.js'),
 		},
@@ -253,7 +260,20 @@ ipcMain.on('beforeunload', () => {
 
 ipcMain.on('extensionStates', (event, payload) => {
 	view.webContents.send('extensionStatesReply', payload);
+	if (payload.adBlocker != blockerBool) {
+		setBlocker(payload.adBlocker, blockerBool);
+		blockerBool = payload.adBlocker;
+	}
 });
+
+const setBlocker = (bool, previousState) => {
+	if (bool) {
+		blocker.enableBlockingInSession(view.webContents.session);
+	} else {
+		// This prevents error that disableBlockingInSession gives error
+		if (previousState) blocker.disableBlockingInSession(view.webContents.session);
+	}
+};
 
 ipcMain.on('getExtensionStates', () => {
 	mainWindow.webContents.send('getExtensionStatesReply');
