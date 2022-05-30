@@ -1,15 +1,13 @@
-
 //import statement for tensorflow
 const tf = require('@tensorflow/tfjs');
 const tfnode = require('@tensorflow/tfjs-node');
+const { mouse , Point, straightTo} = require("@nut-tree/nut-js");
 
 
 /**
  * BUGS/PROBLEMS
  * everything is in this file, meaning the model needs to be loaded again on every page, needs to be refactored to background workers.
  * curretly an old lstm model is used, needs to be updated(not important right now)
- * buttonsnapper is replace by shortcut button, which links to predicted button
- * shortcut button is removed when no button is nearby or when the traveled distance is too short.
  */
 
 
@@ -18,21 +16,15 @@ const tfnode = require('@tensorflow/tfjs-node');
  let elements = [];
  let clickableItemsFiltered = [];
  //enabled is hardcoded, need to be option
- let enabled = false;
+ let enabled = true;
  //variable to save the last element that was closest to the prediction
  let previousClosestElement = null;
  let previousClosestObject;
- //the button that propagates click events to the original event
- let shortcutButton;
- let shortcutLocationInterval = 3;
- let shortcutLocationCounter = 0;
  let foundCloseElement = false;
 
 // array for saving a [windowsize, features] array with the last mouse positions 
 let queue = [];
 
-//array with the last full input set sent to service_worker
-//array with the last returned prediction by service_worker
 //are used for drawing the squares that show current work
 let lastInput = [];
 let lastPrediction = [];
@@ -61,6 +53,7 @@ let features = 2;
 let timeOut;
 let working = false;
 let mouseTrackingActive =true;
+let visualsation = false
 
 //Canvas used for drawing input and prediction squares
 let drawingCanvas;
@@ -82,7 +75,6 @@ const registerListeners = () => {
  * register mouse movement in intervals and save it
  * also saves windowdimensions
  * if the window dimensions change, the canvas is deleted and redrawn
- * the shortcut button is also moved every few timesteps
  */
 const handleMouseMove = (e) => {
 	if (pageX != window.innerWidth ||  pageY !=window.innerHeight){
@@ -98,11 +90,6 @@ const handleMouseMove = (e) => {
 	clientY = e.clientY;
 	pageX = window.innerWidth;
 	pageY = window.innerHeight;
-	shortcutLocationCounter ++;
-	if( shortcutLocationCounter >= shortcutLocationInterval ){
-		moveShortCutButton();
-		shortcutLocationCounter = 0;
-	}
 	clearTimeout(timeOut);
 
 	if (mouseTrackingActive) {
@@ -202,16 +189,19 @@ function createCanvas(){
  * canvas is made empty when a new set of input-prediction is given
  */
 function drawprediction(inputs,predictions){
-	let canvasContext = drawingCanvas.getContext("2d")
-	canvasContext.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
-	inputs.forEach(input=> {
-		point(input[0], input[1],canvasContext,false)
+	if(visualsation === true){
+		let canvasContext = drawingCanvas.getContext("2d")
+		canvasContext.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+		inputs.forEach(input=> {
+			point(input[0], input[1],canvasContext,false)
 		
 	});
 	predictions[0].forEach(singlePred => {
-		point(singlePred [0], singlePred [1],canvasContext,true)
+			point(singlePred [0], singlePred [1],canvasContext,true)
 		
 	});
+	}
+	
 }
 /**
  * 
@@ -237,11 +227,7 @@ function point(x_co, y_co, cont, predBool){
 	cont.stroke();
   }
 
-/**
- * Get the individual positions of all clickable items these are absolute pixel positions.
- * also removes and recreates the canvas that visualises the predictions, otherwise it does not follow the users scrollbehaviour
- * ClickableItems filters containes actual html object, shortcut clicks are propagated through the shortcut button to these objects
- */
+
 const getAllClickableItems = () => {
 	if (drawingCanvas){
 		drawingCanvas.remove();
@@ -274,15 +260,17 @@ const getAllClickableItems = () => {
  * 
  * @param {[windowSize,features] } prediction contains the mouse cursor prediction made by the aiModel
  * checks which clickable html elements lies closest to the end point of the prediction(windowsize - 1)
- * Then checks if there are qny nearby html elements, if there are, it links the shortcut button to this element.
  */
-const checkCloseElements = (prediction) => {
+const checkCloseElements = async (prediction) => {
 	let xPosPredictionEndPoint = prediction[0][windowSize-1][0] * window.innerWidth 
 	let yPosPredictionEndPoint = prediction[0][windowSize-1][1] * window.innerHeight 
-	let canvasContext = drawingCanvas.getContext("2d")
-	canvasContext.fillStyle = "#0000FF";
-	canvasContext.fillRect(xPosPredictionEndPoint,yPosPredictionEndPoint,9,9);
-	canvasContext.stroke();
+	if(visualsation === true){
+		let canvasContext = drawingCanvas.getContext("2d")
+		canvasContext.fillStyle = "#0000FF";
+		canvasContext.fillRect(xPosPredictionEndPoint,yPosPredictionEndPoint,9,9);
+		canvasContext.stroke();
+	}
+	
 	
 	let closestDistance;
 	let closestElement;
@@ -306,7 +294,7 @@ const checkCloseElements = (prediction) => {
 			if (!closestDistance) closestDistance = distance;
 			if (!previousClosestElement) previousClosestElement = element;
 			// Update everything when condition is met
-			if (distance < closestDistance && distance < 150 && enabled) {
+			if (distance < closestDistance && distance < 100 && enabled) {
 				foundCloseElement = true
 				closestDistance = distance;
 				closestElement = element;
@@ -317,65 +305,59 @@ const checkCloseElements = (prediction) => {
 		}
 	}
 	
-	if (closestElement.tag && foundCloseElement) {
-		closestElement.tag.style.cssText = `
-		background-color:#52C287;
-		color:white;
-		z-index: 99999;
-		`;
+	if (closestElement.tag && foundCloseElement ) {
+		if(visualsation === true){
+			closestElement.tag.style.cssText = `
+			background-color:#52C287;
+			color:white;
+			z-index: 99999;
+			`;
+		}
 		previousClosestElement = closestElement;
-		moveShortCutButton()	
+		await makeGravityWell()	
 	}else{
 		removeProperties(closestElement, 'background-color', 'color', 'transform', 'z-index');}
 	if (!enabled) removeProperties(closestElement, 'background-color', 'color', 'transform', 'z-index');
 };
 
-/*
- * moves the shortcut button to the cursor position
- * if the travled distance is to small(slow precise movement or slowing down to destination), the shortcut button is removed and deactivated
- * 
- */
-function moveShortCutButton(){
-	shortcutButton.style.cssText = `
-	background-color:green;
-	color:white;
-	z-index: 99999;	
-	`;	
-	shortcutButton.style.top = clientY + windowY - 5 +"px"
-	shortcutButton.style.left = clientX + windowX- 5 +"px"
-	shortcutButton.style.position = "absolute";
-	if (queue.length == 10){
-		let euclideanDistance = Math.sqrt(Math.pow(queue[9][0] - queue[0][0], 2) +  
-		   Math.pow(queue[9][1] - queue[0][1], 2));
-		   
-	   if (euclideanDistance < 0.05 || foundCloseElement == false){
-		   shortcutButton.disabled = true;
-		   shortcutButton.style.visibility = 'hidden';
-		   removeProperties(previousClosestElement, 'background-color', 'color', 'transform', 'z-index');
+async function makeGravityWell(){
+	//check if mouse is moving towards item
+	let element = previousClosestElement
+	elementPosMiddle = [element.left + element.width / 2 , element.top + element.height / 2]
+	let distance = Math.sqrt(Math.pow(clientX-elementPosMiddle[0], 2) + Math.pow(clientY - elementPosMiddle[1], 2));
+	let target_X = undefined
+	let target_Y = undefined
+	let borderWidth = (window.outerWidth - window.innerWidth)/2
+	let heightOffset = window.outerHeight - window.innerHeight - borderWidth
+	if (distance < 100){
+		if(clientX > elementPosMiddle[0] && clientY > elementPosMiddle[1] ){
+			target_X = clientX -5
+			target_Y = clientY  + heightOffset - 8
+			//console.log("bottom right")
+		}
+		if(clientX < elementPosMiddle[0] && clientY > elementPosMiddle[1] ){
+			target_X = clientX + 5
+			target_Y = clientY  + heightOffset - 8
+			//console.log("bottom left")
+		}
+		if(clientX < elementPosMiddle[0] && clientY < elementPosMiddle[1] ){
+			target_X = clientX + 5
+			target_Y = clientY  + heightOffset + 25
+			//console.log("top left")
+		}
+		if(clientX > elementPosMiddle[0] && clientY < elementPosMiddle[1] ){
+			target_X = clientX - 5
+			target_Y = clientY + heightOffset + 25
+			//console.log("top right")
+		}
+		if(target_X != undefined && target_Y != undefined){
+			const target = new Point(target_X, target_Y)
+			mouse.config.mouseSpeed = 2000
+			await mouse.move(straightTo(target))
+		}
 		
-	   }else{
-		   shortcutButton.disabled = false;
-		   if (previousClosestElement.title === "" ){
-			shortcutButton.textContent = 'shortcut'
-		   }
-		   if ( previousClosestElement.title.length > 30){
-			shortcutButton.textContent = previousClosestElement.title.slice(0, 30)
-		   }
-		   if ( previousClosestElement.title.length <= 30 && previousClosestElement.title.length > 3 ){
-			shortcutButton.textContent = previousClosestElement.title
-		   }
-		   else{shortcutButton.textContent = 'shortcut' }
-	   }
-	   
-   }
-}
-
-/**
- * propagates the clicks of the shortcut button to the last object that passed the closeobject events
- */
-function shortCutClick(){
-	previousClosestObject.click()
-
+	}
+	
 }
 
 const removeProperties = (element, ...properties) => {
@@ -443,72 +425,6 @@ const removeProperties = (element, ...properties) => {
 	}
   }  
   
-  function createButtonStyle(){
-	var styles =   `.btn41-43 {
-		padding: 10px 25px;
-		font-family: "Roboto", sans-serif;
-		font-weight: 500;
-		background: transparent;
-		outline: none !important;
-		cursor: pointer;
-		transition: all 0.3s ease;
-		position: relative;
-		display: inline-block;
-	  }
-	  
-	  .btn-42 {
-		border: 2px solid rgb(255, 255, 255);
-		z-index: 1;
-		color: white;
-	  }
-	  
-	  .btn-42:after {
-		position: absolute;
-		content: "";
-		width: 100%;
-		height: 0;
-		bottom: 0;
-		left: 0;
-		z-index: -1;
-		background: rgb(255, 255, 255);
-		transition: all 0.3s ease;
-	  }
-	  
-	  .btn-42:hover {
-		color: rgb(0, 0, 0);
-	  }
-	  
-	  .btn-42:hover:after {
-		top: 0;
-		height: 100%;
-	  }
-	  
-	  .btn-42:active {
-		top: 2px;
-	  }`
-	var styleSheet = document.createElement("style")
-	styleSheet.innerText = styles
-	document.head.appendChild(styleSheet)
-  }
-function createShortCutButton(){
-	
-	shortcutButton = document.createElement('button')
-	//shortcutButton.style.class = "btn41-43 btn-42"
-	shortcutButton.id = 'shortcutButton'
-	shortcutButton.onclick = shortCutClick
-	shortcutButton.position = "absolute";
-	shortcutButton.style.top = 0+"px";
-	shortcutButton.style.left = 0+"px"
-	shortcutButton.style.position = "absolute";
-	shortcutButton.width = 20;
-	shortcutButton.height = 20;
-	shortcutButton.zIndex = 99999;
-	shortcutButton.textContent = 'shortcut'
-	shortcutButton.style.background = 'blue'
-	shortcutButton.disabled = false;
-	const bodyElement = document.getElementsByTagName("body")[0];
-	bodyElement.appendChild(shortcutButton)
-}  
 /**
  * initialising the extension page
  * first get all clickable items
@@ -518,8 +434,6 @@ function createShortCutButton(){
 const init = () => {
   	console.log("start up mouse prediction") 
 	clickableItems = document.querySelectorAll('button ,a ,g-menu');  
-	createButtonStyle()  
-	createShortCutButton()
 	registerListeners();
 	startInterval();
 	createCanvas();
@@ -531,5 +445,3 @@ const pointerPredictor= new PointerPredictor();
 document.addEventListener("DOMContentLoaded", function(){
     init()
 });
-
-

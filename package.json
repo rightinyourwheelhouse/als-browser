@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^1.0.6",
+    "@nut-tree/nut-js": "^2.1.1",
     "@tensorflow/tfjs-node": "^3.16.0",
     "cross-env": "^7.0.3",
     "electron-is-dev": "^2.0.0",
