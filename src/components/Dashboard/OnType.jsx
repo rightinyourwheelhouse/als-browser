@@ -103,7 +103,7 @@ const OnType = ({ params }) => {
 
 	return (
 		<div>
-			<Clock className="mt-8 h-10 text-center" />
+			<Clock className="mt-4 h-10 text-center" />
 
 			<div className="m-center mt-10 flex w-3/4 flex-col">
 				<Title>Zoeken</Title>
