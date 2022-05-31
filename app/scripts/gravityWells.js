@@ -7,7 +7,7 @@ const { mouse , Point, straightTo} = require("@nut-tree/nut-js");
 /**
  * BUGS/PROBLEMS
  * everything is in this file, meaning the model needs to be loaded again on every page, needs to be refactored to background workers.
- * curretly an old lstm model is used, needs to be updated(not important right now)
+ * curretly an old lstm model is used, needs to be updated, is done in 5 min
  */
 
 
@@ -19,7 +19,6 @@ const { mouse , Point, straightTo} = require("@nut-tree/nut-js");
  let enabled = true;
  //variable to save the last element that was closest to the prediction
  let previousClosestElement = null;
- let previousClosestObject;
  let foundCloseElement = false;
 
 // array for saving a [windowsize, features] array with the last mouse positions 
@@ -44,11 +43,13 @@ let interval;
 // we only send the queue with x and y coordinates every "PredictionInterval" to the service_worker
 // this to limit load + making predictions every 0.003 seconds is useless+ might give lot's of false positives with slow mouse movements
 // features => X,Y + possible other features, model dependant
-let PredictionInterval = 5;
+let PredictionInterval = 2;
 let PredictionIntervalCounter = 0;
 let windowSize = 10;
 let features = 2;
 
+// decides the strength at which te cursor is pulled towards buttons
+let magnetstrength = 2
 
 let timeOut;
 let working = false;
@@ -320,40 +321,75 @@ const checkCloseElements = async (prediction) => {
 	if (!enabled) removeProperties(closestElement, 'background-color', 'color', 'transform', 'z-index');
 };
 
+
+/**
+ * this function creates a gravity well around the element that is closest to the endpoint of the prediction
+ * it slows/ moves the cursor based on the distance to the object=> farther away greater gravity, closer lower gravity/ smaller mouse translations
+ * the global variabel magnetstrength increases or decrease the strength of the magnetic / gravitywell effect
+ * if the mouse is on top of the button(aka not in any of the checked zones around it), nothing happens
+ */
+
+
 async function makeGravityWell(){
-	//check if mouse is moving towards item
+	
 	let element = previousClosestElement
 	elementPosMiddle = [element.left + element.width / 2 , element.top + element.height / 2]
 	let distance = Math.sqrt(Math.pow(clientX-elementPosMiddle[0], 2) + Math.pow(clientY - elementPosMiddle[1], 2));
 	let target_X = undefined
 	let target_Y = undefined
-	let borderWidth = (window.outerWidth - window.innerWidth)/2
-	let heightOffset = window.outerHeight - window.innerHeight - borderWidth
+	let heightOffset = window.outerHeight - window.innerHeight - ((window.outerWidth - window.innerWidth)/2)
+	let diffX = Math.min(10, ( 0 + 1 * ((Math.abs(elementPosMiddle[0]-clientX))/100) )  )
+	let diffY = Math.min(10, ( 0 + 1 * ((Math.abs(elementPosMiddle[1]-clientY))/100) ) )
 	if (distance < 100){
-		if(clientX > elementPosMiddle[0] && clientY > elementPosMiddle[1] ){
-			target_X = clientX -5
-			target_Y = clientY  + heightOffset - 8
+		if(clientX > element.left+element.width   && clientY > element.top+element.height ){
+			target_X = clientX - magnetstrength* 2 * (1 + diffX  ) 		
+			target_Y = clientY  + heightOffset + 9 - magnetstrength*2*(1 + diffY  ) 
 			//console.log("bottom right")
 		}
-		if(clientX < elementPosMiddle[0] && clientY > elementPosMiddle[1] ){
-			target_X = clientX + 5
-			target_Y = clientY  + heightOffset - 8
+		else if(clientX < element.left && clientY > element.top+element.height ){
+			target_X = clientX + magnetstrength * 2 * (1 + diffX  ) 
+			target_Y = clientY  + heightOffset + 9 - magnetstrength*2*(1 + diffY ) 
 			//console.log("bottom left")
 		}
-		if(clientX < elementPosMiddle[0] && clientY < elementPosMiddle[1] ){
-			target_X = clientX + 5
-			target_Y = clientY  + heightOffset + 25
+		else if(clientX < element.left && clientY < element.top){
+			target_X = clientX + magnetstrength*2*(1 + diffX  ) 
+			target_Y = clientY  + heightOffset + 9 +  magnetstrength*2*(1 + diffY  ) 
 			//console.log("top left")
 		}
-		if(clientX > elementPosMiddle[0] && clientY < elementPosMiddle[1] ){
-			target_X = clientX - 5
-			target_Y = clientY + heightOffset + 25
+		else if(clientX > element.left+element.width && clientY < element.top ){
+			target_X = clientX - magnetstrength*2*(1 + diffX  ) 
+			target_Y = clientY  + heightOffset + 9 +  magnetstrength*2*(1 + diffY  ) 
 			//console.log("top right")
 		}
+		else if (clientX < element.left+element.width && clientY < element.top ){
+			target_X = clientX  
+			target_Y = clientY  + heightOffset + 9 +  magnetstrength*2*(1 + diffY  ) 
+			//console.log("top middle")
+		}
+		else if (clientX < element.left+element.width && clientY > element.top+element.height ){
+			target_X = clientX  
+			target_Y = clientY  + heightOffset + 9 - magnetstrength*2*(1 + diffY  ) 
+			//console.log("bottom middle")
+		}
+		else if (clientX < element.left && clientY > element.top && clientY < element.top+element.height){
+			target_X = clientX + magnetstrength*2*(1 + diffX  )
+			target_Y = clientY + heightOffset + 9
+			//console.log("left middle")
+		}
+		else if (clientX > element.left+element.width && clientY > element.top && clientY < element.top+element.height){
+			target_X = clientX  - magnetstrength*2*(1 + diffX  ) 
+			target_Y = clientY + heightOffset + 9
+			//console.log("right middle")
+		}
+		else{}
+
 		if(target_X != undefined && target_Y != undefined){
 			const target = new Point(target_X, target_Y)
-			mouse.config.mouseSpeed = 2000
+			mouse.config.mouseSpeed = 2000000000
 			await mouse.move(straightTo(target))
+		}
+		else{
+			//console.log('ontop of button')
 		}
 		
 	}
@@ -425,12 +461,6 @@ const removeProperties = (element, ...properties) => {
 	}
   }  
   
-/**
- * initialising the extension page
- * first get all clickable items
- * initialise listeners
- * start the mouse pointer detection system/interval
- */
 const init = () => {
   	console.log("start up mouse prediction") 
 	clickableItems = document.querySelectorAll('button ,a ,g-menu');  
