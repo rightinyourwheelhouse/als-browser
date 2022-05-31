@@ -179,7 +179,6 @@ ipcMain.on('searchURL', (event, url) => {
 	}
 
 	view.webContents.loadURL(url);
-	console.log(url);
 
 	mainWindow.send('historyReply', url);
 

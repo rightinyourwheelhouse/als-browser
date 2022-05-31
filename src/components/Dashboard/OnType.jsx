@@ -30,7 +30,6 @@ const googleSearch = async (list, searchInput) => {
 
 	const googleSearchItems = [];
 	if (data[1].length !== 0) {
-		console.log(data);
 		for (let i = 0; i < data.length; i++) {
 			let title = data[1][i];
 			let url = data[2][i];
