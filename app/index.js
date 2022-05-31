@@ -179,6 +179,9 @@ ipcMain.on('searchURL', (event, url) => {
 	}
 
 	view.webContents.loadURL(url);
+	console.log(url);
+
+	mainWindow.send('historyReply', url);
 
 	// When dashboard is loaded, set the browserView back
 	if (view.getBounds().width === 0 && view.getBounds().height === 0)

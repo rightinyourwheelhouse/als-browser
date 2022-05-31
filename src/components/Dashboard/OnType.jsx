@@ -29,20 +29,23 @@ const googleSearch = async (list, searchInput) => {
 	const data = await response.json();
 
 	const googleSearchItems = [];
-	for (let i = 0; i < data.length; i++) {
-		let title = data[1][i];
-		let url = data[2][i];
+	if (data[1].length !== 0) {
+		console.log(data);
+		for (let i = 0; i < data.length; i++) {
+			let title = data[1][i];
+			let url = data[2][i];
 
-		// When a title and url exists, the title is the URL and the url is the title, so we need to swap them....
-		if (title.length > 0 && url.length > 0) {
-			const baseurl = title.split('/').slice(2)[0];
-			const favicon = `https://s2.googleusercontent.com/s2/favicons?sz=128&domain=${baseurl}`;
+			// When a title and url exists, the title is the URL and the url is the title, so we need to swap them....
+			if (title?.length > 0 && url?.length > 0) {
+				const baseurl = title.split('/').slice(2)[0];
+				const favicon = `https://s2.googleusercontent.com/s2/favicons?sz=128&domain=${baseurl}`;
 
-			// This prevents that two hostnames with the same URL are displayed
-			const isInList = list.some((item) => item.hostname === baseurl);
-			if (!isInList) googleSearchItems.push({ url: baseurl, title: url, favicon: favicon });
-		} else {
-			googleSearchItems.push({ title, url });
+				// This prevents that two hostnames with the same URL are displayed
+				const isInList = list.some((item) => item.hostname === baseurl);
+				if (!isInList) googleSearchItems.push({ url: baseurl, title: url, favicon: favicon });
+			} else {
+				googleSearchItems.push({ title, url });
+			}
 		}
 	}
 	return googleSearchItems;
