@@ -110,19 +110,27 @@ const OnType = ({ params }) => {
 
 			<div className="m-center mt-10 flex w-3/4 flex-col">
 				<Title>Zoeken</Title>
-				{suggestions.slice(0, 3).map((suggestion, index) => {
-					return (
-						<BigTile
-							key={index}
-							size="w-7 h-7"
-							title={suggestion?.item?.title || suggestion.title}
-							img={suggestion?.item?.favicon || suggestion.favicon || 'https://www.google.com/favicon.ico'}
-							description={suggestion?.item?.description || ''}
-							url={suggestion?.item?.hostname || suggestion.url}
-							hiddenUrl={suggestion.title || suggestion.url}
-						/>
-					);
-				})}
+				{suggestions.length > 0 ? (
+					suggestions.slice(0, 3).map((suggestion, index) => {
+						if (suggestion.title) {
+							return (
+								<BigTile
+									key={index}
+									size="w-7 h-7"
+									title={suggestion?.item?.title || suggestion.title}
+									img={suggestion?.item?.favicon || suggestion.favicon || 'https://www.google.com/favicon.ico'}
+									description={suggestion?.item?.description || ''}
+									url={suggestion?.item?.hostname || suggestion.url}
+									hiddenUrl={suggestion.title || suggestion.url}
+								/>
+							);
+						}
+					})
+				) : (
+					<p className="mt-4 text-lg font-light">
+						Geen zoekresultaten gevonden. Druk op enter om te zoeken op Google...
+					</p>
+				)}
 			</div>
 		</div>
 	);
