@@ -1,8 +1,5 @@
-import { useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContextProvider';
-import useLocalStorageState from './useLocalStorageState';
-import { db } from '../utils/FirebaseConfig';
-import { query, collection, onSnapshot, orderBy } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import useHistory from './useHistory';
 
 const getPartOfDay = (now) => {
 	const hours = now.getHours();
@@ -25,95 +22,75 @@ const getPartOfWeek = (now) => {
 };
 
 export default function useFrecency() {
-	const { user } = useAuth();
-	const [history, setHistory] = useLocalStorageState('history', []);
+	const history = useHistory();
+	const [suggestions, setSuggestions] = useState([]);
+
 
 	useEffect(() => {
-		if (!user) return;
+		let now = new Date();
+		const partOfDayNow = getPartOfDay(now);
+		const partOfWeekNow = getPartOfWeek(now);
 
-		const queryRef = query(collection(db, 'users', `${user.uid}/history`), orderBy('visitTime', 'desc'));
+		now = now.getTime();
+		const hour = 1000 * 60 * 60;
+		const day = 24 * hour;
 
-		const unsubscribe = onSnapshot(queryRef, (snapshot) => {
-			let historyArray = [];
-			snapshot.forEach((doc) => {
-				const data = doc.data();
-				const historyData = {
-					id: doc.id,
-					visitTime: data.visitTime,
-					title: data.title,
-					url: data.url,
-					favicon: data.favicon,
-				};
-				historyArray.push(historyData);
+		// This groupes all the documents by title
+		const groupedHistory = history.reduce((acc, cur) => {
+			acc[cur.title] = acc[cur.title] || [];
+			acc[cur.title].push(cur);
+			return acc;
+		}, {});
+
+		// This loop gives a score to each title based on visittime, visitcount, ...
+		const scoreArray = [];
+		for (let key in groupedHistory) {
+			let score = 0;
+
+			groupedHistory[key].forEach((history) => {
+				const { visitTime } = history;
+				let date = new Date(visitTime);
+				let partOfDay = getPartOfDay(date);
+				let partOfWeek = getPartOfWeek(date);
+
+				if (partOfDay === partOfDayNow) {
+					score += 100;
+				} else if (partOfWeek === partOfWeekNow) {
+					score += 50;
+				} else if (visitTime >= now - day) {
+					score += 80;
+				} else if (visitTime >= now - 7 * day) {
+					score += 60;
+				} else if (visitTime >= now - 14 * day) {
+					score += 40;
+				} else if (visitTime >= now - 21 * day) {
+					score += 20;
+				}
 			});
-			setHistory(historyArray);
-		});
-		return () => unsubscribe();
-	}, [user, setHistory]);
 
-	let now = new Date();
-	const partOfDayNow = getPartOfDay(now);
-	const partOfWeekNow = getPartOfWeek(now);
+			scoreArray.push([key, score]);
+		}
 
-	now = now.getTime();
-	const hour = 1000 * 60 * 60;
-	const day = 24 * hour;
-
-	// This groupes all the documents by title
-	const groupedHistory = history.reduce((acc, cur) => {
-		acc[cur.title] = acc[cur.title] || [];
-		acc[cur.title].push(cur);
-		return acc;
-	}, {});
-
-	// This loop gives a score to each title based on visittime, visitcount, ...
-	const scoreArray = [];
-	for (let key in groupedHistory) {
-		let score = 0;
-
-		groupedHistory[key].forEach((history) => {
-			const { visitTime } = history;
-			let date = new Date(visitTime);
-			let partOfDay = getPartOfDay(date);
-			let partOfWeek = getPartOfWeek(date);
-
-			if (partOfDay === partOfDayNow) {
-				score += 100;
-			} else if (partOfWeek === partOfWeekNow) {
-				score += 50;
-			} else if (visitTime >= now - day) {
-				score += 80;
-			} else if (visitTime >= now - 7 * day) {
-				score += 60;
-			} else if (visitTime >= now - 14 * day) {
-				score += 40;
-			} else if (visitTime >= now - 21 * day) {
-				score += 20;
-			}
+		const sortedScoreArray = scoreArray.sort((a, b) => {
+			return b[1] - a[1];
 		});
 
-		scoreArray.push([key, score]);
-	}
+		const scoreObject = sortedScoreArray.slice(0, 3).reduce((acc, cur) => ({ ...acc, [cur[0]]: cur[1] }), {});
 
-	const sortedScoreArray = scoreArray.sort((a, b) => {
-		return b[1] - a[1];
-	});
+		const suggestionArray = [];
 
-	const scoreObject = sortedScoreArray.slice(0, 3).reduce((acc, cur) => ({ ...acc, [cur[0]]: cur[1] }), {});
+		// There are multiple historyItems with the same title. If you use the return false, this will stop searching on this key. With the return true, the every function will continue.
+		for (let key in scoreObject) {
+			history.every((historyItem) => {
+				if (key === historyItem.title) {
+					suggestionArray.push(historyItem);
+					return false;
+				}
+				return true;
+			});
+		}
+		setSuggestions(suggestionArray);
+	}, [history]);
 
-	const suggestionArray = [];
-
-	// There are multiple historyItems with the same title. If you use the return false, this will stop searching on this key. With the return true, the every function will continue.
-	for (let key in scoreObject) {
-		history.every((historyItem) => {
-			if (key === historyItem.title) {
-				suggestionArray.push(historyItem);
-				return false;
-			}
-			return true;
-		});
-	}
-
-
-	return suggestionArray;
+	return suggestions;
 }

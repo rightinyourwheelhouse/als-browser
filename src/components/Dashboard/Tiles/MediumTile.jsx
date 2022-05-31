@@ -8,7 +8,7 @@ const MediumTile = ({ title, img, url }) => {
 	return (
 		<button
 			onClick={handleChangeUrl}
-			className="mb-4 flex h-20 w-60 min-w-max items-center justify-start gap-4 rounded-2xl bg-white pr-4 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
+			className="w-90 flex h-20 items-center justify-start gap-2 rounded-2xl bg-white pr-4 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
 		>
 			<div className="ml-4">
 				<TileImage size="h-12 w-12" src={img} title={title} alt={`${title}'s favicon`} />

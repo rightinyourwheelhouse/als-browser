@@ -16,14 +16,13 @@ import { query, collection, limit, doc, setDoc, onSnapshot, orderBy, deleteDoc }
 import { db } from '../../utils/FirebaseConfig';
 import AddBookmarkModal from './AddBookmarkModal';
 import useImmutableCallback from '../../hooks/useImmutableCallback';
-import useFrecency from '../../hooks/useFrecency';
+import useSuggestions from '../../hooks/useSuggestions';
 
 const Dashboard = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { user } = useAuth();
-
-	const frecency = useFrecency();
+	const suggestions = useSuggestions();
 
 	const [showDeleteBookmark, setShowDeleteBookmark] = useState(false);
 	const [showAddBookmarkModal, setShowAddBookmarkModal] = useState(false);
@@ -133,11 +132,11 @@ const Dashboard = () => {
 				/>
 			)}
 			<div className="select-none overflow-y-auto">
-				<Clock className="mt-8 h-10 text-center" />
+				<Clock className="mt-4 h-10 text-center" />
 
 				<button
 					onClick={handleSettings}
-					className="absolute right-8 top-28 flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
+					className="absolute right-8 top-24 flex flex-col items-center justify-center gap-2 drop-shadow-light transition duration-300 ease-in-out hover:scale-105 hover:drop-shadow-hover"
 				>
 					<CogIcon className="h-12 w-12 rounded-full" />
 
@@ -147,27 +146,29 @@ const Dashboard = () => {
 					<div className="mb-10">
 						<Title>Suggesties</Title>
 					</div>
-					<div className="flex cursor-pointer flex-row gap-10">
+					<div className="grid cursor-pointer grid-cols-3 flex-row gap-5">
 						{user ? (
-							frecency.length === 0 ? (
-								<p className="text-lg font-thin">
+							suggestions.length === 0 ? (
+								<p className="col-start-1 col-end-3 text-lg font-thin">
 									Begin met <strong>zoeken op het internet</strong> en je suggesties zullen hier verschijnen.
 								</p>
 							) : (
-								frecency.map(({ title, favicon, url }, index) => (
-									<MediumTile key={index} title={title} img={favicon} url={url} />
-								))
+								suggestions
+									.slice(0, 6)
+									.map(({ title, favicon, url }, index) => (
+										<MediumTile key={index} title={title} img={favicon} url={url} />
+									))
 							)
 						) : (
-							<p className="text-lg font-thin">
-								Gelieve te{' '}
+							<p className="col-start-1 col-end-3 text-lg font-thin">
+								Gelieve te
 								<Link className="font-bold text-dark-blue" to="/settings/account">
 									registreren
-								</Link>{' '}
-								of{' '}
+								</Link>
+								of
 								<Link className="font-bold text-dark-blue" to="/settings/account">
 									in te loggen
-								</Link>{' '}
+								</Link>
 								om deze feature te gebruiken...
 							</p>
 						)}
