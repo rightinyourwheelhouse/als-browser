@@ -1,17 +1,50 @@
-import React from 'react';
-import Dashboard from '../Dashboard/Dashboard';
+import React, { useEffect, useState } from 'react';
 import SearchBar from './SearchBar';
 import ToolbarIcon from './ToolbarIcon.jsx';
 
-import { ArrowLeftIcon } from '@heroicons/react/outline';
-import { ArrowRightIcon } from '@heroicons/react/outline';
-import { RefreshIcon } from '@heroicons/react/outline';
-import { HomeIcon } from '@heroicons/react/outline';
-import { MinusSmIcon } from '@heroicons/react/outline';
-import { ArrowsExpandIcon } from '@heroicons/react/outline';
-import { XIcon } from '@heroicons/react/outline';
+import { useLocation, useNavigate, useMatch } from 'react-router-dom';
 
-const Toolbar = ({ onFocusChange }) => {
+import LogoBrainWeb from '/assets/img/logo-brainweb.png';
+import LogoBrainWebWhite from '/assets/img/logo-brainweb-white.png';
+
+import {
+	ArrowLeftIcon,
+	ArrowRightIcon,
+	RefreshIcon,
+	HomeIcon,
+	MinusSmIcon,
+	ArrowsExpandIcon,
+	XIcon,
+	GlobeAltIcon,
+} from '@heroicons/react/outline';
+
+const Toolbar = () => {
+	const [logo, setLogo] = useState(LogoBrainWeb);
+	const [webviewState, setWebviewState] = useState(undefined);
+
+	const navigate = useNavigate();
+	const location = useLocation();
+
+	const params = new URLSearchParams(location.search);
+
+	const isWebview = webviewState;
+	const isHome = useMatch('/');
+	const isSearching = !isWebview && params.get('search');
+	const isSettings = useMatch('/settings/*');
+	const isExtension = useMatch('/settings/extension');
+
+	useEffect(() => {
+		const listener = document.addEventListener('click', () => window.api.send('getWebviewState'));
+		window.api.recieve('getWebviewStateReply', (isOpen) => {
+			setWebviewState(...isOpen);
+		});
+
+		return () => {
+			window.api.removeAllListeners('getWebviewStateReply');
+			document.removeEventListener('click', listener);
+		};
+	}, []);
+
 	const handleGoBack = () => {
 		window.api.send('goBack');
 	};
@@ -33,59 +66,76 @@ const Toolbar = ({ onFocusChange }) => {
 	};
 
 	const handleDashboard = () => {
-		window.api.send('toggleDashboard');
+		if (isSearching) {
+			navigate('/');
+		} else if (isSettings?.pathnameBase === '/settings') {
+			navigate('/');
+		} else {
+			window.api.send('toggleWebview', true);
+		}
 	};
 
 	const handleAdjustSize = () => {
 		window.api.send('adjustSize');
 	};
 
-	window.api.recieve('ToggleTheDashboard', () => {
-		onFocusChange(Dashboard);
-	});
+	const handleExtensionToggle = () => {
+		if (isExtension) {
+			window.api.send('toggleWebview', true);
+		} else {
+			navigate('/settings/extension');
+			window.api.send('toggleWebview', false);
+		}
+	};
 
 	return (
-		<>
-			<div className="drop-shadow-browser draggable w-full">
-				<div className="flex h-20 items-center justify-between bg-slate-100 pl-4 pr-4">
-					<div className="flex cursor-pointer flex-row gap-4">
-						<ToolbarIcon onClick={handleGoBack}>
-							<ArrowLeftIcon />
-						</ToolbarIcon>
+		<div className="drop-shadow-browser draggable w-full">
+			<div className="flex h-20 items-center justify-between bg-slate-100 pl-4 pr-4">
+				<div className="flex cursor-pointer flex-row gap-4">
+					<ToolbarIcon onClick={handleGoBack}>
+						<ArrowLeftIcon />
+					</ToolbarIcon>
 
-						<ToolbarIcon onClick={handleGoForward}>
-							<ArrowRightIcon />
-						</ToolbarIcon>
-					</div>
+					<ToolbarIcon onClick={handleGoForward}>
+						<ArrowRightIcon />
+					</ToolbarIcon>
+				</div>
 
-					<div className="flex flex-row items-center gap-4">
-						<ToolbarIcon onClick={handleRefresh}>
-							<RefreshIcon />
-						</ToolbarIcon>
+				<div className="flex flex-row items-center gap-4">
+					<ToolbarIcon onClick={handleRefresh}>
+						<RefreshIcon />
+					</ToolbarIcon>
 
-						<SearchBar onFocusChange={onFocusChange} />
+					<ToolbarIcon onClick={handleDashboard}>
+						{webviewState || !isHome || isSearching ? <HomeIcon /> : <GlobeAltIcon />}
+					</ToolbarIcon>
 
-						<ToolbarIcon onClick={handleDashboard}>
-							<HomeIcon />
-						</ToolbarIcon>
-					</div>
+					<SearchBar />
 
-					<div className="flex flex-row gap-2">
-						<ToolbarIcon onClick={handleMinimize}>
-							<MinusSmIcon />
-						</ToolbarIcon>
+					<ToolbarIcon
+						onClick={handleExtensionToggle}
+						onMouseEnter={() => setLogo(LogoBrainWebWhite)}
+						onMouseLeave={() => setLogo(LogoBrainWeb)}
+					>
+						<img src={logo} alt="" />
+					</ToolbarIcon>
+				</div>
 
-						<ToolbarIcon onClick={handleAdjustSize}>
-							<ArrowsExpandIcon />
-						</ToolbarIcon>
+				<div className="flex flex-row gap-2">
+					<ToolbarIcon onClick={handleMinimize}>
+						<MinusSmIcon />
+					</ToolbarIcon>
 
-						<ToolbarIcon onClick={handleClose}>
-							<XIcon />
-						</ToolbarIcon>
-					</div>
+					<ToolbarIcon onClick={handleAdjustSize}>
+						<ArrowsExpandIcon />
+					</ToolbarIcon>
+
+					<ToolbarIcon onClick={handleClose}>
+						<XIcon />
+					</ToolbarIcon>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 };
 

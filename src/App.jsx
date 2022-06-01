@@ -1,20 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import Toolbar from './components/Toolbar/Toolbar';
 import Dashboard from './components/Dashboard/Dashboard';
-import OnType from './components/Dashboard/OnType';
+
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import Settings from './components/Settings/Settings';
+import { useHistory } from './utils/useHistory';
+import { useMouseTracking } from './utils/useMouseTracking';
 
 const App = () => {
-	const [searchBarStatus, setSearchBarStatus] = useState('Dashboard');
+	useMouseTracking();
+	useHistory();
+	const navigate = useNavigate();
 
-	const handleFocusChange = (component) => {
-		component === 'OnType' ? setSearchBarStatus('OnType') : setSearchBarStatus('Dashboard');
-	};
+	useEffect(() => {
+		window.api.recieve('toggleExtensionRadialReply', () => {
+			navigate('/settings/extension');
+			window.api.send('toggleWebview', true);
+		});
+
+		return () => window.api.removeAllListeners('toggleExtensionRadialReply');
+	}, [navigate]);
 
 	return (
-		<>
-			<Toolbar onFocusChange={handleFocusChange} />
-			{searchBarStatus === 'OnType' ? <OnType /> : <Dashboard />}
-		</>
+		<div className="grid h-full grid-rows-[max-content,1fr]">
+			<Toolbar />
+			<Routes>
+				<Route path="/" element={<Dashboard />} />
+				<Route path="settings/*" element={<Settings />}></Route>
+			</Routes>
+		</div>
 	);
 };
 

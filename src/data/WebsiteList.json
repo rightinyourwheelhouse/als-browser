@@ -1,0 +1,299 @@
+[
+	{
+	   "hostname":"www.instagram.com",
+	   "title":"Instagram",
+	   "favicon":"https://www.instagram.com/static/images/ico/favicon-192.png/68d99ba29cc8.png",
+	   "search":"",
+	   "url":"https://www.instagram.com/",
+	   "description":"Create an account or log in to Instagram – a simple, fun and creative way to capture, edit and share photos, videos and messages with friends and family.",
+	   "pathname":"/"
+	},
+	{
+	   "description":"Enjoy the videos and music that you love, upload original content and share it all with friends, family and the world on YouTube.",
+	   "search":"",
+	   "pathname":"/",
+	   "hostname":"www.youtube.com",
+	   "title":"YouTube",
+	   "favicon":"https://www.youtube.com/s/desktop/dd76c683/img/favicon_32x32.png",
+	   "url":"https://www.youtube.com/"
+	},
+	{
+	   "pathname":"/",
+	   "description":"Van het laatste nieuws en entertainment tot sport en politiek, krijg het volledige verhaal met al het live commentaar.",
+	   "hostname":"twitter.com",
+	   "search":"",
+	   "favicon":"https://abs.twimg.com/favicons/twitter.2.ico",
+	   "url":"https://twitter.com/",
+	   "title":"Twitter"
+	},
+	{
+	   "url":"https://www.vrt.be/nl/",
+	   "hostname":"www.vrt.be",
+	   "favicon":"https://www.vrt.be/etc.clientlibs/corporate/clientlibs/clientlib-site/resources/images/favicon/favicon.ico",
+	   "search":"",
+	   "description":"Schrijf u hier in op onze VRT Nieuwsbrief op maat, zo wordt u maandelijks op de hoogte gehouden van het belangrijkste nieuws over de VRT.",
+	   "title":"Home | VRT.be",
+	   "pathname":"/nl/"
+	},
+	{
+	   "search":"",
+	   "description":"De grootste zoekertjessite van België. Nieuwe en tweedehands goederen en diensten, koop en verkoop je op 2dehands.",
+	   "title":"② 2dehands - Dé plek om nieuwe en tweedehands zaken te kopen en verkopen",
+	   "url":"https://www.2dehands.be/",
+	   "hostname":"www.2dehands.be",
+	   "pathname":"/",
+	   "favicon":"https://cdn.ebayclassifieds.net/bff/static/vendor/design-sdk/themes/twh/favicons/favicon-192x192.1c5d8455.png"
+	},
+	{
+	   "favicon":"https://static.xx.fbcdn.net/rsrc.php/yb/r/hLRJ1GG_y0J.ico",
+	   "url":"https://www.facebook.com/",
+	   "hostname":"www.facebook.com",
+	   "pathname":"/",
+	   "description":"Log in to Facebook to start sharing and connecting with your friends, family and people you know.",
+	   "search":"",
+	   "title":"Facebook – log in or sign up"
+	},
+	{
+	   "hostname":"www.hbvl.be",
+	   "favicon":"https://markup.hbvl.be/extra/assets/img/favicons/coast-icon-228x228.png?v=20220516T115101",
+	   "url":"https://www.hbvl.be/",
+	   "title":"Het Belang van Limburg",
+	   "search":"",
+	   "description":"Op de website van Het Belang van Limburg lees je op elk moment het laatste nieuws uit Limburg. Ook binnen- en buitenlands nieuws, economie, media & cultuur en sport komen uitgebreid aan bod.",
+	   "pathname":"/"
+	},
+	{
+	   "pathname":"/",
+	   "title":"ALS Liga België vzw",
+	   "favicon":"",
+	   "hostname":"www.als.be",
+	   "url":"https://www.als.be/",
+	   "description":"ALS Liga België gebruikt cookies om uw surfervaring op deze website gemakkelijk te maken. Door onze website te bezoeken, gaat u akkoord met deze cookies.",
+	   "search":""
+	},
+	{
+	   "favicon":"https://markup.standaard.be/extra/assets/img/faviconLive.ico",
+	   "url":"https://www.standaard.be/",
+	   "search":"",
+	   "hostname":"www.standaard.be",
+	   "title":"De Standaard",
+	   "pathname":"/",
+	   "description":"Het meest recente nieuws uit België en het buitenland, economie en geld, cultuur, sport en lifestyle. Lees online de krant en DS Avond."
+	},
+	{
+	   "search":"",
+	   "url":"https://www.meteo.be/en/belgium",
+	   "favicon":"https://www.meteo.be/favicon-32x32.png?v20220413-1310",
+	   "pathname":"/en/belgium",
+	   "hostname":"www.meteo.be",
+	   "title":"Weather Belgium - RMI",
+	   "description":"The Weather in Belgium"
+	},
+	{
+	   "description":"",
+	   "search":"",
+	   "title":"Google",
+	   "pathname":"/",
+	   "favicon":"",
+	   "hostname":"www.google.com",
+	   "url":"https://www.google.com/"
+	},
+	{
+	   "search":"",
+	   "pathname":"/be/nl/",
+	   "title":"De winkel van ons allemaal | bol.com",
+	   "description":"bol.com, de winkel van ons allemaal. Kies uit miljoenen artikelen. Snel en vanaf 20,- gratis verzonden!",
+	   "hostname":"www.bol.com",
+	   "url":"https://www.bol.com/be/nl/",
+	   "favicon":"https://www.bol.com/favicon-32x32.png?v=476aOAdO8j"
+	},
+	{
+	   "favicon":"https://kw.be/app/themes/kw/dist/images/android-chrome-192x192.21dd22e1bebde8f3db4b.png",
+	   "url":"https://kw.be/",
+	   "pathname":"/",
+	   "hostname":"kw.be",
+	   "search":"",
+	   "title":"KW.be",
+	   "description":"KW.be, de website van Krant van West-Vlaanderen brengt nieuws uit jouw gemeente voor de hele provincie West-Vlaanderen. Nieuws, maar ook sport, showbizz, faits divers en weetjes uit de rand"
+	},
+	{
+	   "hostname":"www.amazon.nl",
+	   "search":"",
+	   "title":"Amazon.nl: Groot aanbod, kleine prijzen in o.a. Elektronica, boeken, sport en meer",
+	   "url":"https://www.amazon.nl/",
+	   "pathname":"/",
+	   "favicon":"",
+	   "description":"Online winkel voor elektronica, computers, kleding, schoenen, speelgoed, boeken, sport, beauty, persoonlijke verzorging en meer."
+	},
+	{
+	   "hostname":"www.messenger.com",
+	   "url":"https://www.messenger.com/",
+	   "search":"",
+	   "description":"Hang out wherever, whenever! Messenger makes it easy and fun to stay close to your favourite people",
+	   "title":"Messenger",
+	   "favicon":"https://static.xx.fbcdn.net/rsrc.php/ym/r/YQbyhl59TWY.ico",
+	   "pathname":"/"
+	},
+	{
+	   "title":"Zalando.be | Kleding, schoenen en accessoires online",
+	   "url":"https://www.zalando.be/",
+	   "description":"Het ruimste aanbod kleding, schoenen en accessoires online | ☀ Gratis verzending* en retour, veilige betaling ☀ Sla nu je slag bij Zalando!",
+	   "search":"",
+	   "pathname":"/",
+	   "hostname":"www.zalando.be",
+	   "favicon":"https://www.zalando.be/favicon.ico"
+	},
+	{
+	   "pathname":"/",
+	   "hostname":"www.linkedin.com",
+	   "url":"https://www.linkedin.com/",
+	   "favicon":"https://static-exp1.licdn.com/sc/h/al2o9zrvru7aqj8e1x2rzsrca",
+	   "search":"",
+	   "title":"LinkedIn: Log In or Sign Up",
+	   "description":"750 million+ members | Manage your professional identity. Build and engage with your professional network. Access knowledge, insights and opportunities."
+	},
+	{
+	   "favicon":"https://www.proximus.be/.resources/cdn/brand/logos/favicon~2016-05-09-04-06-36-306~cache.ico",
+	   "description":"Proximus offers you the best quality network and wide mobile coverage within Belgium. You’ll also benefit from a top-quality 24/7 service!",
+	   "pathname":"/en/personal/",
+	   "url":"https://www.proximus.be/en/personal/?",
+	   "search":"",
+	   "title":"Welcome to Proximus – Internet, mobile, phone and TV | Proximus",
+	   "hostname":"www.proximus.be"
+	},
+	{
+	   "title":"Het Nieuwsblad",
+	   "url":"https://www.nieuwsblad.be/",
+	   "hostname":"www.nieuwsblad.be",
+	   "favicon":"https://markup.nieuwsblad.be/extra/assets/img/favicons/coast-icon-228x228.png?v=20220516T115102",
+	   "pathname":"/",
+	   "description":"Bovenop een complete verslaggeving van het nieuws uit binnen- en buitenland, economie, lifestyle, ... schenkt Nieuwsblad.be extra aandacht aan streek- en sportnieuws.",
+	   "search":""
+	},
+	{
+	   "hostname":"www.tijd.be",
+	   "url":"https://www.tijd.be/",
+	   "title":"De Tijd",
+	   "favicon":"https://www.tijd.be/etc.clientlibs/settings/wcm/designs/tijd/clientlibs/headlibs/resources/favicon/favicon-32x32.png",
+	   "description":"Op de site van de Vlaamse zakenkrant De Tijd vindt u naast financieel, economisch, business en politiek nieuws ook het meest volledige koersenpakket.",
+	   "search":"",
+	   "pathname":"/"
+	},
+	{
+	   "hostname":"www.hln.be",
+	   "favicon":"https://statics.hln.be/img/favicon-fd9a23b3e3.png",
+	   "pathname":"/vtm-nieuws",
+	   "description":"HLN - Het Laatste Nieuws - Volg het nieuws op de nr1 nieuwssite in België, HLN.be brengt je het allerlaatste nieuws 24/24 en 7/7, uit binnen - en buitenland, evenals dichtbij met nieuws uit je eigen regio.",
+	   "title":"VTM Nieuws | hln.be",
+	   "url":"https://www.hln.be/vtm-nieuws",
+	   "search":""
+	},
+	{
+	   "url":"https://www2.telenet.be/residential/nl",
+	   "description":"Overal in huis zorgeloos en supersnel surfen? Da’s internet van Telenet. Kies voor een alles-in-één of stel zelf je bundel samen. Nu al vanaf € 30.",
+	   "pathname":"/residential/nl",
+	   "search":"",
+	   "hostname":"www2.telenet.be",
+	   "favicon":"https://www2.telenet.be/etc/designs/aff-telenet-touch/ngjs/media/icons/favicon/favicon-32x32.png",
+	   "title":"Telenet.be – Supersnel en veilig internet, thuis en onderweg"
+	},
+	{
+	   "search":"",
+	   "title":"Gazet van Antwerpen",
+	   "pathname":"/",
+	   "url":"https://www.gva.be/",
+	   "favicon":"https://markup.gva.be/extra/assets/img/favicons/coast-icon-228x228.png?v=20220516T115102",
+	   "hostname":"www.gva.be",
+	   "description":"Recent nieuws uit Antwerpen: op gva.be vindt u de meest complete verslaggeving over stad Antwerpen, de randgemeenten, Kempen en regio Mechelen."
+	},
+	{
+	   "hostname":"www.wikipedia.be",
+	   "description":"Wikipedia is een gratis online encyclopedie, gemaakt en bewerkt door vrijwilligers over de hele wereld en gehost door de Wikimedia Foundation.",
+	   "favicon":"https://www.wikipedia.be/favicon.ico",
+	   "url":"https://www.wikipedia.be/",
+	   "pathname":"/",
+	   "title":"Wikipedia.be",
+	   "search":""
+	},
+	{
+	   "favicon":"",
+	   "search":"?siteKey=Uqxf9TXhjmaG4pbQ&callbackUrl=https%3A%2F%2Fwww.hln.be%2Fprivacy-gate%2Faccept-tcf2%3FredirectUri%3D%252F",
+	   "title":"Het Laatste Nieuws",
+	   "url":"https://www.hln.be/",
+	   "description":"",
+	   "hostname":"www.hln.be",
+	   "pathname":"/consent"
+	},
+	{
+	   "title":"Booking.com | Official site | The best hotels, flights, car rentals & accommodations",
+	   "url":"https://www.booking.com/index.en-gb.html?label=gen173nr-1BCAEoggI46AdIM1gEaBWIAQGYAQm4AQrIAQXYAQHoAQGIAgGoAgO4ApTBiJQGwAIB0gIkZmU0YzcwMTctM2ViZi00YzkwLWIwMjItZGYxZjJkOWJiMWZm2AIF4AIB&sid=e85de5c626cdd98c97b644fc83adebab&keep_landing=1&sb_price_type=total&",
+	   "pathname":"",
+	   "hostname":"www.booking.com",
+	   "search":"?label=gen173nr-1BCAEoggI46AdIM1gEaBWIAQGYAQm4AQrIAQXYAQHoAQGIAgGoAgO4ApTBiJQGwAIB0gIkZmU0YzcwMTctM2ViZi00YzkwLWIwMjItZGYxZjJkOWJiMWZm2AIF4AIB&sid=e85de5c626cdd98c97b644fc83adebab&keep_landing=1&sb_price_type=total&",
+	   "favicon":"https://cf.bstatic.com/static/img/b25logo/favicon/ebc77706da3aae4aee7b05dadf182390f0d26d11.ico",
+	   "description":"Explore the world with Booking.com. Big savings on homes, hotels, flights, car rentals, taxis and attractions – build your perfect trip on any budget."
+	},
+	{
+	   "title":"Vacation Homes & Condo Rentals - Airbnb",
+	   "search":"",
+	   "url":"https://www.airbnb.com/",
+	   "hostname":"www.airbnb.com",
+	   "description":"May 16, 2022 - Find the perfect place to stay at an amazing price in 191 countries. Belong anywhere with Airbnb.",
+	   "favicon":"https://a0.muscache.com/airbnb/static/icons/android-icon-192x192-c0465f9f0380893768972a31a614b670.png",
+	   "pathname":"/"
+	},
+	{
+	   "url":"https://nl.metrotime.be/",
+	   "favicon":"https://nl.metrotime.be/sites/all/themes/enabootstrap_metro_nl/favicon.ico",
+	   "hostname":"nl.metrotime.be",
+	   "pathname":"/",
+	   "description":"De krant Metro is een gratis Belgisch dagblad dat je aantreft in trein-en metrostations, onderwijsinstellingen en tal van andere bedrijven.",
+	   "search":"",
+	   "title":"Metrotime | Gratis Belgisch Dagblad"
+	},
+	{
+	   "search":"",
+	   "url":"https://www.netflix.com/be-en/",
+	   "hostname":"www.netflix.com",
+	   "title":"Netflix Belgium - Watch TV Shows Online, Watch Movies Online",
+	   "description":"Watch Netflix movies & TV shows online or stream right to your smart TV, game console, PC, Mac, mobile, tablet and more.",
+	   "favicon":"https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.ico",
+	   "pathname":"/be-en/"
+	},
+	{
+	   "title":"Reddit - Dive into anything",
+	   "pathname":"/",
+	   "url":"https://www.reddit.com/",
+	   "favicon":"https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png",
+	   "hostname":"www.reddit.com",
+	   "description":"Reddit is a network of communities where people can dive into their interests, hobbies and passions. There's a community for whatever you're interested in on Reddit.",
+	   "search":""
+	},
+	{
+	   "url":"https://sporza.be/nl/",
+	   "favicon":"https://sporza.be/etc.clientlibs/sporza/clientlibs/clientlib-site/resources/images/favicon.ico",
+	   "hostname":"sporza.be",
+	   "search":"",
+	   "title":"sporza",
+	   "description":"Sporza neemt het op zich om van de populaire sporten sociale gebeurtenissen te maken en kleine sporten te doen begrijpen en bewonderen. Het merk bedient zowel de sportfan als de sporttechnicus, door de sportwereld nauw te volgen vanuit verschillende standpunten.",
+	   "pathname":"/nl/"
+	},
+	{
+	   "description":"Gratis Belgisch dagblad dat je aantreft in trein-en metrostations, onderwijsinstellingen en tal van andere bedrijven. Quotidien belge gratuit que tu trouves dans les gares et les stations de métro, les hautes écoles et universités et de nombreuses entreprises.",
+	   "title":"Metro | België / Belgique | Gratis Krant - Journal Gratuit",
+	   "favicon":"https://www.metrotime.be/bi_icon_gradient.png",
+	   "search":"",
+	   "pathname":"/",
+	   "url":"https://www.metrotime.be/",
+	   "hostname":"www.metrotime.be"
+	},
+	{
+		"search":"",
+		"title":"NMBS",
+		"pathname":"/",
+		"url":"https://www.gva.be/",
+		"favicon":"https://markup.gva.be/extra/assets/img/favicons/coast-icon-228x228.png?v=20220516T115102",
+		"hostname":"www.gva.be",
+		"description":"Recent nieuws uit Antwerpen: op gva.be vindt u de meest complete verslaggeving over stad Antwerpen, de randgemeenten, Kempen en regio Mechelen."
+	 }
+ ]
