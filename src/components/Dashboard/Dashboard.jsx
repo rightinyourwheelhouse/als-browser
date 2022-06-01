@@ -161,14 +161,14 @@ const Dashboard = () => {
 							)
 						) : (
 							<p className="col-start-1 col-end-3 text-lg font-thin">
-								Gelieve te
+								Gelieve te{' '}
 								<Link className="font-bold text-dark-blue" to="/settings/account">
 									registreren
-								</Link>
-								of
+								</Link>{' '}
+								of{' '}
 								<Link className="font-bold text-dark-blue" to="/settings/account">
 									in te loggen
-								</Link>
+								</Link>{' '}
 								om deze feature te gebruiken...
 							</p>
 						)}
