@@ -2,6 +2,14 @@
 const tf = require('@tensorflow/tfjs');
 const tfnode = require('@tensorflow/tfjs-node');
 const { mouse, Point, straightTo } = require('@nut-tree/nut-js');
+const {ipcRenderer} = require("electron")
+
+// decides the strength at which te cursor is pulled towards buttons
+let magnetstrength = 3;
+
+ipcRenderer.on('extensionStatesReply', (event, payload) => {
+	if (payload.magnetstrength) magnetstrength = payload.magnetstrength;
+});
 
 /**
  * BUGS/PROBLEMS
@@ -45,13 +53,10 @@ let PredictionInterval = 2;
 let PredictionIntervalCounter = 0;
 let windowSize = 10;
 
-// decides the strength at which te cursor is pulled towards buttons
-let magnetstrength = 2;
-
 let timeOut;
 let working = false;
 let mouseTrackingActive = true;
-let visualsation = true;
+let visualsation = false;
 
 //Canvas used for drawing input and prediction squares
 let drawingCanvas;
@@ -318,36 +323,36 @@ async function makeGravityWell() {
 	let distance = Math.sqrt(Math.pow(clientX - elementPosMiddle[0], 2) + Math.pow(clientY - elementPosMiddle[1], 2));
 	let target_X = undefined;
 	let target_Y = undefined;
-	let heightOffset = window.outerHeight - window.innerHeight - (window.outerWidth - window.innerWidth);
+	let heightOffset = window.outerHeight - window.innerHeight + 20;
 	let diffX = Math.min(10, 0 + 1 * (Math.abs(elementPosMiddle[0] - clientX) / 100));
 	let diffY = Math.min(10, 0 + 1 * (Math.abs(elementPosMiddle[1] - clientY) / 100));
 	if (distance < 100) {
 		if (clientX > element.left + element.width && clientY > element.top + element.height) {
-			target_X = clientX - magnetstrength * 2 * (1 + diffX);
-			target_Y = clientY + heightOffset - magnetstrength * 2 * (1 + diffY);
+			target_X = clientX - magnetstrength * (1 + diffX);
+			target_Y = clientY + heightOffset - magnetstrength * (1 + diffY);
 			//console.log("bottom right")
 		} else if (clientX < element.left && clientY > element.top + element.height) {
-			target_X = clientX + magnetstrength * 2 * (1 + diffX);
-			target_Y = clientY + heightOffset - magnetstrength * 2 * (1 + diffY);
+			target_X = clientX + magnetstrength * (1 + diffX);
+			target_Y = clientY + heightOffset - magnetstrength * (1 + diffY);
 			//console.log("bottom left")
 		} else if (clientX < element.left && clientY < element.top) {
-			target_X = clientX + magnetstrength * 2 * (1 + diffX);
-			target_Y = clientY + heightOffset + magnetstrength * 2 * (1 + diffY);
+			target_X = clientX + magnetstrength * (1 + diffX);
+			target_Y = clientY + heightOffset + magnetstrength * (1 + diffY);
 			//console.log("top left")
 		} else if (clientX > element.left + element.width && clientY < element.top) {
-			target_X = clientX - magnetstrength * 2 * (1 + diffX);
-			target_Y = clientY + heightOffset + magnetstrength * 2 * (1 + diffY);
+			target_X = clientX - magnetstrength * (1 + diffX);
+			target_Y = clientY + heightOffset + magnetstrength * (1 + diffY);
 			//console.log("top right")
 		} else if (clientX < element.left + element.width && clientY < element.top) {
 			target_X = clientX;
-			target_Y = clientY + heightOffset + magnetstrength * 2 * (1 + diffY);
+			target_Y = clientY + heightOffset + magnetstrength * (1 + diffY);
 			//console.log("top middle")
 		} else if (clientX < element.left + element.width && clientY > element.top + element.height) {
 			target_X = clientX;
-			target_Y = clientY + heightOffset - magnetstrength * 2 * (1 + diffY);
+			target_Y = clientY + heightOffset - magnetstrength * (1 + diffY);
 			//console.log("bottom middle")
 		} else if (clientX < element.left && clientY > element.top && clientY < element.top + element.height) {
-			target_X = clientX + magnetstrength * 2 * (1 + diffX);
+			target_X = clientX + magnetstrength * (1 + diffX);
 			target_Y = clientY + heightOffset;
 			//console.log("left middle")
 		} else if (
@@ -355,7 +360,7 @@ async function makeGravityWell() {
 			clientY > element.top &&
 			clientY < element.top + element.height
 		) {
-			target_X = clientX - magnetstrength * 2 * (1 + diffX);
+			target_X = clientX - magnetstrength * (1 + diffX);
 			target_Y = clientY + heightOffset;
 			//console.log("right middle")
 		}

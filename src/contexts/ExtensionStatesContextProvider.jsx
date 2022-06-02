@@ -21,6 +21,7 @@ const ExtensionStatesContextProvider = ({ children }) => {
 		scrollHelp: true,
 		mouseTracking: true,
 		scrollHelpPosition: { top: '68%', left: '90%' },
+		magnetStrength: 3,
 	});
 
 	useEffect(() => {
