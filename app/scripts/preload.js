@@ -5,8 +5,12 @@ window.addEventListener('DOMContentLoaded', () => {
 	require('./radialUI');
 	require('./scrollHelp.js');
 	require('./history.js');
-	require('./AlertMessageBookmark');
-	require('./gravityWells.js');
+	require('./AlertMessageBookmark')
+
+	ipcRenderer.on('extensionStatesReply', (event, payload) => {
+	if (payload.gravityWell) require('./gravityWells');
+	if (payload.shortcut) require('./cursorPrediction');
+});
 
 	ipcRenderer.send('getExtensionStates');
 });

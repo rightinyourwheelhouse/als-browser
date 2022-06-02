@@ -191,6 +191,25 @@ const ExtensionSetting = () => {
 				/>
 			</SettingTile>
 
+			<SettingTile infoText="Wanneer je in de buurt komt van een knop, zal je muiscursor naar de knop toegetrokken worden.">
+				<CustomSwitch
+					title="Magnetische knoppen"
+					name="gravityWell"
+					state={extensionStates.gravityWell}
+					handleOnChange={handleOnChange}
+				/>
+			</SettingTile>
+
+			<SettingTile infoText="Wanneer je beweegt naar een knop, zal deze knop op je cursor tevoorschijn komen.">
+				<CustomSwitch
+					title="Shortcut knop"
+					name="shortcut"
+					state={extensionStates.shortcut}
+					handleOnChange={handleOnChange}
+				/>
+			</SettingTile>
+
+
 			{/* <SettingTile infoText="Schakel achtervolgende knoppen aan of uit.">
 				<CustomSwitch
 					title="Achtervolgende knoppen"

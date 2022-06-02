@@ -44,7 +44,6 @@ let interval;
 let PredictionInterval = 2;
 let PredictionIntervalCounter = 0;
 let windowSize = 10;
-let features = 2;
 
 // decides the strength at which te cursor is pulled towards buttons
 let magnetstrength = 2;
@@ -113,8 +112,8 @@ const handleMouseLeave = () => {
  * @returns an array with the percentage X and Y coordinates
  */
 const getCursorData = () => {
-	x = clientX / pageX;
-	y = clientY / pageY;
+	const x = clientX / pageX;
+	const y = clientY / pageY;
 	return [x, y];
 };
 
@@ -134,11 +133,11 @@ const startInterval = () => {
 			if (queue.length >= windowSize) {
 				queue.shift();
 			}
-			cursor = getCursorData();
+			const cursor = getCursorData();
 			queue.push(cursor);
 			PredictionIntervalCounter += 1;
 			if (PredictionIntervalCounter >= PredictionInterval && queue.length == windowSize) {
-				output = pointerPredictor.makePrediction(queue);
+				const output = pointerPredictor.makePrediction(queue);
 				lastInput = queue;
 				lastPrediction = output;
 				drawprediction(lastInput, lastPrediction);
@@ -222,7 +221,7 @@ const getAllClickableItems = () => {
 	createCanvas();
 	elements = [];
 	for (let i = 0; i < clickableItems.length; i++) {
-		item = clickableItems[i];
+		const item = clickableItems[i];
 		const rect = item.getBoundingClientRect();
 		const elementObj = {
 			tag: item,
@@ -258,6 +257,7 @@ const checkCloseElements = async (prediction) => {
 
 	let closestDistance;
 	let closestElement;
+
 	if (previousClosestElement)
 		removeProperties(previousClosestElement, 'background-color', 'color', 'transform', 'z-index');
 	foundCloseElement = false;
@@ -273,7 +273,7 @@ const checkCloseElements = async (prediction) => {
 		elementPoints.push(elementPosMiddle, elementTopLeft, elementBottomLeft, elementTopRight, elementBottomRight);
 
 		for (let j = 0; j < elementPoints.length; j++) {
-			position = elementPoints[0];
+			const position = elementPoints[0];
 			let distance = Math.sqrt(
 				Math.pow(xPosPredictionEndPoint - position[0], 2) + Math.pow(yPosPredictionEndPoint - position[1], 2),
 			);
@@ -285,9 +285,6 @@ const checkCloseElements = async (prediction) => {
 				foundCloseElement = true;
 				closestDistance = distance;
 				closestElement = element;
-				previousClosestObject = clickableItemsFiltered[i];
-				closestElementPosX = elementPoints[0][0];
-				closestElementPosY = elementPoints[0][1];
 			}
 		}
 	}
@@ -317,12 +314,11 @@ const checkCloseElements = async (prediction) => {
 
 async function makeGravityWell() {
 	let element = previousClosestElement;
-	elementPosMiddle = [element.left + element.width / 2, element.top + element.height / 2];
+	const elementPosMiddle = [element.left + element.width / 2, element.top + element.height / 2];
 	let distance = Math.sqrt(Math.pow(clientX - elementPosMiddle[0], 2) + Math.pow(clientY - elementPosMiddle[1], 2));
 	let target_X = undefined;
 	let target_Y = undefined;
 	let heightOffset = window.outerHeight - window.innerHeight - (window.outerWidth - window.innerWidth);
-	console.log(window.outerWidth - window.innerWidth);
 	let diffX = Math.min(10, 0 + 1 * (Math.abs(elementPosMiddle[0] - clientX) / 100));
 	let diffY = Math.min(10, 0 + 1 * (Math.abs(elementPosMiddle[1] - clientY) / 100));
 	if (distance < 100) {
@@ -362,7 +358,6 @@ async function makeGravityWell() {
 			target_X = clientX - magnetstrength * 2 * (1 + diffX);
 			target_Y = clientY + heightOffset;
 			//console.log("right middle")
-		} else {
 		}
 
 		if (target_X != undefined && target_Y != undefined) {
@@ -413,13 +408,11 @@ class PointerPredictor {
 	 * uses the dummy data to check if it is working properly
 	 */
 	async getModel() {
-		const input = tf.expandDims(tf.tensor(this.dummyArray, [10, 2]));
 		try {
 			const handler = tfnode.io.fileSystem('app/scripts/1DCNNLSTMAbsolute/model.json');
 			this.model = await tf.loadLayersModel(handler);
-			console.log('Model loaded');
 		} catch (e) {
-			console.error('Unable to load model', e);
+			throw new Error(e);
 		}
 	}
 	/**
@@ -438,7 +431,6 @@ class PointerPredictor {
 }
 
 const init = () => {
-	console.log('start up mouse prediction');
 	clickableItems = document.querySelectorAll('button ,a ,g-menu');
 	registerListeners();
 	startInterval();
@@ -447,6 +439,4 @@ const init = () => {
 };
 const pointerPredictor = new PointerPredictor();
 
-document.addEventListener('DOMContentLoaded', function () {
-	init();
-});
+init();
