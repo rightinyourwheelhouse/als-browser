@@ -14,6 +14,8 @@ const SearchBar = () => {
 	};
 
 	const handleOnFocus = (bool) => {
+		inputRef.current.select();
+
 		if (input.length === 0) {
 			navigate('/');
 		} else {
@@ -38,8 +40,20 @@ const SearchBar = () => {
 				inputRef.current.focus();
 			}
 		});
+		window.api.recieve('historyReply', ([url]) => {
+			const { hostname, pathname } = url;
 
-		return () => window.api.removeAllListeners('focusSearchBarRadialUiReply');
+			if (typeof url === 'object') {
+				setInput(hostname + pathname);
+			} else {
+				setInput(url);
+			}
+		});
+
+		return () => {
+			window.api.removeAllListeners('focusSearchBarRadialUiReply');
+			window.api.removeAllListeners('historyReply');
+		};
 	}, []);
 
 	return (
@@ -47,6 +61,7 @@ const SearchBar = () => {
 			<input
 				id="search-bar"
 				ref={inputRef}
+				value={input}
 				className="hover:drop-shadow-browser h-14 w-96 rounded-full pl-4 text-center drop-shadow-light transition duration-300 ease-in-out placeholder:text-center focus:outline-none focus:ring focus:ring-dark-blue"
 				onInput={(e) => handleOnChange(e)}
 				onFocus={() => handleOnFocus(true)}

@@ -180,6 +180,8 @@ ipcMain.on('searchURL', (event, url) => {
 
 	view.webContents.loadURL(url);
 
+	mainWindow.send('historyReply', url);
+
 	// When dashboard is loaded, set the browserView back
 	if (view.getBounds().width === 0 && view.getBounds().height === 0)
 		view.setBounds({ x: 0, y: 80, width: mainWindow.getBounds().width, height: mainWindow.getBounds().height - 80 });
