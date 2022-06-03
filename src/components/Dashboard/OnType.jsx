@@ -29,20 +29,22 @@ const googleSearch = async (list, searchInput) => {
 	const data = await response.json();
 
 	const googleSearchItems = [];
-	for (let i = 0; i < data.length; i++) {
-		let title = data[1][i];
-		let url = data[2][i];
+	if (data[1].length !== 0) {
+		for (let i = 0; i < data.length; i++) {
+			let title = data[1][i];
+			let url = data[2][i];
 
-		// When a title and url exists, the title is the URL and the url is the title, so we need to swap them....
-		if (title.length > 0 && url.length > 0) {
-			const baseurl = title.split('/').slice(2)[0];
-			const favicon = `https://s2.googleusercontent.com/s2/favicons?sz=128&domain=${baseurl}`;
+			// When a title and url exists, the title is the URL and the url is the title, so we need to swap them....
+			if (title?.length > 0 && url?.length > 0) {
+				const baseurl = title.split('/').slice(2)[0];
+				const favicon = `https://s2.googleusercontent.com/s2/favicons?sz=128&domain=${baseurl}`;
 
-			// This prevents that two hostnames with the same URL are displayed
-			const isInList = list.some((item) => item.hostname === baseurl);
-			if (!isInList) googleSearchItems.push({ url: baseurl, title: url, favicon: favicon });
-		} else {
-			googleSearchItems.push({ title, url });
+				// This prevents that two hostnames with the same URL are displayed
+				const isInList = list.some((item) => item.hostname === baseurl);
+				if (!isInList) googleSearchItems.push({ url: baseurl, title: url, favicon: favicon });
+			} else {
+				googleSearchItems.push({ title, url });
+			}
 		}
 	}
 	return googleSearchItems;
@@ -103,23 +105,31 @@ const OnType = ({ params }) => {
 
 	return (
 		<div>
-			<Clock className="mt-8 h-10 text-center" />
+			<Clock className="mt-4 h-10 text-center" />
 
 			<div className="m-center mt-10 flex w-3/4 flex-col">
 				<Title>Zoeken</Title>
-				{suggestions.slice(0, 3).map((suggestion, index) => {
-					return (
-						<BigTile
-							key={index}
-							size="w-7 h-7"
-							title={suggestion?.item?.title || suggestion.title}
-							img={suggestion?.item?.favicon || suggestion.favicon || 'https://www.google.com/favicon.ico'}
-							description={suggestion?.item?.description || ''}
-							url={suggestion?.item?.hostname || suggestion.url}
-							hiddenUrl={suggestion.title || suggestion.url}
-						/>
-					);
-				})}
+				{suggestions.length > 0 ? (
+					suggestions.slice(0, 3).map((suggestion, index) => {
+						if (suggestion.title) {
+							return (
+								<BigTile
+									key={index}
+									size="w-7 h-7"
+									title={suggestion?.item?.title || suggestion.title}
+									img={suggestion?.item?.favicon || suggestion.favicon || 'https://www.google.com/favicon.ico'}
+									description={suggestion?.item?.description || ''}
+									url={suggestion?.item?.hostname || suggestion.url}
+									hiddenUrl={suggestion.title || suggestion.url}
+								/>
+							);
+						}
+					})
+				) : (
+					<p className="mt-4 text-lg font-light">
+						Geen zoekresultaten gevonden. Druk op enter om te zoeken op Google...
+					</p>
+				)}
 			</div>
 		</div>
 	);

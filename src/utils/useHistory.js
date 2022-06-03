@@ -11,7 +11,7 @@ export const useHistory = () => {
 		if (!user) return;
 		window.api.recieve('historyReply', async (historyItem) => {
 			const historyRef = collection(db, `users/${user.uid}/history/`);
-			await addDoc(historyRef, historyItem[0]);
+			if (typeof historyItem[0] !== 'string') await addDoc(historyRef, historyItem[0]);
 		});
 		return () => window.api.removeAllListeners('historyReply');
 	}, [user]);
