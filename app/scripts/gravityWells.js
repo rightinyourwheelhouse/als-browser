@@ -323,7 +323,8 @@ async function makeGravityWell() {
 	let distance = Math.sqrt(Math.pow(clientX - elementPosMiddle[0], 2) + Math.pow(clientY - elementPosMiddle[1], 2));
 	let target_X = undefined;
 	let target_Y = undefined;
-	let heightOffset = window.outerHeight - window.innerHeight + 20;
+	let heightOffset = window.outerHeight - window.innerHeight + 16;
+	console.log(heightOffset)
 	let diffX = Math.min(10, 0 + 1 * (Math.abs(elementPosMiddle[0] - clientX) / 100));
 	let diffY = Math.min(10, 0 + 1 * (Math.abs(elementPosMiddle[1] - clientY) / 100));
 	if (distance < 100) {
@@ -414,7 +415,7 @@ class PointerPredictor {
 	 */
 	async getModel() {
 		try {
-			const handler = tfnode.io.fileSystem('app/scripts/1DCNNLSTMAbsolute/model.json');
+			const handler = tfnode.io.fileSystem('app/scripts/gravityWell_1dcnn_bidirectional_small/model.json');
 			this.model = await tf.loadLayersModel(handler);
 		} catch (e) {
 			throw new Error(e);
