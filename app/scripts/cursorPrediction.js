@@ -10,6 +10,10 @@ const tfnode = require('@tensorflow/tfjs-node');
  * shortcut button is removed when no button is nearby or when the traveled distance is too short.
  */
 
+const interval = 30;
+let previousTimestamp = 0;
+let timestamp;
+
 //get all the buttons and links of the current document/page
 let clickableItems;
 let elements = [];
@@ -43,8 +47,6 @@ let pageY;
 // the current location of the window viewport, needed for moving the canvas otherwise it does not follow the scrolling of the page and is stuck up top.
 let windowX;
 let windowY;
-//used in the mousetracking
-let interval;
 
 // we only send the queue with x and y coordinates every "PredictionInterval" to the service_worker
 // this to limit load + making predictions every 0.003 seconds is useless+ might give lot's of false positives with slow mouse movements
@@ -53,10 +55,10 @@ let PredictionInterval = 5;
 let PredictionIntervalCounter = 0;
 let windowSize = 10;
 
-let timeOut;
-let working = false;
+// let timeOut;
+// let working = false;
 let mouseTrackingActive = true;
-let visualsation = false;
+let visualsation = true;
 
 //Canvas used for drawing input and prediction squares
 let drawingCanvas;
@@ -66,9 +68,10 @@ const registerListeners = () => {
 	window.addEventListener('mousemove', handleMouseMove);
 
 	// clear interval if mouse leaves window
-	document.addEventListener('mouseleave', handleMouseLeave);
+	// document.addEventListener('mouseleave', handleMouseLeave);
 	// Update the top and left when scrolling so it according to viewport width & height
 	window.addEventListener('scroll', getAllClickableItems);
+	window.addEventListener('mouseenter', handleMouseEnter);
 
 	// Doesnt work all the time, should not be needed in this use case
 	//window.addEventListener('beforeunload', handleBeforeUnload);
@@ -79,7 +82,11 @@ const registerListeners = () => {
  * if the window dimensions change, the canvas is deleted and redrawn
  * the shortcut button is also moved every few timesteps
  */
-const handleMouseMove = (e) => {
+
+function handleMouseEnter() {
+	previousTimestamp = new Date().getTime();
+}
+const handleMouseMove = async (e) => {
 	if (pageX != window.innerWidth || pageY != window.innerHeight) {
 		pageX = window.innerWidth;
 		pageY = window.innerHeight;
@@ -97,25 +104,49 @@ const handleMouseMove = (e) => {
 		moveShortCutButton();
 		shortcutLocationCounter = 0;
 	}
-	clearTimeout(timeOut);
 
-	if (mouseTrackingActive) {
-		timeOut = setTimeout(() => {
-			working = false;
-			clearInterval(interval);
-		}, 40);
+	if (mouseTrackingActive && pageX != undefined && pageY != undefined) {
+		timestamp = new Date().getTime();
 
-		if (working === false) {
-			startInterval(interval);
-			working = true;
+		if (timestamp >= previousTimestamp + interval) {
+			console.log('inhere');
+			if (queue.length >= windowSize) {
+				queue.shift();
+			}
+			const cursor = getCursorData();
+			queue.push(cursor);
+			PredictionIntervalCounter += 1;
+			if (PredictionIntervalCounter >= PredictionInterval && queue.length == windowSize) {
+				const output = await pointerPredictor.makePrediction(queue);
+				lastInput = queue;
+				lastPrediction = output;
+				drawprediction(lastInput, lastPrediction);
+				checkCloseElements(lastPrediction);
+				PredictionIntervalCounter = 0;
+			}
+			previousTimestamp = timestamp;
 		}
 	}
+
+	// clearTimeout(timeOut);
+
+	// if (mouseTrackingActive) {
+	// 	timeOut = setTimeout(() => {
+	// 		working = false;
+	// 		clearInterval(interval);
+	// 	}, 40);
+
+	// 	if (working === false) {
+	// 		startInterval(interval);
+	// 		working = true;
+	// 	}
+	// }
 };
 
-const handleMouseLeave = () => {
-	working = false;
-	clearInterval(interval);
-};
+// const handleMouseLeave = () => {
+// 	// working = false;
+// 	// clearInterval(interval);
+// };
 
 /**
  * return an object with the current mouse information
@@ -137,27 +168,27 @@ const getCursorData = () => {
  * 		then sendMessage(queue) is used to send an array with X and Y coordinates to the service_worker who will send a prediction back
  * 		the prediction is received by a event listener further below
  */
-const startInterval = () => {
-	// if mouse tracking is active, start interval
-	if (mouseTrackingActive && pageX != undefined && pageY != undefined) {
-		interval = setInterval(async () => {
-			if (queue.length >= windowSize) {
-				queue.shift();
-			}
-			const cursor = getCursorData();
-			queue.push(cursor);
-			PredictionIntervalCounter += 1;
-			if (PredictionIntervalCounter >= PredictionInterval && queue.length == windowSize) {
-				const output = pointerPredictor.makePrediction(queue);
-				lastInput = queue;
-				lastPrediction = output;
-				drawprediction(lastInput, lastPrediction);
-				checkCloseElements(lastPrediction);
-				PredictionIntervalCounter = 0;
-			}
-		}, 30);
-	}
-};
+// const startInterval = () => {
+// 	// if mouse tracking is active, start interval
+// 	if (mouseTrackingActive && pageX != undefined && pageY != undefined) {
+// 		interval = setInterval(async () => {
+// 			if (queue.length >= windowSize) {
+// 				queue.shift();
+// 			}
+// 			const cursor = getCursorData();
+// 			queue.push(cursor);
+// 			PredictionIntervalCounter += 1;
+// 			if (PredictionIntervalCounter >= PredictionInterval && queue.length == windowSize) {
+// 				const output = pointerPredictor.makePrediction(queue);
+// 				lastInput = queue;
+// 				lastPrediction = output;
+// 				drawprediction(lastInput, lastPrediction);
+// 				checkCloseElements(lastPrediction);
+// 				PredictionIntervalCounter = 0;
+// 			}
+// 		}, 30);
+// 	}
+// };
 
 /**
  * Create a canvas for visualising the predictions
@@ -262,6 +293,8 @@ const getAllClickableItems = () => {
  * checks which clickable html elements lies closest to the end point of the prediction(windowsize - 1)
  * Then checks if there are qny nearby html elements, if there are, it links the shortcut button to this element.
  */
+
+// Check the testapplication for better implementation => Link: 
 const checkCloseElements = (prediction) => {
 	let xPosPredictionEndPoint = prediction[0][windowSize - 1][0] * window.innerWidth;
 	let yPosPredictionEndPoint = prediction[0][windowSize - 1][1] * window.innerHeight;
@@ -497,7 +530,7 @@ const init = () => {
 	createButtonStyle();
 	createShortCutButton();
 	registerListeners();
-	startInterval();
+	// startInterval();
 	createCanvas();
 	getAllClickableItems();
 };
