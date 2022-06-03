@@ -415,7 +415,7 @@ class PointerPredictor {
 	 */
 	async getModel() {
 		try {
-			const handler = tfnode.io.fileSystem('app/scripts/1DCNNLSTMAbsolute/model.json');
+			const handler = tfnode.io.fileSystem('app/scripts/gravityWell_1dcnn_bidirectional_small/model.json');
 			this.model = await tf.loadLayersModel(handler);
 		} catch (e) {
 			throw new Error(e);
