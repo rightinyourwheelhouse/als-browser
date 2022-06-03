@@ -40,8 +40,7 @@ const SearchBar = () => {
 				inputRef.current.focus();
 			}
 		});
-		window.api.recieve('historyReply', (url) => {
-			url = url[0];
+		window.api.recieve('historyReply', ([url]) => {
 			const { hostname, pathname } = url;
 
 			if (typeof url === 'object') {
