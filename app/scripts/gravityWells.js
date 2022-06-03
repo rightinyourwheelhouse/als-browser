@@ -324,7 +324,6 @@ async function makeGravityWell() {
 	let target_X = undefined;
 	let target_Y = undefined;
 	let heightOffset = window.outerHeight - window.innerHeight + 16;
-	console.log(heightOffset)
 	let diffX = Math.min(10, 0 + 1 * (Math.abs(elementPosMiddle[0] - clientX) / 100));
 	let diffY = Math.min(10, 0 + 1 * (Math.abs(elementPosMiddle[1] - clientY) / 100));
 	if (distance < 100) {

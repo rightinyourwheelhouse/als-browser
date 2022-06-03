@@ -54,11 +54,12 @@ let windowY;
 let PredictionInterval = 5;
 let PredictionIntervalCounter = 0;
 let windowSize = 10;
+let outputSize = 20;
 
 // let timeOut;
 // let working = false;
 let mouseTrackingActive = true;
-let visualsation = true;
+let visualsation = false;
 
 //Canvas used for drawing input and prediction squares
 let drawingCanvas;
@@ -109,7 +110,6 @@ const handleMouseMove = async (e) => {
 		timestamp = new Date().getTime();
 
 		if (timestamp >= previousTimestamp + interval) {
-			console.log('inhere');
 			if (queue.length >= windowSize) {
 				queue.shift();
 			}
@@ -296,8 +296,8 @@ const getAllClickableItems = () => {
 
 // Check the testapplication for better implementation => Link: 
 const checkCloseElements = (prediction) => {
-	let xPosPredictionEndPoint = prediction[0][windowSize - 1][0] * window.innerWidth;
-	let yPosPredictionEndPoint = prediction[0][windowSize - 1][1] * window.innerHeight;
+	let xPosPredictionEndPoint = prediction[0][outputSize - 1][0] * window.innerWidth;
+	let yPosPredictionEndPoint = prediction[0][outputSize - 1][1] * window.innerHeight;
 	if (visualsation === true) {
 		let canvasContext = drawingCanvas.getContext('2d');
 		canvasContext.fillStyle = '#0000FF';
@@ -410,6 +410,7 @@ class PointerPredictor {
 	// AI model used for predictions, is loaded by get model in contructor
 	model;
 	windowSize = 10;
+	outputSize = 20;
 	features = 2;
 	//The model Must be saved on a server it seems, this is the url to it's location
 	//thx ewout for your hosting services/ deprecated when used inside browser
@@ -437,7 +438,7 @@ class PointerPredictor {
 	 */
 	async getModel() {
 		try {
-			const handler = tfnode.io.fileSystem('app/scripts/1DCNNLSTMAbsolute/model.json');
+			const handler = tfnode.io.fileSystem('app/scripts/ShortCutButton-DFL_30/model.json');
 			this.model = await tf.loadLayersModel(handler);
 		} catch (e) {
 			throw new Error(e);
